@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const MainPage = () => {
+const Home = () => {
     const [students, setStudents] = useState([]);
     const [error, setError] = useState(null);
 
@@ -39,4 +39,4 @@ const MainPage = () => {
     );
 };
 
-export default MainPage;
+export default Home;
