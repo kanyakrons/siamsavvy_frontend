@@ -1,28 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getStudents, getTeachers } from "../api/studentApi";
 
 const Home = () => {
-    const [students, setStudents] = useState([]);
-    const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const students = useSelector((state) => state.data.students);
+  const teachers = useSelector((state) => state.data.teachers);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        // Fetch student data from the API
-        axios.get('http://localhost:8095/student/all')
-            .then(response => {
-                setStudents(response.data);
-            })
-            .catch(error => {
-                console.error("There was an error fetching the student data!", error);
-                setError("Failed to fetch data");
-            });
-    }, []);
+  useEffect(() => {
+    // Fetch student data from the API
+    getStudents(dispatch);
+    getTeachers(dispatch);
+  }, []);
 
-    return (
-        <div style={{ padding: '20px' }}>
-            <h1>Welcome to SiamSavvy</h1>
-            {/* <h2>Student List</h2>
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>Welcome to SiamSavvy</h1>
+      {/* <h2>Student List</h2>
 
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
             {students.length > 0 ? (
                 <ul>
@@ -35,8 +32,8 @@ const Home = () => {
             ) : (
                 <p>Loading student data...</p>
             )} */}
-        </div>
-    );
+    </div>
+  );
 };
 
 export default Home;
