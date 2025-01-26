@@ -17,21 +17,21 @@ const Home = () => {
   return (
     <div style={{ padding: "20px" }}>
       <h1>Welcome to SiamSavvy</h1>
-      <h2>Student List</h2>
+      {/* <h2>Student List</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {students.length > 0 ? (
-        <ul>
-          {students.map((student) => (
-            <li key={student.id}>
-              {student.name} - {student.email}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Loading student data...</p>
-      )}
+            {students.length > 0 ? (
+                <ul>
+                    {students.map(student => (
+                        <li key={student.id}>
+                            {student.name} - {student.email}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>Loading student data...</p>
+            )} */}
     </div>
   );
 };
