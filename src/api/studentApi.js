@@ -1,5 +1,5 @@
 import { setStudents, setTeachers, setError } from "../redux/dataService";
-import fetchData from "./axiosService";
+import { fetchData } from "./axiosService";
 
 const getStudents = async () => {
   try {
