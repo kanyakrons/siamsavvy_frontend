@@ -4,6 +4,7 @@ const axiosInstance = axios.create({
   baseURL: "http://localhost:8095",
   headers: {
     "Content-Type": "application/json",
+    Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJibHVlQGdtYWlsLmNvbSIsImlhdCI6MTc0MTA5ODUxOCwiZXhwIjoxNzQxMTAyMTE4fQ.GLOllI_hjN99kvZN2rjHAqKCl710gvEmLvpHmKlBrkY"
   },
 });
 

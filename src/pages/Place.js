@@ -66,82 +66,90 @@ const Place = () => {
     }, [searchQuery, selectedProvinces, selectedCategories, places]);
 
     return (
-        <div style={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
-            <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Places List</h2>
+        <div className="p-5 max-w-7xl mx-auto">
+            {/* Outer container to center the search bar */}
+            <div className="flex justify-center items-center w-full mb-7">
+                {/* Search Bar container */}
+                <div className="flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
+                    {/* Province Multi-Select */}
+                    <Select
+                        isMulti
+                        options={provinces.map((p) => ({ value: p, label: p }))}
+                        value={selectedProvinces}
+                        onChange={setSelectedProvinces}
+                        placeholder="Filter by Province"
+                        styles={{
+                            control: (base) => ({
+                                ...base,
+                                width: "200px",
+                                borderRadius: "9999px",
+                              }),
+                        }}
+                    />
 
-            {/* Search Bar */}
-            <div style={{
-                display: "flex",
-                gap: "15px",
-                marginBottom: "20px",
-                justifyContent: "center",
-                alignItems: "center",
-            }}>
-                {/* Province Multi-Select */}
-                <Select
-                    isMulti
-                    options={provinces.map((p) => ({ value: p, label: p }))}
-                    value={selectedProvinces}
-                    onChange={setSelectedProvinces}
-                    placeholder="Filter by Province"
-                    styles={{ width: "250px" }}
-                />
+                    {/* Search by Place Name */}
+                    <input
+                        type="text"
+                        placeholder="Place Name ..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-[200px] p-2 border-2 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    />
 
-                {/* Search by Place Name */}
-                <input
-                    type="text"
-                    placeholder="Search by Place Name (Thai/English)"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{
-                        padding: "10px",
-                        width: "300px",
-                        borderRadius: "5px",
-                        border: "1px solid #ccc",
-                    }}
-                />
-
-                {/* Category Multi-Select */}
-                <Select
-                    isMulti
-                    options={categories.map((c) => ({ value: c.id, label: c.name }))}
-                    value={selectedCategories}
-                    onChange={setSelectedCategories}
-                    placeholder="Filter by Category"
-                    styles={{ width: "250px" }}
-                />
+                    {/* Category Multi-Select */}
+                    <Select
+                        isMulti
+                        options={categories.map((c) => ({ value: c.id, label: c.name }))}
+                        value={selectedCategories}
+                        onChange={setSelectedCategories}
+                        placeholder="Filter by Category"
+                        styles={{
+                            control: (base) => ({
+                              ...base,
+                              width: "200px",
+                              borderRadius: "9999px",
+                            }),
+                          }}
+                    />
+                </div>
             </div>
 
             {/* Grid Display */}
             {loading ? (
-                <p>Loading places...</p>
-            ) : error ? (
-                <p style={{ color: "red" }}>{error}</p>
-            ) : (
-                <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: "20px",
-                }}>
-                    {filteredPlaces.length > 0 ? (
-                        filteredPlaces.map((place) => (
-                            <div key={place.id} style={{
-                                border: "1px solid #ddd",
-                                padding: "15px",
-                                borderRadius: "8px",
-                                boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
-                                background: "#fff",
-                            }}>
-                                <h3 style={{ marginBottom: "5px" }}>{place.nameTh} ({place.nameEn})</h3>
-                                <p><strong>Province:</strong> {place.province}</p>
-                                <p><strong>Category:</strong> {place.category.name}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No places found.</p>
-                    )}
-                </div>
-            )}
+                    <p>Loading places...</p>
+                ) : error ? (
+                    <p style={{ color: "red" }}>{error}</p>
+                ) : (
+                    <div className="grid grid-cols-3 gap-5">
+                        {filteredPlaces.length > 0 ? (
+                            filteredPlaces.map((place) => (
+                                <div key={place.id} className="w-full h-[335px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+                                    {/* Image Section */}
+                                    <div className="h-[230px] relative">
+                                        <img
+                                            src={place.image ? place.image : "/default-mockup-place.jpg"}
+                                            alt={place.nameEn}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        {/* Category Box (Top Right) */}
+                                        <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full">
+                                            {place.category.name}
+                                        </div>
+                                    </div>
+
+                                    {/* Info Section */}
+                                    <div className="h-[105px] bg-white px-5 py-3">
+                                        <p className="text-purple-400 font-semibold text-sm mb-1">{place.province}</p>
+                                        <p className="text-black font-semibold ">{place.nameTh}</p>
+                                        <p className="text-black">{place.nameEn}</p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No places found.</p>
+                        )}
+                    </div>
+                )}
         </div>
     );
 };
