@@ -1,13 +1,12 @@
 import { setStudents, setTeachers, setError } from "../redux/dataService";
 import fetchData from "./axiosService";
 
-const getStudents = async (dispatch) => {
+const getStudents = async () => {
   try {
-    const data = await fetchData("GET", "/student/all");
-    dispatch(setStudents(data));
+    const data = await fetchData("GET", "/places");
+    return data;
   } catch (err) {
     console.log(err);
-    dispatch(setError("Failed to fetch student data"));
   }
 };
 
