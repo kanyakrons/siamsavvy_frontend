@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import GeneratePlan from './pages/GeneratePlan';
 import Place from './pages/Place';
+import PlaceDetail from './pages/PlaceDetail';
 
 function App() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -64,6 +65,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/places" element={<Place />} />
+          <Route path="/places/:placeId" element={<PlaceDetail />} />
           <Route path="/plans/generate" element={<GeneratePlan />} />
           {/* <Route path="/plans/:id" element={<Home />} /> */}
         </Routes>

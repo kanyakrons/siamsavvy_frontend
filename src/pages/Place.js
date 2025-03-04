@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getPlaces, getProvinces } from "../api/placeApi";
 import { getCategories } from "../api/categoryApi";
 import Select from "react-select";
-import { setError } from "../redux/dataService";
+import { Link } from 'react-router-dom';
 
 const Place = () => {
     const [places, setPlaces] = useState([]);
@@ -124,6 +124,7 @@ const Place = () => {
                         {filteredPlaces.length > 0 ? (
                             filteredPlaces.map((place) => (
                                 <div key={place.id} className="w-full h-[335px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
+                                <Link to={`/places/${place.id}`}>
                                     {/* Image Section */}
                                     <div className="h-[230px] relative">
                                         <img
@@ -143,6 +144,7 @@ const Place = () => {
                                         <p className="text-black font-semibold ">{place.nameTh}</p>
                                         <p className="text-black">{place.nameEn}</p>
                                     </div>
+                                </Link>
                                 </div>
                             ))
                         ) : (

@@ -19,4 +19,13 @@ const getProvinces = async () => {
       }
 }
 
-export { getPlaces, getProvinces };
+const getPlaceDetail = async (placeId) => {
+  try {
+    const data = await fetchData("GET", `/places/${placeId}`);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { getPlaces, getProvinces, getPlaceDetail };
