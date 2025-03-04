@@ -8,6 +8,9 @@ function PlaceDetail() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [rating, setRating] = useState(0);
+    const [reviewText, setReviewText] = useState("");
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -119,7 +122,7 @@ function PlaceDetail() {
                         {/* Review Section*/}
                         <p className="text-xl font-semibold">Reviews</p>
                         {placeDetails.placeReviews && placeDetails.placeReviews.length > 0 && (
-                            <div className="mt-5">
+                            <div className="mt-5 mb-5">
                                 {placeDetails.placeReviews.map((review) => (
                                     <div key={review.id} className="mt-4 p-4 border-t border-gray-300">
                                         <div className="flex justify-between items-center">
@@ -151,6 +154,55 @@ function PlaceDetail() {
                                 ))}
                             </div>
                         )}
+
+                        <div className="border border-gray-200 rounded-lg bg-gray-100 px-7 py-5 shadow-md">
+                            {/* User Name */}
+                            <p className="font-semibold">username</p>
+
+                            {/* Review Input */}
+                            <textarea
+                                className="w-full mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                                rows="3"
+                                placeholder="Write your review..."
+                                value={reviewText}
+                                onChange={(e) => setReviewText(e.target.value)}
+                            ></textarea>
+
+                            {/* Rating and Button Container */}
+                            <div className="mt-2 flex items-center justify-between">
+                                {/* Star Rating */}
+                                <div className="flex items-center">
+                                    <span className="text-gray-700 me-2">Your Rating:</span>
+                                    {[...Array(5)].map((_, index) => (
+                                        <svg
+                                            key={index}
+                                            onClick={() => setRating(index + 1)}
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20"
+                                            fill={index < rating ? "currentColor" : "none"}
+                                            stroke="gray"
+                                            strokeWidth="1"
+                                            className={`w-6 h-6 cursor-pointer transition-all duration-200 ${index < rating ? "text-yellow-500" : "text-gray-400"
+                                                }`}
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M10 15.27l4.15 2.18-1.08-4.73L18 7.24l-4.91-.42L10 2.5 7.91 6.82 3 7.24l3.93 5.48-1.08 4.73L10 15.27z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                    ))}
+                                </div>
+
+                                {/* Post Review Button */}
+                                <button
+                                    className="px-5 py-2 bg-black text-white font-semibold rounded-full shadow-md transition-all duration-200 hover:bg-purple-400"
+                                    // onClick={() => onPostReview(reviewText, rating)}
+                                >
+                                    Post Review
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
