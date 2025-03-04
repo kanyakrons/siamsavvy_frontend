@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import GeneratePlan from './pages/GeneratePlan';
+import Place from './pages/Place';
 
 function App() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -28,7 +29,7 @@ function App() {
               <Link to="/">Blogs</Link>
             </li>
             <li>
-              <Link to="/">Places</Link>
+              <Link to="/places">Places</Link>
             </li>
             <li>
               <Link to="/plans/generate">Trip planner</Link>
@@ -62,6 +63,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/places" element={<Place />} />
           <Route path="/plans/generate" element={<GeneratePlan />} />
           {/* <Route path="/plans/:id" element={<Home />} /> */}
         </Routes>
