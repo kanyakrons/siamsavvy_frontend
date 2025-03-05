@@ -42,7 +42,7 @@ const reviewPlace = async (placeId, score, content) => {
   }
 };
 
-const checkIfLiked = async(placeId) => {
+const checkIfFavorited = async(placeId) => {
   try {
     const response = await fetchDataWithAuth("GET", `/favoritePlace/check/${placeId}`);
     return response;
@@ -51,4 +51,13 @@ const checkIfLiked = async(placeId) => {
   }
 };
 
-export { getPlaces, getProvinces, getPlaceDetail, reviewPlace, checkIfLiked };
+const toggleFavorite = async(placeId) => {
+  try {
+    const response = await fetchDataWithAuth("POST", `/places/${placeId}/toggle-favorite`);
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { getPlaces, getProvinces, getPlaceDetail, reviewPlace, checkIfFavorited, toggleFavorite };

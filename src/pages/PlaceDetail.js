@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
-import { getPlaceDetail, reviewPlace, checkIfLiked } from "../api/placeApi";
+import { getPlaceDetail, reviewPlace, checkIfFavorited, toggleFavorite } from "../api/placeApi";
 import { AuthContext } from "../context/AuthContext";
 
 function PlaceDetail() {
@@ -8,7 +8,7 @@ function PlaceDetail() {
     const [placeDetails, setPlaceDetails] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isLiked, setIsLiked] = useState(false);
+    const [isFavorited, setIsFavorited] = useState(false);
 
     const [rating, setRating] = useState(0);
     const [reviewText, setReviewText] = useState("");
@@ -21,8 +21,8 @@ function PlaceDetail() {
                 const placesData = await getPlaceDetail(placeId);
                 setPlaceDetails(placesData.data);
 
-                const likedData = await checkIfLiked(placeId);
-                setIsLiked(likedData.data);
+                const likedData = await checkIfFavorited(placeId);
+                setIsFavorited(likedData.data);
             }
             catch (error) {
                 setError("Error fetching data");
@@ -67,8 +67,16 @@ function PlaceDetail() {
         }
     };
 
-    const toggleLike = () => {
-        setIsLiked(prevState => !prevState);
+    const addFavorite = async () => {
+        try{
+            const response = await toggleFavorite(placeId);
+            if (response.status === 200 || response.status === 201) {
+                setIsFavorited(response.data);
+            }
+        }
+        catch (error) {
+            setError("Failed to like/unlike place. Please try again later.");
+        }
     };
 
     if (loading) {
@@ -117,11 +125,11 @@ function PlaceDetail() {
                                 <div>
                                     {/* Heart icon */}
                                     <svg
-                                        onClick={toggleLike}
+                                        onClick={addFavorite}
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24"
-                                        fill={isLiked ? "red" : "none"}
-                                        stroke={isLiked ? "red" : "gray"}
+                                        fill={isFavorited ? "red" : "none"}
+                                        stroke={isFavorited ? "red" : "gray"}
                                         className="w-7 h-7 cursor-pointer"
                                     >
                                         <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
