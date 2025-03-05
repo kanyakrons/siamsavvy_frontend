@@ -21,7 +21,7 @@ function PlaceDetail() {
                 const placesData = await getPlaceDetail(placeId);
                 setPlaceDetails(placesData.data);
 
-                const likedData = await checkIfLiked(placeId, user.id);
+                const likedData = await checkIfLiked(placeId);
                 setIsLiked(likedData.data);
             }
             catch (error) {
@@ -42,7 +42,7 @@ function PlaceDetail() {
             return;
         }
         try {
-            const response = await reviewPlace(placeId, user.id, rating, reviewText);
+            const response = await reviewPlace(placeId, rating, reviewText);
 
             if (response.status === 200 || response.status === 201) {
                 setReviewText("");

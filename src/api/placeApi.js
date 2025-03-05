@@ -28,11 +28,10 @@ const getPlaceDetail = async (placeId) => {
   }
 };
 
-const reviewPlace = async (placeId, userId, score, content) => {
+const reviewPlace = async (placeId, score, content) => {
   try {
     const response = await fetchDataWithAuth("POST", `/review`, {
       "placeId": parseInt(placeId, 10),
-      "userId": parseInt(userId, 10),
       "content": content,
       "score": parseFloat(score)
     });
@@ -43,9 +42,9 @@ const reviewPlace = async (placeId, userId, score, content) => {
   }
 };
 
-const checkIfLiked = async(placeId, userId) => {
+const checkIfLiked = async(placeId) => {
   try {
-    const response = await fetchDataWithAuth("GET", `/favoritePlace/check/${placeId}?userId=${userId}`);
+    const response = await fetchDataWithAuth("GET", `/favoritePlace/check/${placeId}`);
     return response;
   } catch (err) {
     console.log(err);
