@@ -5,7 +5,7 @@ const loginApi = async (data) => {
     const response = await fetchData("POST", "auth/login", data);
     return response;
   } catch (error) {
-    console.log(err);
+    console.log(error);
   }
 };
 

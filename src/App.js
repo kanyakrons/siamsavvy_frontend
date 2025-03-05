@@ -7,6 +7,7 @@ import Place from "./pages/Place";
 import Login from "./pages/Login";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import NavBar from "./components/NavBar";
+import PlaceDetail from './pages/PlaceDetail';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/places" element={<Place />} />
+          <Route path="/places/:placeId" element={<PlaceDetail />} />
           <Route path="/plans/generate" element={<GeneratePlan />} />
           <Route path="/login" element={<Login />} />
           {/* <Route path="/plans/:id" element={<Home />} /> */}

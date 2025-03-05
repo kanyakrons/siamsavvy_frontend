@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        prompt: ["Sarabun", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 };
