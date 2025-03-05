@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
     try {
       const response = await loginApi(userData);
       const expiryTime = new Date().getTime() + response?.expiresIn;
-      localStorage.setItem("user", { id: response?.id, username: response?.username });
+      localStorage.setItem("user", JSON.stringify({ id: response?.id, username: response?.username }));
       localStorage.setItem("token", response?.token);
       localStorage.setItem("tokenExpiry", expiryTime);
       setUser(userData);

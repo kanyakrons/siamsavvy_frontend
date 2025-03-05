@@ -7,7 +7,8 @@ const axiosInstanceWithAuth = axios.create({
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
-});
+}
+);
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8095",
@@ -22,11 +23,11 @@ const fetchDataWithAuth = async (method, url, data = null) => {
     if (method.toUpperCase() === "GET") {
       response = await axiosInstanceWithAuth.get(url);
     } else if (method.toUpperCase() === "POST") {
-      response = await axiosInstanceWithAuth.post(url, data);
+      response = await axiosInstanceWithAuth.post(url, JSON.stringify(data));
     } else {
       throw new Error("Invalid HTTP method");
     }
-    return response.data;
+    return response;
   } catch (error) {
     console.error("There was an error fetching the data:", error);
     throw error;
@@ -43,7 +44,7 @@ const fetchData = async (method, url, data = null) => {
     } else {
       throw new Error("Invalid HTTP method");
     }
-    return response.data;
+    return response;
   } catch (error) {
     console.error("There was an error fetching the data:", error);
     throw error;

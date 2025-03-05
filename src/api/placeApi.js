@@ -1,5 +1,5 @@
 import { setError } from "../redux/dataService";
-import { fetchData } from "./axiosService";
+import { fetchData, fetchDataWithAuth } from "./axiosService";
 
 const getPlaces = async () => {
   try {
@@ -28,4 +28,19 @@ const getPlaceDetail = async (placeId) => {
   }
 };
 
-export { getPlaces, getProvinces, getPlaceDetail };
+const reviewPlace = async (placeId, userId, score, content) => {
+  try {
+    const response = await fetchDataWithAuth("POST", `/review`, {
+      "placeId": parseInt(placeId, 10),
+      "userId": parseInt(userId, 10),
+      "content": content,
+      "score": parseFloat(score)
+    });
+
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { getPlaces, getProvinces, getPlaceDetail, reviewPlace };

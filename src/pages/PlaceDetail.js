@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
-import { getPlaceDetail } from "../api/placeApi";
+import { getPlaceDetail, reviewPlace } from "../api/placeApi";
 import { AuthContext } from "../context/AuthContext";
 
 function PlaceDetail() {
@@ -18,7 +18,7 @@ function PlaceDetail() {
         const fetchData = async () => {
             try {
                 const placesData = await getPlaceDetail(placeId);
-                setPlaceDetails(placesData);
+                setPlaceDetails(placesData.data);
             }
             catch (error) {
                 setError("Error fetching data");
@@ -30,6 +30,38 @@ function PlaceDetail() {
         fetchData();
 
     }, [placeId]);
+
+
+    const onPostReview = async () => {
+        if (rating === 0) {
+            setError("Please provide a rating score.");
+            return;
+        }
+        try {
+            const response = await reviewPlace(placeId, user.id, rating, reviewText);
+
+            if (response.status === 200 || response.status === 201) {
+                setReviewText("");
+                setRating(0);
+                setError(null);
+
+                const updatedPlaceDetail = await getPlaceDetail(placeId);
+                const updatedPlaceDetailScore = updatedPlaceDetail.data.score;
+
+                setPlaceDetails(prev => ({
+                    ...prev,
+                    placeReviews: [...prev.placeReviews, response.data],
+                    score: updatedPlaceDetailScore
+                }));
+            }
+        }
+        catch (error) {
+            setError("Failed to submit review. Please try again later.");
+        }
+        finally {
+            setLoading(false);
+        }
+    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -162,7 +194,7 @@ function PlaceDetail() {
                         {isAuth && (
                             <div className="border border-gray-200 rounded-lg bg-gray-100 px-7 py-5 shadow-md">
                                 {/* User Name */}
-                                <p className="font-semibold">{user.username}</p>
+                                <p className="font-semibold">{JSON.parse(JSON.stringify(user)).username}</p>
 
                                 {/* Review Input */}
                                 <textarea
@@ -202,7 +234,7 @@ function PlaceDetail() {
                                     {/* Post Review Button */}
                                     <button
                                         className="px-5 py-2 bg-black text-white font-semibold rounded-full shadow-md transition-all duration-200 hover:bg-purple-400"
-                                        // onClick={() => onPostReview(reviewText, rating)}
+                                        onClick={onPostReview}
                                     >
                                         Post Review
                                     </button>

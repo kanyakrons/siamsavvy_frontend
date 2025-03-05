@@ -25,10 +25,10 @@ const Place = () => {
                 const provincesData = await getProvinces();
                 const categoriesData = await getCategories();
 
-                setPlaces(placesData);
-                setFilteredPlaces(placesData);
-                setProvinces(provincesData);
-                setCategories(categoriesData);
+                setPlaces(placesData.data);
+                setFilteredPlaces(placesData.data);
+                setProvinces(provincesData.data);
+                setCategories(categoriesData.data);
             }
             catch (error) {
                 setError("Error fetching data");
