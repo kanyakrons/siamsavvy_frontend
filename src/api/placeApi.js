@@ -43,4 +43,13 @@ const reviewPlace = async (placeId, userId, score, content) => {
   }
 };
 
-export { getPlaces, getProvinces, getPlaceDetail, reviewPlace };
+const checkIfLiked = async(placeId, userId) => {
+  try {
+    const response = await fetchDataWithAuth("GET", `/favoritePlace/check/${placeId}?userId=${userId}`);
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { getPlaces, getProvinces, getPlaceDetail, reviewPlace, checkIfLiked };

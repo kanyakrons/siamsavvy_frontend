@@ -28,13 +28,13 @@ const AuthProvider = ({ children }) => {
   const login = async (userData) => {
     try {
       const response = await loginApi(userData);
-      const expiryTime = new Date().getTime() + response?.expiresIn;
-      localStorage.setItem("user", JSON.stringify({ id: response?.id, username: response?.username }));
-      localStorage.setItem("token", response?.token);
+      const expiryTime = new Date().getTime() + response?.data.expiresIn;
+      localStorage.setItem("user", JSON.stringify({ id: response?.data.id, username: response?.data.username }));
+      localStorage.setItem("token", response?.data.token);
       localStorage.setItem("tokenExpiry", expiryTime);
-      setUser(userData);
-      setTokenExpirationCheck(response?.expiresIn);
-      setToken(response?.token);
+      setUser(localStorage.getItem("user"));
+      setTokenExpirationCheck(response?.data.expiresIn);
+      setToken(response?.data.token);
     } catch (err) {
       console.log("failed to login");
     }
