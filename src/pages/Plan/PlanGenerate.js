@@ -127,6 +127,7 @@ const PlanGenerate = () => {
         categoryLabels,
         selectedProvincesCriteria.label
       );
+      
       const data = {
         name: planName,
         detail: response.data,

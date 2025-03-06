@@ -27,6 +27,7 @@ const PlanDetail = () => {
         <div className="w-full">
           {planDetails.detail && (
             <div>
+              <p className="font-semibold text-3xl mb-6">{planDetails.name}</p>
               {/* Day Tabs */}
               <div className="flex overflow-x-auto mb-4">
                 {planDetails.detail?.trip.itinerary.map((dayPlan) => (

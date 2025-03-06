@@ -32,21 +32,29 @@ const UserPlan = () => {
     return <div>{error}</div>;
   }
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  };
+
   return (
-    <>
+    <div className="p-5 max-w-7xl mx-auto">
+      <p className="font-semibold text-3xl my-4">Your Plans</p>
       {planList && planList.length > 0 ? (
         planList.map((plan, index) => (
           <div
             key={index}
-            onClick={() => navigate(`/plans/${plan.id}`)} // Wrap navigate in a function
+            onClick={() => navigate(`/plans/${plan.id}`)}
+            className="px-6 py-4 rounded-xl mb-3 border border-gray-200 shadow-lg hover:border-purple-400 hover:border-2"
           >
-            {plan.name}
+            <p className="font-semibold text-xl mb-1">{plan.name}</p>
+            <p className="text-gray-500 text-sm">{formatDate(plan.createdAt)}</p>
           </div>
         ))
       ) : (
         <div>No plans available</div>
       )}
-    </>
+    </div>
   );
 };
 
