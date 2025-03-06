@@ -54,13 +54,13 @@ function NavBar() {
               {isAuth && (
                 <>
                   <li>
-                    <Link to="/">Profile</Link>
+                    <Link to="/profile">Profile</Link>
                   </li>
                   <li>
                     <Link to="/">Blogs</Link>
                   </li>
                   <li>
-                    <Link to="/">Plans</Link>
+                    <Link to="/plans/saved">Plans</Link>
                   </li>
                   <li>
                     <button

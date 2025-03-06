@@ -1,15 +1,6 @@
 import { Token } from "@mui/icons-material";
 import axios from "axios";
 
-const axiosInstanceWithAuth = axios.create({
-  baseURL: "http://localhost:8095",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-}
-);
-
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8095",
   headers: {
@@ -17,13 +8,19 @@ const axiosInstance = axios.create({
   },
 });
 
+const getAuthToken = () => localStorage.getItem("token");
+
 const fetchDataWithAuth = async (method, url, data = null) => {
+  const token = getAuthToken();
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
   try {
     let response;
     if (method.toUpperCase() === "GET") {
-      response = await axiosInstanceWithAuth.get(url);
+      response = await axiosInstance.get(url, { headers });
     } else if (method.toUpperCase() === "POST") {
-      response = await axiosInstanceWithAuth.post(url, JSON.stringify(data));
+      response = await axiosInstance.post(url, JSON.stringify(data), {
+        headers,
+      });
     } else {
       throw new Error("Invalid HTTP method");
     }
