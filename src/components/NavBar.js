@@ -24,7 +24,7 @@ function NavBar() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/">Blogs</Link>
+            <Link to="/blogs">Blogs</Link>
           </li>
           <li>
             <Link to="/places">Places</Link>
@@ -32,14 +32,10 @@ function NavBar() {
           <li>
             <Link to="/plans/generate">Trip planner</Link>
           </li>
-          {!isAuth && (
-            <li>
-              <Link to="/Login">Login</Link>
-            </li>
-          )}
         </ul>
       </div>
       <div className="navbar-right">
+        {!isAuth && <Link to="/Login">Login</Link>}
         {isAuth && (
           <img
             src="https://your-user-profile-image-url.com"

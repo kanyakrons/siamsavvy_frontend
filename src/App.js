@@ -11,6 +11,7 @@ import PlanGenerate from "./pages/Plan/PlanGenerate";
 import PlanDetail from "./pages/Plan/PlanDetail";
 import UserPlan from "./pages/Plan/UserPlan";
 import UserProfile from "./pages/User/UserProfile";
+import BlogSearch from "./pages/Blog/BlogSearch";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/plans/:planId" element={<PlanDetail />} />
           <Route path="/plans/saved" element={<UserPlan />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/blogs" element={<BlogSearch />} />
           <Route path="/login" element={<Login />} />
 
           {/* <Route path="/plans/:id" element={<Home />} /> */}
