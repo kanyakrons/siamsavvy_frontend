@@ -7,6 +7,7 @@ import { generatePlanByAi, CreatePlan } from "../../api/planApi";
 import { Link } from "react-router-dom";
 import { CircularProgress, Backdrop } from "@mui/material";
 import { defaultValue } from "./PlanDefaultValue";
+import { Hero } from "../Sections";
 
 const PlanGenerate = () => {
   const [loading, setLoading] = useState(true);
@@ -127,7 +128,7 @@ const PlanGenerate = () => {
         categoryLabels,
         selectedProvincesCriteria.label
       );
-      
+
       const data = {
         name: planName,
         detail: response.data,
@@ -141,8 +142,9 @@ const PlanGenerate = () => {
   };
 
   return (
-    <div className="p-5 max-w-7xl mx-auto">
+    <div className="w-full h-screen mx-auto">
       {/* Full-screen Loading Spinner */}
+      <Hero />
       {loading && (
         <Backdrop
           open={loading}
@@ -153,7 +155,7 @@ const PlanGenerate = () => {
       )}
 
       {/* toggle plan / summary */}
-      <div className="flex flex-col items-center mt-4">
+      <div className="flex flex-col items-center mt-10">
         <div className="flex w-60 bg-gray-200 rounded-xl p-1">
           <button
             className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
@@ -175,7 +177,7 @@ const PlanGenerate = () => {
       </div>
 
       {isPlanning && (
-        <div>
+        <div className="px-20 min-h-[70rem]">
           <div className="mt-8">
             <input
               type="text"
@@ -477,7 +479,7 @@ const PlanGenerate = () => {
       )}
 
       {!isPlanning && (
-        <div className="flex flex-col items-center mt-4">
+        <div className="flex flex-col items-center mt-4 px-20 min-h-[70rem]">
           <div className="w-full">
             {planDetails.detail && (
               <div>

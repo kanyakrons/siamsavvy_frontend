@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { GetPlanDetail } from "../../api/planApi";
 import { useEffect, useState } from "react";
 import { defaultValue } from "./PlanDefaultValue";
+import { Hero } from "../Sections";
 
 const PlanDetail = () => {
   const { planId } = useParams();
@@ -22,8 +23,9 @@ const PlanDetail = () => {
   }, [planId]);
 
   return (
-    <div className="p-5 max-w-7xl mx-auto">
-      <div className="flex flex-col items-center mt-4">
+    <div className="w-full mx-auto h-screen">
+      <Hero />
+      <div className=" p-5 flex flex-col items-center mt-4">
         <div className="w-full">
           {planDetails.detail && (
             <div>

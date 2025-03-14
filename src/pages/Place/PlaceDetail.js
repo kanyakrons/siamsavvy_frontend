@@ -6,8 +6,9 @@ import {
   reviewPlace,
   checkIfFavorited,
   toggleFavorite,
-} from "../api/placeApi";
-import { AuthContext } from "../context/AuthContext";
+} from "../../api/placeApi";
+import { AuthContext } from "../../context/AuthContext";
+import { Hero } from "../Sections";
 
 function PlaceDetail() {
   const { placeId } = useParams();
@@ -89,7 +90,8 @@ function PlaceDetail() {
   }
 
   return (
-    <div className="p-5 max-w-7xl mx-auto">
+    <div className=" w-full mx-auto">
+      <Hero />
       {placeDetails && (
         <div className="bg-white p-6">
           <div className="my-4 flex items-end">

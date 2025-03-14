@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { SearchValue } from "./SearchValue";
 import Select from "react-select";
+import { Hero } from "../Sections";
 
 const BlogSearch = () => {
   const [searchValue, setSearchValue] = useState(SearchValue);
@@ -8,10 +9,11 @@ const BlogSearch = () => {
   useEffect(() => {}, []);
 
   return (
-    <div className="p-5 max-w-7xl mx-auto">
-      <div className="flex justify-center items-center w-full mb-7">
+    <div className="relative w-full mx-auto h-screen ">
+      <Hero />
+      <div className=" flex justify-center items-center w-full mb-7">
         {/* Search Bar container */}
-        <div className="flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
+        <div className="absolute top-[60%] flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px] ">
           {/* Province Multi-Select */}
           <Select
             isMulti

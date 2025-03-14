@@ -5,6 +5,7 @@
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+  color: white;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -41,15 +42,14 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: white;
+  background-color: bg-transparent;
   padding: 6px 30px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-left .logo {
   font-size: 24px; /* Larger font size for SiamSavvy */
   font-weight: bold;
-  color: black;
+
   text-decoration: none;
 }
 
@@ -66,7 +66,6 @@ nav {
 }
 
 .navbar-center a {
-  color: black;
   text-decoration: none;
   font-size: 18px;
   font-weight: bold;
@@ -74,7 +73,7 @@ nav {
 }
 
 .navbar-center a:hover {
-  background-color: #f0f0f0;
+  color: #3c3248;
   border-radius: 10%;
 }
 
