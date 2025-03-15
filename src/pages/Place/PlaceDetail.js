@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import GoogleMapPin from "../Sections/GoogleMapPin";
 import NavBar from "../../components/NavBar";
-
 import {
   getPlaceDetail,
   reviewPlace,
@@ -10,6 +9,7 @@ import {
   toggleFavorite,
 } from "../../api/placeApi";
 import { AuthContext } from "../../context/AuthContext";
+
 function PlaceDetail() {
   const { placeId } = useParams();
   const [placeDetails, setPlaceDetails] = useState(null);
@@ -38,8 +38,9 @@ function PlaceDetail() {
         setLoading(false);
       }
     };
+
     fetchData();
-  }, [placeId]);
+  }, [placeId, isAuth]);
 
   const onPostReview = async () => {
     if (rating === 0) {
