@@ -95,8 +95,8 @@ function PlaceDetail() {
       <NavBar variant="black" />
       <div className=" w-full mx-auto p-10">
         {placeDetails && (
-          <div className="bg-white p-6 space-y-6">
-            <div className="my-4 flex items-end">
+          <div className="bg-white p-6 pt-12">
+            <div className="flex items-end">
               <div>
                 <p className="text-lg font-medium text-purple-400">
                   {placeDetails.province}
@@ -163,7 +163,7 @@ function PlaceDetail() {
               </div>
             </div>
 
-            <div>
+            <div className="my-3">
               <img
                 src={placeDetails.image || "/default-mockup-place.jpg"}
                 alt={placeDetails.nameEn}
@@ -171,7 +171,7 @@ function PlaceDetail() {
               />
             </div>
 
-            <div className="space-y-4">
+            <div className="mt-6 space-y-3">
               <div>
                 <p className="font-semibold text-lg text-gray-800">Address:</p>
                 <p className="text-gray-700">
@@ -265,18 +265,20 @@ function PlaceDetail() {
             </div>
 
             {/* Google Map Section*/}
-            <GoogleMapPin location={{ lat: Number(placeDetails.location.split(",")[0].trim()), lng: Number(placeDetails.location.split(",")[1].trim()) }} />
+            <div className="mt-6">
+              <GoogleMapPin location={{ lat: Number(placeDetails.location.split(",")[0].trim()), lng: Number(placeDetails.location.split(",")[1].trim()) }} />
+            </div>
 
             {/* Review Section*/}
-            <div>
+            <div className="mt-6">
               <p className="text-xl font-semibold">Reviews</p>
               {placeDetails.placeReviews &&
                 placeDetails.placeReviews.length > 0 && (
-                  <div className="mt-5 mb-5">
+                  <div className="">
                     {placeDetails.placeReviews.map((review) => (
                       <div
                         key={review.id}
-                        className="mt-4 p-4 border-t border-gray-300"
+                        className="mt-2 p-4 border-t border-gray-300"
                       >
                         <div className="flex justify-between items-center">
                           <p className="font-semibold">
@@ -321,7 +323,7 @@ function PlaceDetail() {
                 )}
 
               {isAuth && (
-                <div className="border border-gray-200 rounded-lg bg-gray-100 px-7 py-5 shadow-md">
+                <div className="mt-2 border border-gray-200 rounded-lg bg-gray-100 px-7 py-5 shadow-md">
                   {/* User Name */}
                   <p className="font-semibold">
                     {JSON.parse(JSON.stringify(user)).username}
