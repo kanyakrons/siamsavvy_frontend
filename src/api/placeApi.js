@@ -10,6 +10,16 @@ const getPlaces = async () => {
   }
 };
 
+const searchPlace = async (searchValue) => {
+  try {
+    const data = await fetchData("POST", "/places/search", searchValue);
+    console.log("🚀 ~ searchPlace ~ data:", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getProvinces = async () => {
   try {
     const data = await fetchData("GET", "/places/provinces");
@@ -40,9 +50,9 @@ const getPlacePhoto = async (placeId) => {
 const reviewPlace = async (placeId, score, content) => {
   try {
     const response = await fetchDataWithAuth("POST", `/review`, {
-      "placeId": parseInt(placeId, 10),
-      "content": content,
-      "score": parseFloat(score)
+      placeId: parseInt(placeId, 10),
+      content: content,
+      score: parseFloat(score),
     });
 
     return response;
@@ -51,22 +61,37 @@ const reviewPlace = async (placeId, score, content) => {
   }
 };
 
-const checkIfFavorited = async(placeId) => {
+const checkIfFavorited = async (placeId) => {
   try {
-    const response = await fetchDataWithAuth("GET", `/favoritePlace/check/${placeId}`);
+    const response = await fetchDataWithAuth(
+      "GET",
+      `/favoritePlace/check/${placeId}`
+    );
     return response;
   } catch (err) {
     console.log(err);
   }
 };
 
-const toggleFavorite = async(placeId) => {
+const toggleFavorite = async (placeId) => {
   try {
-    const response = await fetchDataWithAuth("POST", `/places/${placeId}/toggle-favorite`);
+    const response = await fetchDataWithAuth(
+      "POST",
+      `/places/${placeId}/toggle-favorite`
+    );
     return response;
   } catch (err) {
     console.log(err);
   }
 };
 
-export { getPlaces, getPlacePhoto, getProvinces, getPlaceDetail, reviewPlace, checkIfFavorited, toggleFavorite };
+export {
+  getPlaces,
+  getPlacePhoto,
+  getProvinces,
+  getPlaceDetail,
+  reviewPlace,
+  checkIfFavorited,
+  toggleFavorite,
+  searchPlace,
+};

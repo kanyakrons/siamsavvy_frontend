@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { getPlaces, getProvinces } from "../../api/placeApi";
+import { getPlaces, getProvinces, searchPlace } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
 import Select from "react-select";
 import { Link } from "react-router-dom";
 import { Hero } from "../Sections";
+import SearchValue from "./SearchValue";
 
 const Place = () => {
   const [places, setPlaces] = useState([]);
-  const [filteredPlaces, setFilteredPlaces] = useState([]);
+  const [searchValue, setSearchValue] = useState(SearchValue);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,16 +20,31 @@ const Place = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
+  const handleSearch = async () => {
+    console.log("🚀 ~ Place ~ searchValue:", searchValue);
+    try {
+      // Mapping the selected options to only include values
+      const formattedSearchValue = {
+        ...searchValue,
+        placeTitle: searchQuery,
+        listCategory: searchValue.listCategory?.map((option) => option.value),
+        listProvince: searchValue.listProvince?.map((option) => option.value),
+      };
+
+      const response = await searchPlace(formattedSearchValue);
+      setPlaces(response.data.content);
+      console.log("🚀 ~ searchPlace ~ response:", response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const placesData = await getPlaces();
         const provincesData = await getProvinces();
         const categoriesData = await getCategories();
-        // const placesData = { data: [] };
-
-        setPlaces(placesData.data);
-        setFilteredPlaces(placesData.data);
+        handleSearch();
         setProvinces(provincesData.data);
         setCategories(categoriesData.data);
       } catch (error) {
@@ -39,35 +55,6 @@ const Place = () => {
     };
     fetchData();
   }, []);
-
-  // Handle filtering when inputs change
-  useEffect(() => {
-    let filtered = places;
-
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (place) =>
-          place.nameTh.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          place.nameEn.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    if (selectedProvinces.length > 0) {
-      const provinceNames = selectedProvinces.map((p) => p.value);
-      filtered = filtered.filter((place) =>
-        provinceNames.includes(place.province)
-      );
-    }
-
-    if (selectedCategories.length > 0) {
-      const categoryNames = selectedCategories.map((c) => c.value);
-      filtered = filtered.filter((place) =>
-        categoryNames.includes(place.category.id)
-      );
-    }
-
-    setFilteredPlaces(filtered);
-  }, [searchQuery, selectedProvinces, selectedCategories, places]);
 
   return (
     <div className="relative w-full mx-auto h-screen ">
@@ -80,8 +67,9 @@ const Place = () => {
           <Select
             isMulti
             options={provinces.map((p) => ({ value: p, label: p }))}
-            value={selectedProvinces}
-            onChange={setSelectedProvinces}
+            onChange={(selectedOption) => {
+              setSearchValue({ ...searchValue, listProvince: selectedOption });
+            }}
             placeholder="Filter by Province"
             styles={{
               control: (base) => ({
@@ -96,8 +84,9 @@ const Place = () => {
           <input
             type="text"
             placeholder="Place Name ..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) =>
+              setSearchValue({ ...searchValue, placeTitle: e.target.value })
+            }
             className="w-[200px] p-2 border-2 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
 
@@ -105,8 +94,9 @@ const Place = () => {
           <Select
             isMulti
             options={categories.map((c) => ({ value: c.id, label: c.name }))}
-            value={selectedCategories}
-            onChange={setSelectedCategories}
+            onChange={(selectedOption) => {
+              setSearchValue({ ...searchValue, listCategory: selectedOption });
+            }}
             placeholder="Filter by Category"
             styles={{
               control: (base) => ({
@@ -116,6 +106,12 @@ const Place = () => {
               }),
             }}
           />
+          <button
+            className="p-2 bg-purple-600 text-white rounded-full"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
         </div>
       </div>
 
@@ -126,8 +122,8 @@ const Place = () => {
         <p style={{ color: "red" }}>{error}</p>
       ) : (
         <div className="grid grid-cols-3 gap-5 mx-20 mt-20">
-          {filteredPlaces.length > 0 ? (
-            filteredPlaces.map((place) => (
+          {places.length > 0 ? (
+            places.map((place) => (
               <div
                 key={place.id}
                 className="w-full h-[335px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
