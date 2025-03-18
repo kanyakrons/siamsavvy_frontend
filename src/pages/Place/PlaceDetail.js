@@ -4,6 +4,7 @@ import GoogleMapPin from "../Sections/GoogleMapPin";
 import NavBar from "../../components/NavBar";
 import {
   getPlaceDetail,
+  getPlacePhoto,
   reviewPlace,
   checkIfFavorited,
   toggleFavorite,
@@ -13,6 +14,8 @@ import { AuthContext } from "../../context/AuthContext";
 function PlaceDetail() {
   const { placeId } = useParams();
   const [placeDetails, setPlaceDetails] = useState(null);
+  const [photos, setPhotos] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -27,6 +30,9 @@ function PlaceDetail() {
       try {
         const placesData = await getPlaceDetail(placeId);
         setPlaceDetails(placesData.data);
+
+        const photosdata = await getPlacePhoto(placeId);
+        setPhotos(photosdata.data);
 
         if (isAuth) {
           const likedData = await checkIfFavorited(placeId);
@@ -262,6 +268,13 @@ function PlaceDetail() {
                   </a>
                 </div>
               </div>
+            </div>
+
+            {/* Photos */}
+            <div className="mt-6" style={{ display: "flex", gap: "10px" }}>
+              {photos.map((photo, index) => (
+                <img key={index} src={photo} alt={`Place ${index}`} width="200px" />
+              ))}
             </div>
 
             {/* Google Map Section*/}
