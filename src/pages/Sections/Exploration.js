@@ -32,7 +32,7 @@ const Exploration = () => {
   return (
     <div className="w-full min-h-[40rem] pt-8">
       <div className="justify-center items-center flex flex-col">
-        <p className="text-2xl font-bold">POPULAR PLACES</p>
+        <p className="text-2xl font-bold">EXPLORATION</p>
         <p className="mt-1 text-purple-400">
           Lorem ipsum dolor sit amet consectetur. Diam eu risus volutpat in.{" "}
         </p>

@@ -73,7 +73,7 @@ nav {
 }
 
 .navbar-center a:hover {
-  color: #3c3248;
+  
   border-radius: 10%;
 }
 
@@ -113,4 +113,50 @@ nav {
 .dropdown-menu li:hover {
   background-color: #f0f0f0;
 }
+
+.controls {
+  display: flex;
+  border: 1px solid #ccc;
+  border-top: 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.controls-right {
+  margin-left: auto;
+}
+
+/* Styling for the state section */
+.state {
+  margin: 10px 0;
+  font-family: monospace;
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.state-title {
+  color: #999;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Styling for the Quill editor */
+.ql-container {
+  min-height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  padding: 10px;
+}
+
+.ql-editor {
+  min-height: 100px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 

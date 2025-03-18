@@ -22,9 +22,10 @@ const Place = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const placesData = await getPlaces();
+        // const placesData = await getPlaces();
         const provincesData = await getProvinces();
         const categoriesData = await getCategories();
+        const placesData = { data: [] };
 
         setPlaces(placesData.data);
         setFilteredPlaces(placesData.data);
@@ -72,9 +73,9 @@ const Place = () => {
     <div className="relative w-full mx-auto h-screen ">
       <Hero />
       {/* Outer container to center the search bar */}
-      <div className="flex justify-center items-center w-full mb-7 mt-10">
+      <div className="flex justify-center items-center w-full mb-7">
         {/* Search Bar container */}
-        <div className="absolute top-[60%]  flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
+        <div className="absolute flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
           {/* Province Multi-Select */}
           <Select
             isMulti
@@ -124,7 +125,7 @@ const Place = () => {
       ) : error ? (
         <p style={{ color: "red" }}>{error}</p>
       ) : (
-        <div className="grid grid-cols-3 gap-5 mx-20">
+        <div className="grid grid-cols-3 gap-5 mx-20 mt-20">
           {filteredPlaces.length > 0 ? (
             filteredPlaces.map((place) => (
               <div

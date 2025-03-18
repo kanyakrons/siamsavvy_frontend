@@ -15,7 +15,7 @@ function NavBar({ variant = "white" }) {
     <header className="absolute w-full z-10">
       <nav
         className={`p-4 ${
-          variant === "black" ? "bg-black text-white" : " text-white "
+          variant === "black" ? " text-black" : " text-white "
         }`}
       >
         <div className="navbar-left ">
@@ -58,7 +58,7 @@ function NavBar({ variant = "white" }) {
                       <Link to="/profile">Profile</Link>
                     </li>
                     <li>
-                      <Link to="/">Blogs</Link>
+                      <Link to="/blogs/saved">Blogs</Link>
                     </li>
                     <li>
                       <Link to="/plans/saved">Plans</Link>

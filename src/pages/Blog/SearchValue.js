@@ -1,6 +1,7 @@
 const SearchValue = {
+  blogTitle: "",
   listCategory: [],
-  listPlace: [],
+  listProvince: [],
   createDateFrom: null,
   createDateTo: null,
 };
