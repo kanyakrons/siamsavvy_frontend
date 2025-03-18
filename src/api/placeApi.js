@@ -28,6 +28,15 @@ const getPlaceDetail = async (placeId) => {
   }
 };
 
+const getPlacePhoto = async (placeId) => {
+  try {
+    const data = await fetchData("GET", `/places/${placeId}/photos`);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const reviewPlace = async (placeId, score, content) => {
   try {
     const response = await fetchDataWithAuth("POST", `/review`, {
@@ -60,4 +69,4 @@ const toggleFavorite = async(placeId) => {
   }
 };
 
-export { getPlaces, getProvinces, getPlaceDetail, reviewPlace, checkIfFavorited, toggleFavorite };
+export { getPlaces, getPlacePhoto, getProvinces, getPlaceDetail, reviewPlace, checkIfFavorited, toggleFavorite };

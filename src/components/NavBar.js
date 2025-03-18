@@ -14,9 +14,7 @@ function NavBar({ variant = "white" }) {
   return (
     <header className="absolute w-full z-10">
       <nav
-        className={`p-4 ${
-          variant === "black" ? " text-black" : " text-white "
-        }`}
+        className={`p-4 ${variant === "black" ? "text-black" : " text-white "}`}
       >
         <div className="navbar-left ">
           <Link to="/" className="logo ">
