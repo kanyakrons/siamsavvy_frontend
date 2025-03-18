@@ -22,10 +22,10 @@ const Place = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const placesData = await getPlaces();
+        const placesData = await getPlaces();
         const provincesData = await getProvinces();
         const categoriesData = await getCategories();
-        const placesData = { data: [] };
+        // const placesData = { data: [] };
 
         setPlaces(placesData.data);
         setFilteredPlaces(placesData.data);

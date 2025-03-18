@@ -1,4 +1,5 @@
 const formatDate = (dateString) => {
+  console.log("🚀 ~ formatDate ~ dateString:", dateString);
   const date = new Date(dateString);
   const options = {
     day: "2-digit",

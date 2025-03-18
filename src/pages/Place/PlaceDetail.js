@@ -9,6 +9,7 @@ import {
 } from "../../api/placeApi";
 import { AuthContext } from "../../context/AuthContext";
 import { Hero } from "../Sections";
+import { message } from "antd";
 
 function PlaceDetail() {
   const { placeId } = useParams();
@@ -43,7 +44,7 @@ function PlaceDetail() {
 
   const onPostReview = async () => {
     if (rating === 0) {
-      setError("Please provide a rating score.");
+      message.error("Please provide a rating score.");
       return;
     }
     try {
