@@ -15,10 +15,7 @@ const Place = () => {
 
   // Search & filter states
   const [provinces, setProvinces] = useState([]);
-  const [selectedProvinces, setSelectedProvinces] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
 
   const handleSearch = async () => {
     console.log("🚀 ~ Place ~ searchValue:", searchValue);
@@ -26,7 +23,7 @@ const Place = () => {
       // Mapping the selected options to only include values
       const formattedSearchValue = {
         ...searchValue,
-        placeTitle: searchQuery,
+        placeTitle: searchValue.placeTitle,
         listCategory: searchValue.listCategory?.map((option) => option.value),
         listProvince: searchValue.listProvince?.map((option) => option.value),
       };
