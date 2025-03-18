@@ -48,6 +48,7 @@ function PlaceDetail() {
     };
 
     fetchData();
+
   }, [placeId, isAuth]);
 
   const onPostReview = async () => {
@@ -101,7 +102,7 @@ function PlaceDetail() {
   return (
     <div>
       <NavBar variant="black" />
-      <div className=" w-full mx-auto p-10">
+      <div className=" w-full mx-auto py-10 px-20">
         {placeDetails && (
           <div className="bg-white p-6 pt-12">
             <div className="flex items-end">
@@ -276,16 +277,46 @@ function PlaceDetail() {
             </div>
 
             {/* Photos */}
-            <div className="mt-6" style={{ display: "flex", gap: "10px" }}>
-              {photos.map((photo, index) => (
+            <div
+            className="mt-6"
+            style={{
+              display: "flex",
+              gap: "8px",
+              overflowX: "auto",
+              scrollSnapType: "x mandatory",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              padding: "10px",
+              whiteSpace: "nowrap",
+            }}
+            >
+            {photos.map((photo, index) => (
+              <div
+                key={index}
+                style={{
+                  flex: "0 0 auto",
+                  width: "500px",
+                  height: "300px",
+                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  scrollSnapAlign: "start",
+                }}
+              >
                 <img
-                  key={index}
                   src={photo}
                   alt={`Place ${index}`}
-                  width="200px"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                 />
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
+
 
             {/* Google Map Section*/}
             <div className="mt-6">
