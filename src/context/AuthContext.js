@@ -1,5 +1,6 @@
 import { useEffect, useState, createContext } from "react";
 import { loginApi } from "../api/userApi";
+import { message } from "antd";
 
 const AuthContext = createContext();
 
@@ -29,14 +30,20 @@ const AuthProvider = ({ children }) => {
     try {
       const response = await loginApi(userData);
       const expiryTime = new Date().getTime() + response?.data.expiresIn;
-      localStorage.setItem("user", JSON.stringify({ id: response?.data.id, username: response?.data.username }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: response?.data.id,
+          username: response?.data.username,
+        })
+      );
       localStorage.setItem("token", response?.data.token);
       localStorage.setItem("tokenExpiry", expiryTime);
       setUser(localStorage.getItem("user"));
       setTokenExpirationCheck(response?.data.expiresIn);
       setToken(response?.data.token);
     } catch (err) {
-      console.log("failed to login");
+      message.error("failed to login");
     }
   };
 

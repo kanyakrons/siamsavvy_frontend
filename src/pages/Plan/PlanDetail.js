@@ -12,7 +12,6 @@ const PlanDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await GetPlanDetail(planId);
-      console.log("🚀 ~ fetchData ~ response:", response);
 
       setPlanDetail({
         name: response.data.name,

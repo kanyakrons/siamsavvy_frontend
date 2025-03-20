@@ -1,11 +1,22 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import formatDate from "../utils/FormatDate";
 
 const BlogCard = ({ blog, layout = "vertical", imageHeight = 200 }) => {
+  const navigate = useNavigate();
+  const getTextFromHTML = (htmlString) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+    return doc.body.textContent.replace(/\s+/g, "  ").trim();
+  };
   return (
     <div
       className={`flex ${
         layout === "horizontal" ? "flex-row gap-4" : "flex-col"
       } w-full`}
+      onClick={() => {
+        navigate(`/blogs/${blog?.id}`);
+      }}
     >
       {/* Image Section */}
       <div
@@ -14,7 +25,7 @@ const BlogCard = ({ blog, layout = "vertical", imageHeight = 200 }) => {
         }`}
       >
         <img
-          src={blog.pic}
+          src={blog?.pic}
           alt="blog"
           className="w-full object-cover"
           style={{ height: `${imageHeight}px` }}
@@ -28,10 +39,14 @@ const BlogCard = ({ blog, layout = "vertical", imageHeight = 200 }) => {
         }`}
       >
         <p className="text-purple-500 font-semibold">
-          {blog.date || "Sunday, 1 Jan 2023"}
+          {blog?.createdAt ? formatDate(blog?.createdAt) : "xx/xx/xxxx"}
         </p>
-        <p className="font-bold text-xl truncate">
-          {blog.title || "Lorem ipsum dolor sit"}
+        <p
+          className={`font-bold text-xl truncate   ${
+            layout === "horizontal" ? "w-[300px] " : "w-full"
+          }`}
+        >
+          {blog?.title}
         </p>
         <p
           className={` text-gray-700   ${
@@ -40,8 +55,7 @@ const BlogCard = ({ blog, layout = "vertical", imageHeight = 200 }) => {
               : "w-full line-clamp-2"
           }`}
         >
-          {blog.description ||
-            "Lorem ipsum dolor sit amet consectetur. Diam eu risus volutpat in. A consequat netus vulputate. A consequat netus vulputate. A consequat netus vulputate. A consequat netus vulputate. A consequat netus vulputate."}
+          {blog?.content ? getTextFromHTML(blog?.content) : ""}
         </p>
       </div>
     </div>

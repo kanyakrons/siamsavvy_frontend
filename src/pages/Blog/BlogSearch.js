@@ -22,7 +22,6 @@ const BlogSearch = () => {
 
       const response = await searchBlog(formattedSearchValue);
       setBlogList(response.data.content);
-      console.log("🚀 ~ searchBlog ~ response:", response);
     } catch (error) {
       console.log(error);
     }

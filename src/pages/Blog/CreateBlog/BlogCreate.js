@@ -37,7 +37,6 @@ const BlogCreate = () => {
     };
 
     const response = await createBlog(updatedBlogValue);
-    console.log("🚀 ~ handlePublish ~ response:", response);
   };
 
   const suffix = (

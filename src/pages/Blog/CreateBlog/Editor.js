@@ -57,7 +57,6 @@ const Editor = forwardRef(
           "GET",
           `/api/files/presigned-upload/${file.name}`
         );
-        console.log("🚀 ~ handleImageInsert ~ response:", response);
         if (response.status != 200) {
           console.error("Failed to fetch presigned URL");
           return;
@@ -72,7 +71,6 @@ const Editor = forwardRef(
             "Content-Type": file.type,
           },
         });
-        console.log("🚀 ~ handleImageInsert ~ uploadResponse:", uploadResponse);
 
         if (!uploadResponse.ok) {
           console.error("Failed to upload image");

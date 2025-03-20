@@ -13,7 +13,6 @@ const getPlaces = async () => {
 const searchPlace = async (searchValue) => {
   try {
     const data = await fetchData("POST", "/places/search", searchValue);
-    console.log("🚀 ~ searchPlace ~ data:", data);
     return data;
   } catch (error) {
     console.log(error);
