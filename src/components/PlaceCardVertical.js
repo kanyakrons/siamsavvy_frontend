@@ -2,7 +2,7 @@ import React from "react";
 
 const PlaceCardvertical = ({ place, height }) => {
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full transition-all duration-300 transform hover:scale-105 hover:shadow-2xl">
       <img
         src={place.pic}
         className="w-full object-cover rounded-md"

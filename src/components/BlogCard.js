@@ -13,7 +13,7 @@ const BlogCard = ({ blog, layout = "vertical", imageHeight = 200 }) => {
     <div
       className={`flex ${
         layout === "horizontal" ? "flex-row gap-4" : "flex-col"
-      } w-full`}
+      } w-full transition-all duration-300 transform hover:shadow-2xl`}
       onClick={() => {
         navigate(`/blogs/${blog?.id}`);
       }}
