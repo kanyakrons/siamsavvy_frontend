@@ -44,11 +44,9 @@ const PlanGenerate = () => {
   const navigate = useNavigate();
 
   const SavePlan = async () => {
-    console.log("🚀 ~ SavePlan ~ SavePlan: start");
     setLoading(true);
     try {
       const response = await CreatePlan(planDetails);
-      console.log("🚀 ~ SavePlan ~ response:", response);
       navigate(`/plans/${response.data?.id}`);
     } catch (err) {
       console.error("Error saving plan:", err);

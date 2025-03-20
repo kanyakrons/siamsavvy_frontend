@@ -16,15 +16,12 @@ const UserBlog = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("searchText", searchText);
-    console.log("selectedCategory", selectedCategory);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await GetPlanSaved();
-        console.log("🚀 ~ fetchData ~ response:", response.data);
         setPlanList(response?.data);
       } catch (error) {
         setError("Error fetching data");

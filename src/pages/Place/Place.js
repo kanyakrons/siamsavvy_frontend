@@ -18,7 +18,6 @@ const Place = () => {
   const [categories, setCategories] = useState([]);
 
   const handleSearch = async () => {
-    console.log("🚀 ~ Place ~ searchValue:", searchValue);
     try {
       // Mapping the selected options to only include values
       const formattedSearchValue = {
@@ -30,7 +29,6 @@ const Place = () => {
 
       const response = await searchPlace(formattedSearchValue);
       setPlaces(response.data.content);
-      console.log("🚀 ~ searchPlace ~ response:", response);
     } catch (error) {
       console.log(error);
     }

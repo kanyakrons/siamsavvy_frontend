@@ -2,7 +2,7 @@ const SearchValue = {
   placeTitle: "",
   listCategory: [],
   listProvince: [],
-  pageNumber: 1,
+  pageNumber: 0,
   pageSize: 12,
 };
 
