@@ -1,11 +1,13 @@
 import { fetchData, fetchDataWithAuth } from "./axiosService";
 
-const generatePlanByAi = async (numberOfDay, categories, city) => {
+const generatePlanByAi = async (numberOfDay, categories, city, startLocation, distance) => {
   try {
-    const response = await fetchDataWithAuth("POST", `/openai/generate-plan`, {
+    const response = await fetchDataWithAuth("POST", `/plans/generate-plan`, {
       numberOfDay: numberOfDay,
       categories: categories,
       city: city,
+      startLocation: startLocation,
+      distance: distance
     });
     return response;
   } catch (err) {

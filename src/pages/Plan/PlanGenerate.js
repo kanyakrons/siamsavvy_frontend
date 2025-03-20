@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { getPlaces, getProvinces } from "../../api/placeApi";
@@ -8,8 +8,13 @@ import { Link } from "react-router-dom";
 import { CircularProgress, Backdrop } from "@mui/material";
 import { defaultValue } from "./PlanDefaultValue";
 import { Hero } from "../Sections";
+import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
+import { Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 const PlanGenerate = () => {
+  const googleMapsApiKey = "AIzaSyC5sHKuA6W--94ketB3V89APPJSOvS8okM";
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,15 +25,21 @@ const PlanGenerate = () => {
   const [planDetails, setPlanDetails] = useState(defaultValue);
 
   //ai generate
-  const [selectedDaysCriteria, setSelectedDaysCriteria] = useState(0);
-  const [selectedCategoriesCriteria, setSelectedCategoriesCriteria] = useState(
-    []
-  );
-  const [selectedProvincesCriteria, setSelectedProvincesCriteria] =
-    useState("");
-
   const [categoriesCriteria, setCategoriesCriteria] = useState([]);
   const [provincesCriteria, setProvincesCriteria] = useState([]);
+
+  const [isSpecifyLocation, setIsSpecifyLocation] = useState(false);
+  const [map, setMap] = useState(null);
+  const [center, setCenter] = useState(null);
+  const autocompleteRef = useRef(null);
+  const [searchMapQuery, setSearchMapQuery] = useState("");
+
+  const [selectedDaysCriteria, setSelectedDaysCriteria] = useState(0);
+  const [selectedCategoriesCriteria, setSelectedCategoriesCriteria] = useState([]);
+  const [selectedProvincesCriteria, setSelectedProvincesCriteria] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedPlaceName, setSelectedPlaceName] = useState("");
+  const [selectedDistance, setSelectedDistance] = useState(0);
 
   //ai generate - plan detail
   const [selectedDay, setSelectedDay] = useState(0);
@@ -44,11 +55,9 @@ const PlanGenerate = () => {
   const navigate = useNavigate();
 
   const SavePlan = async () => {
-    console.log("🚀 ~ SavePlan ~ SavePlan: start");
     setLoading(true);
     try {
       const response = await CreatePlan(planDetails);
-      console.log("🚀 ~ SavePlan ~ response:", response);
       navigate(`/plans/${response.data?.id}`);
     } catch (err) {
       console.error("Error saving plan:", err);
@@ -74,6 +83,19 @@ const PlanGenerate = () => {
         setFilteredPlaces(placesData.data);
         setProvinces(provincesData.data);
         setCategories(categoriesData.data);
+
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            position => {
+              const { latitude, longitude } = position.coords;
+              setSelectedLocation({ lat: latitude, lng: longitude });
+              setCenter({ lat: latitude, lng: longitude });
+            },
+            error => {
+              console.error(error);
+            }
+          );
+        }
       } catch (error) {
         setError("Error fetching data");
       } finally {
@@ -123,10 +145,14 @@ const PlanGenerate = () => {
         .map((category) => category.label)
         .join(", ");
 
+      const formattedLocation = selectedPlaceName + " (" +  selectedLocation.lat + ", " + selectedLocation.lng + ")";
+
       const response = await generatePlanByAi(
         selectedDaysCriteria,
         categoryLabels,
-        selectedProvincesCriteria.label
+        selectedProvincesCriteria.label,
+        isSpecifyLocation ? formattedLocation : null,
+        isSpecifyLocation ? selectedDistance : null
       );
 
       const data = {
@@ -139,6 +165,42 @@ const PlanGenerate = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleMapSearch = () => {
+    if (autocompleteRef.current) {
+      const place = autocompleteRef.current.getPlace();
+      if (place && place.geometry) {
+        const { location } = place.geometry;
+        setSelectedLocation({ lat: location.lat(), lng: location.lng() });
+        setCenter({ lat: location.lat(), lng: location.lng() });
+      }
+
+      // Update the search input with the place's name
+      setSearchMapQuery(place.name);
+      setSelectedPlaceName(place.name);
+    }
+  };
+
+  const handleMapClick = (e) => {
+    // Clear the search input
+    setSearchMapQuery("");
+
+    //get pin location
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+    setSelectedLocation({ lat, lng });
+
+    // Reverse Geocoding to get the place name
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === window.google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          const placeName = results[0].formatted_address;
+          setSelectedPlaceName(placeName);
+        }
+      }
+    });
   };
 
   return (
@@ -268,7 +330,7 @@ const PlanGenerate = () => {
                       }}
                     />
                   </div>
-                  <div className="flex flex-col text-left mb-3">
+                  <div className="flex flex-col text-left mb-5">
                     <label className="text-sm font-semibold text-gray-600 mb-1">
                       Province
                     </label>
@@ -288,6 +350,78 @@ const PlanGenerate = () => {
                       }}
                     />
                   </div>
+                  <label className="flex items-center cursor-pointer mb-3">
+                    <input
+                      type="checkbox"
+                      checked={isSpecifyLocation}
+                      onChange={() => setIsSpecifyLocation(!isSpecifyLocation)}
+                      className="w-4 h-4 me-3"
+                    />
+                    <span>Specify Location</span>
+                    <Tooltip title="The selected start location and max distance might not work perfectly" className="ms-2" >
+                      <InfoCircleOutlined style={{ fontSize: '16px'}} className="text-gray-400" />
+                    </Tooltip>
+                  </label>
+                  {isSpecifyLocation && (
+                    <div>
+                      <div className="flex flex-col text-left mb-3">
+                          <label className="text-sm font-semibold text-gray-600 mb-1">
+                            Start Location
+                          </label>
+                          <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={["places"]}>
+                            <GoogleMap
+                              center={center}
+                              zoom={14}
+                              mapContainerStyle={{ width: '100%', height: '350px' }}
+                              onLoad={map => setMap(map)}
+                              onClick={handleMapClick}
+                            >
+                              <Autocomplete
+                                onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                                onPlaceChanged={handleMapSearch}
+                              >
+                                <input
+                                  type="text"
+                                  placeholder="Search for a location"
+                                  value={searchMapQuery}
+                                  onChange={(e) => setSearchMapQuery(e.target.value)}
+                                  style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    width: '250px',
+                                    padding: '8px',
+                                  }}
+                                />
+                              </Autocomplete>
+
+                              {selectedLocation && (
+                                <Marker position={selectedLocation} />
+                              )}
+                            </GoogleMap>
+                          </LoadScript>
+                      </div>
+                      <div className="flex flex-col text-left mb-3">
+                          <label className="text-sm font-semibold text-gray-600 mb-1">
+                            Distance (km)
+                          </label>
+                          <input
+                            type="number"
+                            value={selectedDistance}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === "" || /^\d*\.?\d{0,2}$/.test(value)) {
+                                setSelectedDistance(value);
+                              }
+                            }}
+                            className="p-2 border-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-black"
+                            min="0"
+                            step="0.01"
+                          />
+                      </div>
+                    </div>
+                  )}
                   <div className="flex justify-center mt-8">
                     <button
                       onClick={AiGenerate}
