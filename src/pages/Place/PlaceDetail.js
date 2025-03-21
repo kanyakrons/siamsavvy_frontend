@@ -290,33 +290,32 @@ function PlaceDetail() {
               whiteSpace: "nowrap",
             }}
             >
-            {photos.map((photo, index) => (
-              <div
-                key={index}
-                style={{
-                  flex: "0 0 auto",
-                  width: "500px",
-                  height: "300px",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  scrollSnapAlign: "start",
-                }}
-              >
-                <img
-                  src={photo}
-                  alt={`Place ${index}`}
+              {photos.map((photo, index) => (
+                <div
+                  key={index}
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
+                    flex: "0 0 auto",
+                    width: "500px",
+                    height: "300px",
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    scrollSnapAlign: "start",
                   }}
-                />
-              </div>
-            ))}
-          </div>
-
+                >
+                  <img
+                    src={photo}
+                    alt={`Place ${index}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
 
             {/* Google Map Section*/}
             <div className="mt-6">
