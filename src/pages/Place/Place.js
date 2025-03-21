@@ -4,7 +4,6 @@ import { getCategories } from "../../api/categoryApi";
 import Select from "react-select";
 import { Link, useSearchParams } from "react-router-dom";
 import { Hero } from "../Sections";
-import SearchValue from "./SearchValue";
 import { message, Pagination } from "antd";
 
 const Place = () => {
@@ -96,6 +95,7 @@ const Place = () => {
             onChange={(selectedOption) => {
               setSearchValue({ ...searchValue, listProvince: selectedOption });
             }}
+            value={searchValue.listProvince}
             placeholder="Filter by Province"
             styles={{
               control: (base) => ({
@@ -113,6 +113,7 @@ const Place = () => {
             onChange={(e) =>
               setSearchValue({ ...searchValue, placeTitle: e.target.value })
             }
+            value={searchValue.placeTitle}
             className="w-[200px] p-2 border-2 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
 
@@ -123,6 +124,7 @@ const Place = () => {
             onChange={(selectedOption) => {
               setSearchValue({ ...searchValue, listCategory: selectedOption });
             }}
+            value={searchValue.categories}
             placeholder="Filter by Category"
             styles={{
               control: (base) => ({
@@ -195,6 +197,7 @@ const Place = () => {
               align="center"
               defaultCurrent={page}
               total={totalPage}
+              showSizeChanger={false}
               onChange={(newPage) => {
                 handleSearch(newPage);
               }}
