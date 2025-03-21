@@ -144,7 +144,7 @@ const UserPlan = () => {
         <div className="mt-10 grid grid-cols-3  grid-flow-row gap-4 ">
           {planList && planList.length > 0 ? (
             planList.map((plan, index) => (
-              <CardUserItem key={index} item={plan} />
+              <CardUserItem key={index} item={plan} type={"plans"} />
             ))
           ) : (
             <div>No plans available</div>

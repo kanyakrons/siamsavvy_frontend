@@ -5,10 +5,19 @@ import { Hero } from "../Sections";
 import { searchBlog } from "../../api/blogApi";
 import BlogCard from "../../components/BlogCard";
 import { useNavigate } from "react-router-dom";
+import { getProvinces } from "../../api/placeApi";
+import { getCategories } from "../../api/categoryApi";
+import { message, Pagination } from "antd";
 
 const BlogSearch = () => {
   const [searchValue, setSearchValue] = useState(SearchValue);
   const [blogList, setBlogList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  const [provinces, setProvinces] = useState([]);
+  const [categories, setCategories] = useState([]);
+
   const navigate = useNavigate();
 
   const handleSearch = async () => {
@@ -22,32 +31,29 @@ const BlogSearch = () => {
 
       const response = await searchBlog(formattedSearchValue);
       setBlogList(response.data.content);
+      setPage(response?.data.number);
+      setTotalPage(response?.data.totalPages);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const provinceOptions = [
-    { value: "Bangkok", label: "Bangkok" },
-    { value: "Chiang Mai", label: "Chiang Mai" },
-    { value: "Phuket", label: "Phuket" },
-  ];
-
-  const placeOptions = [
-    { value: "Park", label: "Park" },
-    { value: "Museum", label: "Museum" },
-    { value: "Beach", label: "Beach" },
-  ];
-
-  const categoryOptions = [
-    { value: 1, label: "Nature" },
-    { value: 2, label: "Adventure" },
-    { value: 3, label: "Cafe" },
-  ];
-
   useEffect(() => {
-    // Fetch data initially when the component loads
-    handleSearch();
+    const fetchData = async () => {
+      try {
+        const provincesData = await getProvinces();
+        const categoriesData = await getCategories();
+        handleSearch();
+        setProvinces(provincesData.data);
+        setCategories(categoriesData.data);
+      } catch (error) {
+        message.error("Error fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -60,7 +66,7 @@ const BlogSearch = () => {
           <Select
             isMulti
             placeholder="Filter by Province"
-            options={provinceOptions}
+            options={provinces.map((p) => ({ value: p, label: p }))}
             styles={{
               control: (base) => ({
                 ...base,
@@ -86,7 +92,7 @@ const BlogSearch = () => {
           <Select
             isMulti
             placeholder="Filter by Category"
-            options={categoryOptions}
+            options={categories.map((p) => ({ value: p, label: p }))}
             styles={{
               control: (base) => ({
                 ...base,
@@ -121,6 +127,16 @@ const BlogSearch = () => {
           </div>
         ))}
       </div>
+
+      <Pagination
+        align="center"
+        defaultCurrent={page}
+        total={totalPage}
+        showSizeChanger={false}
+        onChange={(newPage) => {
+          handleSearch(newPage);
+        }}
+      />
     </div>
   );
 };
