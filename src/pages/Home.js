@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getStudents, getTeachers } from "../api/studentApi";
 import { useNavigate } from "react-router-dom";
 import {
   Hero,
@@ -11,26 +10,24 @@ import {
   Footer,
 } from "./Sections";
 import NavBar from "../components/NavBar";
+import Loading from "../components/Loading";
 
 const Home = () => {
-  const dispatch = useDispatch();
-  const [students, setStudents] = useState([]);
-  const teachers = useSelector((state) => state.data.teachers);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch student data from the API
-    const fetchStudents = async () => {
-      const studentData = await getStudents();
-      setStudents(studentData);
-    };
-    fetchStudents();
-    // getTeachers(dispatch);
+    setLoading(true);
+
+    setLoading(false);
   }, []);
 
   return (
     <main className="relative">
+      {loading && (
+        <Loading loading={loading}></Loading>
+      )}
+
       {" "}
       <NavBar />
       <section className="  ">

@@ -6,6 +6,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Hero } from "../Sections";
 import SearchValue from "./SearchValue";
 import { message, Pagination } from "antd";
+import Loading from "../../components/Loading";
 
 const Place = () => {
   const [places, setPlaces] = useState([]);
@@ -66,6 +67,7 @@ const Place = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const provincesData = await getProvinces();
         const categoriesData = await getCategories();
@@ -84,6 +86,10 @@ const Place = () => {
 
   return (
     <div className="relative w-full mx-auto h-screen ">
+      {loading && (
+        <Loading loading={loading}></Loading>
+      )}
+
       <Hero />
       {/* Outer container to center the search bar */}
       <div className="flex justify-center items-center w-full mb-7">
@@ -141,13 +147,6 @@ const Place = () => {
         </div>
       </div>
 
-      {/* Grid Display */}
-      {loading ? (
-        <p>Loading places...</p>
-      ) : error ? (
-        <p style={{ color: "red" }}>{error}</p>
-      ) : (
-        <>
           <div className="grid grid-cols-3 gap-5 mx-20 mt-20 mb-5">
             {places.length > 0 ? (
               places.map((place) => (
@@ -200,8 +199,6 @@ const Place = () => {
               }}
             />
           </div>
-        </>
-      )}
     </div>
   );
 };

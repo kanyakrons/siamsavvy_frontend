@@ -2,6 +2,9 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import GoogleMapPin from "../Sections/GoogleMapPin";
 import NavBar from "../../components/NavBar";
+import { AuthContext } from "../../context/AuthContext";
+import { message } from "antd";
+import Loading from "../../components/Loading";
 import {
   getPlaceDetail,
   getPlacePhoto,
@@ -9,9 +12,6 @@ import {
   checkIfFavorited,
   toggleFavorite,
 } from "../../api/placeApi";
-import { AuthContext } from "../../context/AuthContext";
-import { Hero } from "../Sections";
-import { message } from "antd";
 
 function PlaceDetail() {
   const { placeId } = useParams();
@@ -91,16 +91,16 @@ function PlaceDetail() {
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   if (error) {
     return <p style={{ color: "red" }}>{error}</p>;
   }
 
   return (
     <div>
+      {loading && (
+        <Loading loading={loading}></Loading>
+      )}
+
       <NavBar variant="black" />
       <div className=" w-full mx-auto py-10 px-20">
         {placeDetails && (

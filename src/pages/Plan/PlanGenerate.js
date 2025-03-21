@@ -4,13 +4,12 @@ import { getPlaces, getProvinces } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
 import { generatePlanByAi, CreatePlan } from "../../api/planApi";
 import { Link } from "react-router-dom";
-import { CircularProgress, Backdrop } from "@mui/material";
 import { defaultValue } from "./PlanDefaultValue";
 import { Hero } from "../Sections";
 import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
 import { Tooltip, Button, Checkbox, Form, InputNumber, Select } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
-
+import Loading from "../../components/Loading";
 
 const PlanGenerate = () => {
   const googleMapsApiKey = "AIzaSyC5sHKuA6W--94ketB3V89APPJSOvS8okM";
@@ -209,12 +208,7 @@ const PlanGenerate = () => {
       {/* Full-screen Loading Spinner */}
       <Hero />
       {loading && (
-        <Backdrop
-          open={loading}
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
+          <Loading loading={loading}></Loading>
       )}
 
       {/* toggle plan / summary */}
