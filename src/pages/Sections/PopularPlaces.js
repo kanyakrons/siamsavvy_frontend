@@ -1,34 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PlaceCardvertical from "../../components/PlaceCardVertical";
+import { searchPlace } from "../../api/placeApi";
+import SearchValue from "../Place/SearchValue";
+import { useNavigate } from "react-router-dom";
 
 const PopularPlaces = () => {
-  const places = [
-    {
-      title: "Lorem ipsum dolor sit amet consectetur ",
-      description: "description1",
-      pic: "https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      title: " Lorem ipsum dolor sit amet consectetur",
-      description: "description2",
-      pic: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      title: " Lorem ipsum dolor sit amet consectetur",
-      description: "description3",
-      pic: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      title: " Lorem ipsum ",
-      description: "description4",
-      pic: "https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      title: " Lorem ipsum dolor sit amet consectetur",
-      description: "description5",
-      pic: "https://images.unsplash.com/photo-1506260408121-e353d10b87c7?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-  ];
+  const [places, setPlaces] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        SearchValue.pageSize = 4;
+        const response = await searchPlace(SearchValue);
+        setPlaces(response.data?.content);
+      } catch (error) {}
+    };
+    fetchData();
+  }, []);
   return (
     <div className="w-full min-h-[40rem] pt-8">
       <div className="justify-center items-center flex flex-col">
@@ -39,7 +27,11 @@ const PopularPlaces = () => {
       </div>
       <div className="grid grid-cols-4 gap-4 mt-8 mx-20 ">
         {places.slice(0, 4).map((place) => (
-          <div>
+          <div
+            onClick={() => {
+              navigate(`/places/${place.id}`);
+            }}
+          >
             <PlaceCardvertical place={place} height={500} />
           </div>
         ))}
