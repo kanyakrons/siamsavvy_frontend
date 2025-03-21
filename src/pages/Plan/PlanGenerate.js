@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Select from "react-select";
 import { getPlaces, getProvinces } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
 import { generatePlanByAi, CreatePlan } from "../../api/planApi";
@@ -9,11 +8,13 @@ import { CircularProgress, Backdrop } from "@mui/material";
 import { defaultValue } from "./PlanDefaultValue";
 import { Hero } from "../Sections";
 import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
-import { Tooltip } from 'antd';
+import { Tooltip, Button, Checkbox, Form, InputNumber, Select } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
+
 
 const PlanGenerate = () => {
   const googleMapsApiKey = "AIzaSyC5sHKuA6W--94ketB3V89APPJSOvS8okM";
+  const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -141,16 +142,16 @@ const PlanGenerate = () => {
     setLoading(true);
 
     try {
-      const categoryLabels = selectedCategoriesCriteria
-        .map((category) => category.label)
+      const categoryLabels = categoriesCriteria
+        .filter(c => selectedCategoriesCriteria.includes(c.id)) 
+        .map(c => c.name)
         .join(", ");
-
-      const formattedLocation = selectedPlaceName + " (" +  selectedLocation.lat + ", " + selectedLocation.lng + ")";
+      const formattedLocation = selectedPlaceName + " (" + selectedLocation.lat + ", " + selectedLocation.lng + ")";
 
       const response = await generatePlanByAi(
         selectedDaysCriteria,
         categoryLabels,
-        selectedProvincesCriteria.label,
+        selectedProvincesCriteria,
         isSpecifyLocation ? formattedLocation : null,
         isSpecifyLocation ? selectedDistance : null
       );
@@ -220,17 +221,15 @@ const PlanGenerate = () => {
       <div className="flex flex-col items-center mt-10">
         <div className="flex w-60 bg-gray-200 rounded-xl p-1">
           <button
-            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
-            }`}
+            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
+              }`}
             onClick={() => setIsPlanning(true)}
           >
             Plan
           </button>
           <button
-            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              !isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
-            }`}
+            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${!isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
+              }`}
             onClick={() => setIsPlanning(false)}
           >
             Summary
@@ -272,17 +271,15 @@ const PlanGenerate = () => {
             <div className="w-1/2 flex flex-col items-center">
               <div className="flex w-80 mb-4">
                 <button
-                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${
-                    isAiGenerate ? "bg-gray-300" : "bg-white"
-                  }`}
+                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${isAiGenerate ? "bg-gray-300" : "bg-white"
+                    }`}
                   onClick={() => setIsAiGenerate(true)}
                 >
                   Auto-generate plan
                 </button>
                 <button
-                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${
-                    !isAiGenerate ? "bg-gray-300" : "bg-white"
-                  }`}
+                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${!isAiGenerate ? "bg-gray-300" : "bg-white"
+                    }`}
                   onClick={() => setIsAiGenerate(false)}
                 >
                   Plan trip by yourself
@@ -290,147 +287,185 @@ const PlanGenerate = () => {
               </div>
 
               {isAiGenerate && (
-                <div className="w-full">
-                  <div className="flex flex-col text-left mb-3">
-                    <label className="text-sm font-semibold text-gray-600 mb-1">
-                      Days
-                    </label>
-                    <input
-                      type="number"
-                      value={selectedDaysCriteria}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (value === "" || /^\d+$/.test(value)) {
+                <Form
+                  form={form}
+                  name="planGenRequest"
+                  onFinish={AiGenerate}
+                  layout="vertical"
+                  className="w-full"
+                >
+                  <Form.Item
+                    name="Days"
+                    label="Days"
+                    rules={[
+                      {
+                        validator: (_, value) => {
+                          if (value === undefined || value === null) {
+                            return Promise.reject(new Error("Days is required"));
+                          }
+                          if (!Number.isInteger(value)) {
+                            return Promise.reject(new Error("Days must be an integer"));
+                          }
+                          if (value <= 0) {
+                            return Promise.reject(new Error("Days must be greater than 0"));
+                          }
+                          return Promise.resolve();
+                        },
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      min={0}
+                      onChange={(value) => {
+                        if (value && Number.isInteger(value) && value > 0) {
                           setSelectedDaysCriteria(value);
                         }
                       }}
-                      className="p-2 border-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-black"
-                      min="0"
-                      step="1"
+                      className="w-full"
                     />
-                  </div>
-                  <div className="flex flex-col text-left mb-3">
-                    <label className="text-sm font-semibold text-gray-600 mb-1">
-                      Category
-                    </label>
+                  </Form.Item>
+                  <Form.Item
+                    name="Category"
+                    label="Category"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select at least one category",
+                        type: 'array'
+                      },
+                    ]}
+                  >
                     <Select
-                      isMulti
+                      showSearch
+                      filterOption={(input, option) =>
+                        option.label.toLowerCase().includes(input.toLowerCase())
+                      }
+                      mode="multiple"
                       options={categoriesCriteria.map((c) => ({
                         value: c.id,
                         label: c.name,
                       }))}
                       value={selectedCategoriesCriteria}
-                      onChange={setSelectedCategoriesCriteria}
-                      placeholder="Place Category"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          borderRadius: "0.75rem",
-                        }),
+                      onChange={(values) => {
+                        setSelectedCategoriesCriteria(values);
                       }}
+                      placeholder="Select Categories"
                     />
-                  </div>
-                  <div className="flex flex-col text-left mb-5">
-                    <label className="text-sm font-semibold text-gray-600 mb-1">
-                      Province
-                    </label>
+                  </Form.Item>
+                  <Form.Item
+                    name="Province"
+                    label="Province"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select a province",
+                      },
+                    ]}
+                  >
                     <Select
                       options={provincesCriteria.map((p) => ({
                         value: p,
                         label: p,
                       }))}
+                      showSearch
                       value={selectedProvincesCriteria}
-                      onChange={setSelectedProvincesCriteria}
-                      placeholder="Province"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          borderRadius: "0.75rem",
-                        }),
+                      onChange={(value) => {
+                        setSelectedProvincesCriteria(value);
                       }}
+                      placeholder="Select a province"
                     />
-                  </div>
-                  <label className="flex items-center cursor-pointer mb-3">
-                    <input
-                      type="checkbox"
-                      checked={isSpecifyLocation}
-                      onChange={() => setIsSpecifyLocation(!isSpecifyLocation)}
-                      className="w-4 h-4 me-3"
-                    />
-                    <span>Specify Location</span>
-                    <Tooltip title="The selected start location and max distance might not work perfectly" className="ms-2" >
-                      <InfoCircleOutlined style={{ fontSize: '16px'}} className="text-gray-400" />
-                    </Tooltip>
-                  </label>
+                  </Form.Item>
+                    <div className="flex cursor-pointer mt-8 mb-2">
+                      <Checkbox
+                        checked={isSpecifyLocation}
+                        onChange={() => setIsSpecifyLocation(!isSpecifyLocation)}
+                        className="me-3"
+                      />
+                      <span>Specify Location</span>
+                      <Tooltip title="The selected start location and max distance might not work perfectly" className="ms-2">
+                        <InfoCircleOutlined style={{ fontSize: '16px' }} className="text-gray-400" />
+                      </Tooltip>
+                    </div>
                   {isSpecifyLocation && (
                     <div>
-                      <div className="flex flex-col text-left mb-3">
-                          <label className="text-sm font-semibold text-gray-600 mb-1">
-                            Start Location
-                          </label>
-                          <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={["places"]}>
-                            <GoogleMap
-                              center={center}
-                              zoom={14}
-                              mapContainerStyle={{ width: '100%', height: '350px' }}
-                              onLoad={map => setMap(map)}
-                              onClick={handleMapClick}
+                      <Form.Item
+                        name="Location"
+                        label="Start Location"
+                      >
+                        <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={["places"]}>
+                          <GoogleMap
+                            center={center}
+                            zoom={14}
+                            mapContainerStyle={{ width: '100%', height: '350px' }}
+                            onLoad={(map) => setMap(map)}
+                            onClick={handleMapClick}
+                          >
+                            <Autocomplete
+                              onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                              onPlaceChanged={handleMapSearch}
                             >
-                              <Autocomplete
-                                onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
-                                onPlaceChanged={handleMapSearch}
-                              >
-                                <input
-                                  type="text"
-                                  placeholder="Search for a location"
-                                  value={searchMapQuery}
-                                  onChange={(e) => setSearchMapQuery(e.target.value)}
-                                  style={{
-                                    position: 'absolute',
-                                    top: '10px',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    width: '250px',
-                                    padding: '8px',
-                                  }}
-                                />
-                              </Autocomplete>
+                              <input
+                                type="text"
+                                placeholder="Search for a location"
+                                value={searchMapQuery}
+                                onChange={(e) => setSearchMapQuery(e.target.value)}
+                                style={{
+                                  position: 'absolute',
+                                  top: '10px',
+                                  left: '50%',
+                                  transform: 'translateX(-50%)',
+                                  width: '250px',
+                                  padding: '8px',
+                                }}
+                              />
+                            </Autocomplete>
 
-                              {selectedLocation && (
-                                <Marker position={selectedLocation} />
-                              )}
-                            </GoogleMap>
-                          </LoadScript>
-                      </div>
-                      <div className="flex flex-col text-left mb-3">
-                          <label className="text-sm font-semibold text-gray-600 mb-1">
-                            Distance (km)
-                          </label>
-                          <input
-                            type="number"
-                            value={selectedDistance}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (value === "" || /^\d*\.?\d{0,2}$/.test(value)) {
-                                setSelectedDistance(value);
+                            {selectedLocation && <Marker position={selectedLocation} />}
+                          </GoogleMap>
+                        </LoadScript>
+                      </Form.Item>
+                      <Form.Item
+                        name="distance"
+                        label="Distance (km)"
+                        rules={[
+                          {
+                            validator: (_, value) => {
+                              if (value === undefined || value === null) {
+                                return Promise.reject(new Error("Please enter a distance"));
                               }
-                            }}
-                            className="p-2 border-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-black"
-                            min="0"
-                            step="0.01"
-                          />
-                      </div>
+                              if (isNaN(value)) {
+                                return Promise.reject(new Error("Distance must be a valid number"));
+                              }
+                              if (value <= 0) {
+                                return Promise.reject(new Error("Distance must be greater than 0"));
+                              }
+                              return Promise.resolve();
+                            },
+                          },
+                        ]}
+                      >
+                        <InputNumber
+                          value={selectedDistance}
+                          onChange={(value) => setSelectedDistance(value)}
+                          min={0.01}
+                          step={0.01}
+                          className="w-full"
+                        />
+                      </Form.Item>
                     </div>
                   )}
-                  <div className="flex justify-center mt-8">
-                    <button
-                      onClick={AiGenerate}
-                      className="w-40 bg-purple-400 text-white rounded-xl py-2 hover:bg-purple-500 hover:shadow-lg transition duration-300 ease-in-out"
-                    >
-                      Generate
-                    </button>
-                  </div>
-                </div>
+                  <Form.Item>
+                    <div className="flex justify-center">
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="w-40 h-10 bg-purple-400 text-white rounded-xl py-2 hover:bg-purple-500 hover:shadow-lg transition duration-300 ease-in-out"
+                      >
+                        Generate
+                      </Button>
+                    </div>
+                  </Form.Item>
+                </Form>
               )}
 
               {!isAiGenerate && (
@@ -530,15 +565,13 @@ const PlanGenerate = () => {
                         onClick={() => {
                           setSelectedDay(parseInt(dayPlan.day) - 1);
                         }}
-                        className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${
-                          selectedDay === parseInt(dayPlan.day) - 1
+                        className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${selectedDay === parseInt(dayPlan.day) - 1
                             ? "bg-purple-400 text-white"
                             : "bg-gray-200 text-gray-800"
-                        } transition duration-300 ease-in-out ${
-                          selectedDay === parseInt(dayPlan.day) - 1
+                          } transition duration-300 ease-in-out ${selectedDay === parseInt(dayPlan.day) - 1
                             ? "hover:bg-purple-500"
                             : "hover:bg-gray-300"
-                        }`}
+                          }`}
                       >
                         {`Day ${dayPlan.day}`}
                       </button>
@@ -624,15 +657,13 @@ const PlanGenerate = () => {
                       onClick={() => {
                         setSelectedDay(parseInt(dayPlan.day) - 1);
                       }}
-                      className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${
-                        selectedDay === parseInt(dayPlan.day) - 1
+                      className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${selectedDay === parseInt(dayPlan.day) - 1
                           ? "bg-purple-400 text-white"
                           : "bg-gray-200 text-gray-800"
-                      } transition duration-300 ease-in-out ${
-                        selectedDay === parseInt(dayPlan.day) - 1
+                        } transition duration-300 ease-in-out ${selectedDay === parseInt(dayPlan.day) - 1
                           ? "hover:bg-purple-500"
                           : "hover:bg-gray-300"
-                      }`}
+                        }`}
                     >
                       {`Day ${dayPlan.day}`}
                     </button>
