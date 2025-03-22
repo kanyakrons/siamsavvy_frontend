@@ -160,7 +160,7 @@ const Place = () => {
               places.map((place) => (
                 <div
                   key={place.id}
-                  className="w-full h-[335px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+                  className="w-full h-[330px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
                 >
                   <Link to={`/places/${place.place.id}`}>
                     {/* Image Section */}
@@ -182,14 +182,14 @@ const Place = () => {
                     </div>
 
                     {/* Info Section */}
-                    <div className="h-[105px] bg-white px-5 py-3">
-                      <p className="text-purple-400 font-semibold text-sm mb-1">
+                    <div className="h-[100px] bg-white px-5 py-3">
+                      <p className="text-purple-400 font-semibold text-sm mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
                         {place.place.province}
                       </p>
-                      <p className="text-black font-semibold ">
+                      <p className="text-black font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
                         {place.place.nameTh}
                       </p>
-                      <p className="text-black">{place.place.nameEn}</p>
+                      <p className="text-black overflow-hidden text-ellipsis whitespace-nowrap">{place.place.nameEn}</p>
                     </div>
                   </Link>
                 </div>
