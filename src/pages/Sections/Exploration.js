@@ -11,6 +11,7 @@ const Exploration = () => {
       try {
         const provincesData = await getProvinces();
         setProvinces(provincesData.data);
+        console.log("🚀 ~ fetchData ~ provincesData.data:", provincesData.data);
       } catch (error) {}
     };
     fetchData();

@@ -25,7 +25,7 @@ const BlogCard = ({ blog, layout = "vertical", imageHeight = 200 }) => {
         }`}
       >
         <img
-          src={blog?.pic}
+          src={blog?.image?.url}
           alt="blog"
           className="w-full object-cover"
           style={{ height: `${imageHeight}px` }}

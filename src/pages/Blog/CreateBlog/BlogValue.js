@@ -3,6 +3,7 @@ const BlogValue = {
   content: "",
   places: [],
   categories: [],
+  imageUrl: "",
 };
 
 export default BlogValue;

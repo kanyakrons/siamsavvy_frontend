@@ -22,8 +22,18 @@ const BlogCreate = () => {
 
   const [options, setOptions] = useState([]);
 
+  const extractImageSrc = (htmlString) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, "text/html");
+    const imgElement = doc.querySelector("img"); // Get the first <img>
+    return imgElement ? imgElement.src : "";
+  };
+
   const handlePublish = async () => {
     const htmlContent = quillRef.current.root.innerHTML;
+    console.log("🚀 ~ handlePublish ~ htmlContent:", htmlContent);
+    const imageUrl = extractImageSrc(htmlContent);
+    console.log("🚀 ~ handlePublish ~ imageUrl:", imageUrl);
     // setBlogValue({
     //   ...blogValue,
     //   content: htmlContent,
@@ -34,6 +44,7 @@ const BlogCreate = () => {
       ...blogValue,
       content: htmlContent,
       categories: value, // try to set it manually with normal const
+      imageUrl: imageUrl,
     };
 
     const response = await createBlog(updatedBlogValue);
@@ -80,7 +91,7 @@ const BlogCreate = () => {
           {/* Title */}
           <div>
             <div className="flex flex-col gap-4">
-              <UploadImg />
+              {/* <UploadImg /> */}
               <div>
                 <div className="mb-6">
                   <label

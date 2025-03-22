@@ -27,8 +27,9 @@ const BlogDetail = () => {
       <div>
         <Hero />
         <div className="mt-10 mx-40 h-screen">
+          <h1 className="text-xl font-bold my-5"> {blog?.title} </h1>
           <img
-            src="https://siamsavvy.s3.amazonaws.com/1742222088975_music-poster-with-light-effect_23-2148353360.jpg"
+            src={blog?.image?.url}
             className="object-cover h-[550px]  w-full"
           />
           <div className="w-full flex flex-col">
@@ -64,7 +65,7 @@ const BlogDetail = () => {
             </div>
 
             <div
-              className="w-1/2 mt-10"
+              className="quil-content w-full mt-10"
               dangerouslySetInnerHTML={{ __html: blog?.content }}
             ></div>
 
