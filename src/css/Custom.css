@@ -3,7 +3,7 @@
     --ant-default: #d9d9d9;
   }
 
-.custom-select, .ant-select-selector {
+.custom-select{
     border-radius: 100px !important;
     border: 1px solid var(--ant-default);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -11,10 +11,4 @@
   &:hover {
     border-color: var(--purple-400) !important;
   }
-}
-
-.ant-select-focused {
-    box-shadow: 0 0 0 2px rgba(127, 86, 217, 0.2);
-    border: 2px solid var(--purple-400);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }

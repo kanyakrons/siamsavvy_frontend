@@ -26,7 +26,7 @@ const Place = () => {
       .getAll("listProvince")
       .map((p) => ({ value: p, label: p })),
     pageNumber: searchParams.get("pageNumber") || 0,
-    pageSize: 12,
+    pageSize: 15,
   });
 
   // Search & filter states
@@ -55,11 +55,13 @@ const Place = () => {
       setPlaces(response?.data.content);
       setPage(response?.data.number);
       setTotalPage(response?.data.totalPages);
-      setLoading(false);
     } catch (error) {
       console.log(error);
       setError(error);
       message.error("Load error");
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -118,7 +120,7 @@ const Place = () => {
               setSearchValue({ ...searchValue, placeTitle: e.target.value })
             }
             style={{ width: "300px", padding: "8px", height:'35px'}}
-            className="border-2 rounded-full focus:ring-2 focus:ring-purple-400 hover:border-purple-400"
+            className="rounded-full hover:border-purple-400"
           />
 
           {/* Category Multi-Select */}
@@ -160,7 +162,7 @@ const Place = () => {
                   key={place.id}
                   className="w-full h-[335px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
                 >
-                  <Link to={`/places/${place.id}`}>
+                  <Link to={`/places/${place.place.id}`}>
                     {/* Image Section */}
                     <div className="h-[230px] relative">
                       <img
@@ -174,19 +176,19 @@ const Place = () => {
                       />
                       {/* Category Box (Top Right) */}
                       <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full">
-                        {place.category.name}
+                        {place.place.category.name}
                       </div>
                     </div>
 
                     {/* Info Section */}
                     <div className="h-[105px] bg-white px-5 py-3">
                       <p className="text-purple-400 font-semibold text-sm mb-1">
-                        {place.province}
+                        {place.place.province}
                       </p>
                       <p className="text-black font-semibold ">
-                        {place.nameTh}
+                        {place.place.nameTh}
                       </p>
-                      <p className="text-black">{place.nameEn}</p>
+                      <p className="text-black">{place.place.nameEn}</p>
                     </div>
                   </Link>
                 </div>

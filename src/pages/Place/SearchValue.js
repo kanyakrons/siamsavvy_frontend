@@ -3,7 +3,7 @@ const SearchValue = {
   listCategory: [],
   listProvince: [],
   pageNumber: 0,
-  pageSize: 12,
+  pageSize: 15,
 };
 
 export default SearchValue;
