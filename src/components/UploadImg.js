@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Image, Upload } from "antd";
+import { fetchData } from "../api/axiosService";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -25,6 +26,36 @@ const UploadImg = () => {
 
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
+  const getPreSigned = async (file) => {
+    // Request a presigned URL from the backend
+    const response = await fetchData(
+      "GET",
+      `/api/files/presigned-upload/${file.name}`
+    );
+    if (response.status != 200) {
+      console.error("Failed to fetch presigned URL");
+      return;
+    }
+    const presignedUrl = await response.data;
+
+    // Upload the image to S3 using the presigned URL
+    const uploadResponse = await fetch(presignedUrl, {
+      method: "PUT",
+      body: file,
+      headers: {
+        "Content-Type": file.type,
+      },
+    });
+
+    if (!uploadResponse.ok) {
+      console.error("Failed to upload image");
+      return;
+    }
+
+    // Get the S3 URL for the uploaded image
+    const fileUrl = presignedUrl.split("?")[0]; // Strip query params to get final S3 URL
+  };
+
   const uploadButton = (
     <button
       style={{
@@ -45,7 +76,7 @@ const UploadImg = () => {
   return (
     <>
       <Upload
-        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+        action={getPreSigned}
         listType="picture-card"
         fileList={fileList}
         onPreview={handlePreview}

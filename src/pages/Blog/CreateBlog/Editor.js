@@ -8,7 +8,6 @@ import React, {
 import "react-quill/dist/quill.snow.css";
 import { Quill } from "react-quill";
 import { fetchData } from "../../../api/axiosService";
-
 const Editor = forwardRef(
   ({ readOnly, defaultValue, onTextChange, onSelectionChange }, ref) => {
     const containerRef = useRef(null);
@@ -41,6 +40,9 @@ const Editor = forwardRef(
             ["bold", "italic", "underline"],
             ["link"],
             ["image"],
+            [{ align: "" }, { align: "center" }, { align: "right" }],
+            // Add more options for image alignment
+            ["imageAlignLeft", "imageAlignRight"],
           ],
         },
       });
@@ -88,24 +90,6 @@ const Editor = forwardRef(
         quill.insertEmbed(index, "image", fileUrl);
       };
 
-      const handleImageDelete = async (imageUrl) => {
-        // Extract the image file name from the URL (e.g., "folder/fileName")
-        const fileName = imageUrl.split("/").pop();
-
-        // Send the delete request to the backend to remove the image from S3
-        const response = await fetch(`/api/deleteImage?fileName=${fileName}`, {
-          method: "DELETE",
-        });
-
-        if (response.ok) {
-          // Remove the image URL from the uploaded images list
-          setUploadedImages((prev) => prev.filter((url) => url !== imageUrl));
-        } else {
-          console.error("Failed to delete image");
-        }
-      };
-
-      // Add custom image handler for the image button
       const toolbar = quill.getModule("toolbar");
       toolbar.addHandler("image", () => {
         const input = document.createElement("input");
@@ -121,15 +105,31 @@ const Editor = forwardRef(
         };
       });
 
-      quill.root.addEventListener("click", (e) => {
-        const imageElement = e.target;
-        if (imageElement.tagName === "IMG") {
-          const imageUrl = imageElement.src;
-          if (window.confirm("Do you want to delete this image?")) {
-            handleImageDelete(imageUrl);
-          }
+      // Add custom handlers for text alignment
+      toolbar.addHandler("align", (value) => {
+        const range = quill.getSelection();
+        if (range) {
+          quill.format("align", value);
         }
       });
+
+      // Add custom handlers for image alignment
+      const alignImageLeft = () => {
+        const range = quill.getSelection();
+        if (range) {
+          quill.format("align", "left");
+        }
+      };
+      const alignImageRight = () => {
+        const range = quill.getSelection();
+        if (range) {
+          quill.format("align", "right");
+        }
+      };
+
+      // Add custom image alignment buttons to the toolbar
+      toolbar.addHandler("imageAlignLeft", alignImageLeft);
+      toolbar.addHandler("imageAlignRight", alignImageRight);
 
       quill.on(Quill.events.TEXT_CHANGE, (...args) => {
         onTextChangeRef.current?.(...args);

@@ -14,7 +14,9 @@ const CardUserItem = ({ item, type }) => {
       />
       <div className="pl-3 py-3">
         {" "}
-        <p className="text-lg py-2 ">{item?.name}</p>
+        <p className="text-lg py-2 whitespace-nowrap truncate">
+          {type == "places" ? item?.name : item.title}
+        </p>
         <p>{formatDate(item?.createdAt)}</p>{" "}
       </div>
     </div>

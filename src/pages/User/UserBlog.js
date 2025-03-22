@@ -9,15 +9,12 @@ import { getCategories } from "../../api/categoryApi";
 import { message, Select } from "antd";
 
 const UserBlog = () => {
-  const [planList, setPlanList] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategoty] = useState([]); // Array for multiple categories
   const [searchValue, setSearchValue] = useState(SearchValue);
   const [blogList, setBlogList] = useState([]);
-  const navigate = useNavigate();
 
   const handleSearch = async () => {
     try {

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { getPlaces, getProvinces, searchPlace } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
-import {Select, Input} from "antd";
+import { Select, Input } from "antd";
 import { Link, useSearchParams } from "react-router-dom";
 import { Hero } from "../Sections";
 import { message, Pagination, Image } from "antd";
 import Loading from "../../components/Loading";
-import { SearchOutlined } from '@ant-design/icons';
-import '../../css/Custom.css'
+import { SearchOutlined } from "@ant-design/icons";
+import "../../css/Custom.css";
 
 const Place = () => {
   const [places, setPlaces] = useState([]);
@@ -19,12 +19,8 @@ const Place = () => {
 
   const [searchValue, setSearchValue] = useState({
     placeTitle: searchParams.get("placeTitle") || "",
-    listCategory: searchParams
-      .getAll("listCategory")
-      .map((c) => ({ value: c, label: c })),
-    listProvince: searchParams
-      .getAll("listProvince")
-      .map((p) => ({ value: p, label: p })),
+    listCategory: searchParams.getAll("listCategory"),
+    listProvince: searchParams.getAll("listProvince"),
     pageNumber: searchParams.get("pageNumber") || 0,
     pageSize: 15,
   });
@@ -88,9 +84,7 @@ const Place = () => {
 
   return (
     <div className="relative w-full mx-auto h-screen ">
-      {loading && (
-        <Loading loading={loading}></Loading>
-      )}
+      {loading && <Loading loading={loading}></Loading>}
 
       <Hero />
       {/* Outer container to center the search bar */}
@@ -119,7 +113,7 @@ const Place = () => {
             onChange={(e) =>
               setSearchValue({ ...searchValue, placeTitle: e.target.value })
             }
-            style={{ width: "300px", padding: "8px", height:'35px'}}
+            style={{ width: "300px", padding: "8px", height: "35px" }}
             className="rounded-full hover:border-purple-400"
           />
 
