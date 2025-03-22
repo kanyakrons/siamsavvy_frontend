@@ -4,7 +4,7 @@ import { getCategories } from "../../api/categoryApi";
 import {Select, Input} from "antd";
 import { Link, useSearchParams } from "react-router-dom";
 import { Hero } from "../Sections";
-import { message, Pagination } from "antd";
+import { message, Pagination, Image } from "antd";
 import Loading from "../../components/Loading";
 import { SearchOutlined } from '@ant-design/icons';
 import '../../css/Custom.css'
@@ -165,15 +165,16 @@ const Place = () => {
                   <Link to={`/places/${place.place.id}`}>
                     {/* Image Section */}
                     <div className="h-[230px] relative">
-                      <img
-                        src={
-                          place.image
-                            ? place.image
-                            : "/default-mockup-place.jpg"
-                        }
+                      <Image
+                        src={place.image}
                         alt={place.nameEn}
-                        className="w-full h-full object-cover"
+                        width={"100%"}
+                        height={"100%"}
+                        fallback="/default-mockup-place.jpg"
+                        className="object-cover"
+                        preview="false"
                       />
+
                       {/* Category Box (Top Right) */}
                       <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full">
                         {place.place.category.name}

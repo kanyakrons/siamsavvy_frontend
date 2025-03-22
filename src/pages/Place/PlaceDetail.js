@@ -105,7 +105,7 @@ function PlaceDetail() {
       )}
 
       <NavBar variant="black" />
-      <div className=" w-full mx-auto py-10 px-20">
+      <div className=" w-full mx-auto py-10 px-[120px]">
         {placeDetails && (
           <div className="bg-white p-6 pt-12">
             <div className="flex items-end">
@@ -176,12 +176,12 @@ function PlaceDetail() {
               </div>
             </div>
 
-            <div className="my-3 w-full h-80 relative">
+            <div className="my-3">
               <Image
                 src={placeImage}
                 fallback="/default-mockup-place.jpg"
                 width={"100%"}
-                height={"320px"}
+                height={"500px"}
                 className="object-cover rounded-lg shadow-md"
                />
             </div>
