@@ -16,6 +16,7 @@ import {
 function PlaceDetail() {
   const { placeId } = useParams();
   const [placeDetails, setPlaceDetails] = useState(null);
+  const [placeImage, setPlaceImage] = useState(null);
   const [photos, setPhotos] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -31,7 +32,8 @@ function PlaceDetail() {
     const fetchData = async () => {
       try {
         const placesData = await getPlaceDetail(placeId);
-        setPlaceDetails(placesData.data);
+        setPlaceDetails(placesData.data.place);
+        setPlaceImage(placesData.data.image);
 
         const photosdata = await getPlacePhoto(placeId);
         setPhotos(photosdata.data);
@@ -175,7 +177,7 @@ function PlaceDetail() {
 
             <div className="my-3">
               <img
-                src={placeDetails.image || "/default-mockup-place.jpg"}
+                src={placeImage || "/default-mockup-place.jpg"}
                 alt={placeDetails.nameEn}
                 className="w-full h-80 object-cover rounded-lg shadow-md"
               />
