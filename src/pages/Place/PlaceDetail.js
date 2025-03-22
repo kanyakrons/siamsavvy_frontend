@@ -2,6 +2,9 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import GoogleMapPin from "../Sections/GoogleMapPin";
 import NavBar from "../../components/NavBar";
+import { AuthContext } from "../../context/AuthContext";
+import { message } from "antd";
+import Loading from "../../components/Loading";
 import {
   getPlaceDetail,
   getPlacePhoto,
@@ -9,9 +12,6 @@ import {
   checkIfFavorited,
   toggleFavorite,
 } from "../../api/placeApi";
-import { AuthContext } from "../../context/AuthContext";
-import { Hero } from "../Sections";
-import { message } from "antd";
 
 function PlaceDetail() {
   const { placeId } = useParams();
@@ -91,16 +91,16 @@ function PlaceDetail() {
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   if (error) {
     return <p style={{ color: "red" }}>{error}</p>;
   }
 
   return (
     <div>
+      {loading && (
+        <Loading loading={loading}></Loading>
+      )}
+
       <NavBar variant="black" />
       <div className=" w-full mx-auto py-10 px-20">
         {placeDetails && (
@@ -290,33 +290,32 @@ function PlaceDetail() {
               whiteSpace: "nowrap",
             }}
             >
-            {photos.map((photo, index) => (
-              <div
-                key={index}
-                style={{
-                  flex: "0 0 auto",
-                  width: "500px",
-                  height: "300px",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  scrollSnapAlign: "start",
-                }}
-              >
-                <img
-                  src={photo}
-                  alt={`Place ${index}`}
+              {photos.map((photo, index) => (
+                <div
+                  key={index}
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
+                    flex: "0 0 auto",
+                    width: "500px",
+                    height: "300px",
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    scrollSnapAlign: "start",
                   }}
-                />
-              </div>
-            ))}
-          </div>
-
+                >
+                  <img
+                    src={photo}
+                    alt={`Place ${index}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
 
             {/* Google Map Section*/}
             <div className="mt-6">
