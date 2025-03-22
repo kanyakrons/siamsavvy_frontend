@@ -1,15 +1,31 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPlaces, getProvinces } from "../../api/placeApi";
+import { getPlaces, getProvinces, searchPlace } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
 import { generatePlanByAi, CreatePlan } from "../../api/planApi";
 import { Link } from "react-router-dom";
 import { defaultValue } from "./PlanDefaultValue";
 import { Hero } from "../Sections";
-import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
-import { Tooltip, Button, Checkbox, Form, InputNumber, Select } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  Autocomplete,
+} from "@react-google-maps/api";
+import {
+  Tooltip,
+  Button,
+  Checkbox,
+  Form,
+  InputNumber,
+  Select,
+  message,
+  Pagination,
+} from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import Loading from "../../components/Loading";
+import SearchValue from "../Place/SearchValue";
+import { SearchOutlined } from "@mui/icons-material";
 
 const PlanGenerate = () => {
   const googleMapsApiKey = "AIzaSyC5sHKuA6W--94ketB3V89APPJSOvS8okM";
@@ -35,8 +51,11 @@ const PlanGenerate = () => {
   const [searchMapQuery, setSearchMapQuery] = useState("");
 
   const [selectedDaysCriteria, setSelectedDaysCriteria] = useState(0);
-  const [selectedCategoriesCriteria, setSelectedCategoriesCriteria] = useState([]);
-  const [selectedProvincesCriteria, setSelectedProvincesCriteria] = useState("");
+  const [selectedCategoriesCriteria, setSelectedCategoriesCriteria] = useState(
+    []
+  );
+  const [selectedProvincesCriteria, setSelectedProvincesCriteria] =
+    useState("");
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedPlaceName, setSelectedPlaceName] = useState("");
   const [selectedDistance, setSelectedDistance] = useState(0);
@@ -46,12 +65,14 @@ const PlanGenerate = () => {
 
   //plan be your self
   const [places, setPlaces] = useState([]);
-  const [filteredPlaces, setFilteredPlaces] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
   const [searchName, setSearchName] = useState("");
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [selectedProvinces, setSelectedProvinces] = useState([]);
+  const [searchValue, setSearchValue] = useState(SearchValue);
   const navigate = useNavigate();
 
   const SavePlan = async () => {
@@ -66,32 +87,46 @@ const PlanGenerate = () => {
     }
   };
 
+  const handleSearch = async (newPage) => {
+    setLoading(true);
+    try {
+      // Mapping the selected options to only include values
+      const formattedSearchValue = {
+        ...searchValue,
+        listCategory: searchValue.listCategory,
+        listProvince: searchValue.listProvince,
+        pageNumber: newPage ? newPage : searchValue.pageNumber,
+      };
+
+      const response = await searchPlace(formattedSearchValue);
+      setPlaces(response?.data.content);
+      setPage(response?.data.number);
+      setTotalPage(response?.data.totalPages);
+      setLoading(false);
+    } catch (error) {
+      message.error("Load error");
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const categoriesCriteriaData = await getCategories();
-        const provincesCriteriData = await getProvinces();
-
-        setCategoriesCriteria(categoriesCriteriaData.data);
-        setProvincesCriteria(provincesCriteriData.data);
-
-        const placesData = await getPlaces();
         const provincesData = await getProvinces();
         const categoriesData = await getCategories();
-
-        setPlaces(placesData.data);
-        setFilteredPlaces(placesData.data);
         setProvinces(provincesData.data);
         setCategories(categoriesData.data);
+        setProvincesCriteria(provincesData.data);
+        setCategoriesCriteria(categoriesData.data);
+        handleSearch();
 
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
-            position => {
+            (position) => {
               const { latitude, longitude } = position.coords;
               setSelectedLocation({ lat: latitude, lng: longitude });
               setCenter({ lat: latitude, lng: longitude });
             },
-            error => {
+            (error) => {
               console.error(error);
             }
           );
@@ -105,36 +140,6 @@ const PlanGenerate = () => {
     fetchData();
   }, []);
 
-  //plan by your self
-  // Handle filtering place when inputs change
-  useEffect(() => {
-    let filtered = places;
-
-    if (searchName) {
-      filtered = filtered.filter(
-        (place) =>
-          place.nameTh.toLowerCase().includes(searchName.toLowerCase()) ||
-          place.nameEn.toLowerCase().includes(searchName.toLowerCase())
-      );
-    }
-
-    if (selectedProvinces.length > 0) {
-      const provinceNames = selectedProvinces.map((p) => p.value);
-      filtered = filtered.filter((place) =>
-        provinceNames.includes(place.province)
-      );
-    }
-
-    if (selectedCategories.length > 0) {
-      const categoryNames = selectedCategories.map((c) => c.value);
-      filtered = filtered.filter((place) =>
-        categoryNames.includes(place.category.id)
-      );
-    }
-
-    setFilteredPlaces(filtered);
-  }, [searchName, selectedProvinces, selectedCategories, places]);
-
   //get plan generated by AI
   const AiGenerate = async () => {
     // Set loading to true before the request
@@ -142,10 +147,16 @@ const PlanGenerate = () => {
 
     try {
       const categoryLabels = categoriesCriteria
-        .filter(c => selectedCategoriesCriteria.includes(c.id)) 
-        .map(c => c.name)
+        .filter((c) => selectedCategoriesCriteria.includes(c.id))
+        .map((c) => c.name)
         .join(", ");
-      const formattedLocation = selectedPlaceName + " (" + selectedLocation.lat + ", " + selectedLocation.lng + ")";
+      const formattedLocation =
+        selectedPlaceName +
+        " (" +
+        selectedLocation.lat +
+        ", " +
+        selectedLocation.lng +
+        ")";
 
       const response = await generatePlanByAi(
         selectedDaysCriteria,
@@ -207,23 +218,23 @@ const PlanGenerate = () => {
     <div className="w-full h-screen mx-auto">
       {/* Full-screen Loading Spinner */}
       <Hero />
-      {loading && (
-          <Loading loading={loading}></Loading>
-      )}
+      {loading && <Loading loading={loading}></Loading>}
 
       {/* toggle plan / summary */}
       <div className="flex flex-col items-center mt-10">
         <div className="flex w-60 bg-gray-200 rounded-xl p-1">
           <button
-            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
-              }`}
+            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+              isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
+            }`}
             onClick={() => setIsPlanning(true)}
           >
             Plan
           </button>
           <button
-            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${!isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
-              }`}
+            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+              !isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
+            }`}
             onClick={() => setIsPlanning(false)}
           >
             Summary
@@ -265,15 +276,17 @@ const PlanGenerate = () => {
             <div className="w-1/2 flex flex-col items-center">
               <div className="flex w-80 mb-4">
                 <button
-                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${isAiGenerate ? "bg-gray-300" : "bg-white"
-                    }`}
+                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${
+                    isAiGenerate ? "bg-gray-300" : "bg-white"
+                  }`}
                   onClick={() => setIsAiGenerate(true)}
                 >
                   Auto-generate plan
                 </button>
                 <button
-                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${!isAiGenerate ? "bg-gray-300" : "bg-white"
-                    }`}
+                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${
+                    !isAiGenerate ? "bg-gray-300" : "bg-white"
+                  }`}
                   onClick={() => setIsAiGenerate(false)}
                 >
                   Plan trip by yourself
@@ -295,13 +308,19 @@ const PlanGenerate = () => {
                       {
                         validator: (_, value) => {
                           if (value === undefined || value === null) {
-                            return Promise.reject(new Error("Days is required"));
+                            return Promise.reject(
+                              new Error("Days is required")
+                            );
                           }
                           if (!Number.isInteger(value)) {
-                            return Promise.reject(new Error("Days must be an integer"));
+                            return Promise.reject(
+                              new Error("Days must be an integer")
+                            );
                           }
                           if (value <= 0) {
-                            return Promise.reject(new Error("Days must be greater than 0"));
+                            return Promise.reject(
+                              new Error("Days must be greater than 0")
+                            );
                           }
                           return Promise.resolve();
                         },
@@ -325,7 +344,7 @@ const PlanGenerate = () => {
                       {
                         required: true,
                         message: "Please select at least one category",
-                        type: 'array'
+                        type: "array",
                       },
                     ]}
                   >
@@ -369,52 +388,67 @@ const PlanGenerate = () => {
                       placeholder="Select a province"
                     />
                   </Form.Item>
-                    <div className="flex cursor-pointer mt-8 mb-2">
-                      <Checkbox
-                        checked={isSpecifyLocation}
-                        onChange={() => setIsSpecifyLocation(!isSpecifyLocation)}
-                        className="me-3"
+                  <div className="flex cursor-pointer mt-8 mb-2">
+                    <Checkbox
+                      checked={isSpecifyLocation}
+                      onChange={() => setIsSpecifyLocation(!isSpecifyLocation)}
+                      className="me-3"
+                    />
+                    <span>Specify Location</span>
+                    <Tooltip
+                      title="The selected start location and max distance might not work perfectly"
+                      className="ms-2"
+                    >
+                      <InfoCircleOutlined
+                        style={{ fontSize: "16px" }}
+                        className="text-gray-400"
                       />
-                      <span>Specify Location</span>
-                      <Tooltip title="The selected start location and max distance might not work perfectly" className="ms-2">
-                        <InfoCircleOutlined style={{ fontSize: '16px' }} className="text-gray-400" />
-                      </Tooltip>
-                    </div>
+                    </Tooltip>
+                  </div>
                   {isSpecifyLocation && (
                     <div>
-                      <Form.Item
-                        name="Location"
-                        label="Start Location"
-                      >
-                        <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={["places"]}>
+                      <Form.Item name="Location" label="Start Location">
+                        <LoadScript
+                          googleMapsApiKey={googleMapsApiKey}
+                          libraries={["places"]}
+                        >
                           <GoogleMap
                             center={center}
                             zoom={14}
-                            mapContainerStyle={{ width: '100%', height: '350px' }}
+                            mapContainerStyle={{
+                              width: "100%",
+                              height: "350px",
+                            }}
                             onLoad={(map) => setMap(map)}
                             onClick={handleMapClick}
                           >
                             <Autocomplete
-                              onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                              onLoad={(autocomplete) =>
+                                (autocompleteRef.current = autocomplete)
+                              }
                               onPlaceChanged={handleMapSearch}
                             >
                               <input
                                 type="text"
                                 placeholder="Search for a location"
                                 value={searchMapQuery}
-                                onChange={(e) => setSearchMapQuery(e.target.value)}
+                                onChange={(e) =>
+                                  setSearchMapQuery(e.target.value)
+                                }
                                 style={{
-                                  position: 'absolute',
-                                  top: '10px',
-                                  left: '50%',
-                                  transform: 'translateX(-50%)',
-                                  width: '250px',
-                                  padding: '8px',
+                                  position: "absolute",
+                                  top: "10px",
+                                  left: "50%",
+                                  transform: "translateX(-50%)",
+                                  width: "250px",
+                                  padding: "8px",
                                 }}
                               />
                             </Autocomplete>
 
-                            {selectedLocation && <Marker position={selectedLocation} />}
+                            {selectedLocation && (
+                              <Marker position={selectedLocation} />
+                            )}
                           </GoogleMap>
                         </LoadScript>
                       </Form.Item>
@@ -425,13 +459,19 @@ const PlanGenerate = () => {
                           {
                             validator: (_, value) => {
                               if (value === undefined || value === null) {
-                                return Promise.reject(new Error("Please enter a distance"));
+                                return Promise.reject(
+                                  new Error("Please enter a distance")
+                                );
                               }
                               if (isNaN(value)) {
-                                return Promise.reject(new Error("Distance must be a valid number"));
+                                return Promise.reject(
+                                  new Error("Distance must be a valid number")
+                                );
                               }
                               if (value <= 0) {
-                                return Promise.reject(new Error("Distance must be greater than 0"));
+                                return Promise.reject(
+                                  new Error("Distance must be greater than 0")
+                                );
                               }
                               return Promise.resolve();
                             },
@@ -469,45 +509,78 @@ const PlanGenerate = () => {
                     <input
                       type="text"
                       placeholder="Place Name ..."
-                      value={searchName}
-                      onChange={(e) => setSearchName(e.target.value)}
+                      value={searchValue.placeTitle}
+                      onChange={(e) =>
+                        setSearchValue({
+                          ...searchValue,
+                          placeTitle: e.target.value,
+                        })
+                      }
                       className="mb-3 w-full p-2 border-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-black"
                     />
                     <Select
-                      isMulti
+                      mode="multiple"
                       options={categories.map((c) => ({
                         value: c.id,
                         label: c.name,
                       }))}
-                      value={selectedCategories}
-                      onChange={setSelectedCategories}
+                      value={searchValue.listCategory}
+                      onChange={(selectedValue) => {
+                        setSearchValue({
+                          ...searchValue,
+                          listCategory: selectedValue,
+                        });
+                      }}
                       placeholder="Filter by Category"
-                      className="mb-3"
+                      className="mb-3 w-full"
                       styles={{
                         control: (base) => ({
                           ...base,
                           borderRadius: "0.75rem",
                         }),
+                        width: "100%",
                       }}
                     />
                     <Select
-                      isMulti
+                      mode="multiple"
                       options={provinces.map((p) => ({ value: p, label: p }))}
-                      value={selectedProvinces}
-                      onChange={setSelectedProvinces}
+                      value={searchValue.listProvince}
+                      onChange={(selectedValue) => {
+                        setSearchValue({
+                          ...searchValue,
+                          listProvince: selectedValue,
+                        });
+                      }}
+                      className="w-full"
                       placeholder="Filter by Province"
                       styles={{
                         control: (base) => ({
                           ...base,
                           borderRadius: "0.75rem",
                         }),
+                        width: "100%",
                       }}
                     />
+                    <div className="w-full flex justify-center">
+                      <button
+                        className="py-5 px-20 my-5 bg-purple-600 text-white rounded-full "
+                        style={{
+                          width: "50px",
+                          height: "35px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onClick={() => handleSearch()}
+                      >
+                        <SearchOutlined />
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mt-10">
-                    {filteredPlaces.length > 0 ? (
-                      filteredPlaces.map((place) => (
+                  <div className="grid grid-cols-2 gap-4 mt-10 my-5">
+                    {places.length > 0 ? (
+                      places.map((place) => (
                         <div
                           key={place.id}
                           className="w-full h-[250px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
@@ -546,6 +619,15 @@ const PlanGenerate = () => {
                       <p>No places found.</p>
                     )}
                   </div>
+                  <Pagination
+                    align="center"
+                    defaultCurrent={page}
+                    total={totalPage}
+                    showSizeChanger={false}
+                    onChange={(newPage) => {
+                      handleSearch(newPage);
+                    }}
+                  />
                 </div>
               )}
             </div>
@@ -559,13 +641,15 @@ const PlanGenerate = () => {
                         onClick={() => {
                           setSelectedDay(parseInt(dayPlan.day) - 1);
                         }}
-                        className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${selectedDay === parseInt(dayPlan.day) - 1
+                        className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${
+                          selectedDay === parseInt(dayPlan.day) - 1
                             ? "bg-purple-400 text-white"
                             : "bg-gray-200 text-gray-800"
-                          } transition duration-300 ease-in-out ${selectedDay === parseInt(dayPlan.day) - 1
+                        } transition duration-300 ease-in-out ${
+                          selectedDay === parseInt(dayPlan.day) - 1
                             ? "hover:bg-purple-500"
                             : "hover:bg-gray-300"
-                          }`}
+                        }`}
                       >
                         {`Day ${dayPlan.day}`}
                       </button>
@@ -651,13 +735,15 @@ const PlanGenerate = () => {
                       onClick={() => {
                         setSelectedDay(parseInt(dayPlan.day) - 1);
                       }}
-                      className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${selectedDay === parseInt(dayPlan.day) - 1
+                      className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${
+                        selectedDay === parseInt(dayPlan.day) - 1
                           ? "bg-purple-400 text-white"
                           : "bg-gray-200 text-gray-800"
-                        } transition duration-300 ease-in-out ${selectedDay === parseInt(dayPlan.day) - 1
+                      } transition duration-300 ease-in-out ${
+                        selectedDay === parseInt(dayPlan.day) - 1
                           ? "hover:bg-purple-500"
                           : "hover:bg-gray-300"
-                        }`}
+                      }`}
                     >
                       {`Day ${dayPlan.day}`}
                     </button>

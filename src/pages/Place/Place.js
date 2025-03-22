@@ -16,6 +16,7 @@ const Place = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCategories, setSelectedCateories] = useState([]);
 
   const [searchValue, setSearchValue] = useState({
     placeTitle: searchParams.get("placeTitle") || "",
