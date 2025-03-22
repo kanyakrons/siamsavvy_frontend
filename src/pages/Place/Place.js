@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { getPlaces, getProvinces, searchPlace } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
-import Select from "react-select";
+import {Select, Input} from "antd";
 import { Link, useSearchParams } from "react-router-dom";
 import { Hero } from "../Sections";
 import { message, Pagination } from "antd";
 import Loading from "../../components/Loading";
+import { SearchOutlined } from '@ant-design/icons';
+import '../../css/Custom.css'
 
 const Place = () => {
   const [places, setPlaces] = useState([]);
@@ -32,14 +34,13 @@ const Place = () => {
   const [categories, setCategories] = useState([]);
 
   const handleSearch = async (newPage) => {
-    console.log("🚀 ~ handleSearch ~ number:", newPage);
     setLoading(true);
     try {
       // Mapping the selected options to only include values
       const formattedSearchValue = {
         ...searchValue,
-        listCategory: searchValue.listCategory?.map((option) => option.value),
-        listProvince: searchValue.listProvince?.map((option) => option.value),
+        listCategory: searchValue.listCategory,
+        listProvince: searchValue.listProvince,
         pageNumber: newPage ? newPage : searchValue.pageNumber,
       };
 
@@ -96,56 +97,59 @@ const Place = () => {
         <div className="absolute flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
           {/* Province Multi-Select */}
           <Select
-            isMulti
+            mode="multiple"
             options={provinces.map((p) => ({ value: p, label: p }))}
-            onChange={(selectedOption) => {
-              setSearchValue({ ...searchValue, listProvince: selectedOption });
-            }}
             value={searchValue.listProvince}
+            onChange={(selectedValues) =>
+              setSearchValue({ ...searchValue, listProvince: selectedValues })
+            }
             placeholder="Filter by Province"
-            styles={{
-              control: (base) => ({
-                ...base,
-                width: "200px",
-                borderRadius: "9999px",
-              }),
-            }}
+            style={{ width: "300px", height:'35px' }}
+            maxTagCount={'responsive'}
+            className="custom-select"
+            bordered={false}
           />
 
           {/* Search by Place Name */}
-          <input
-            type="text"
+          <Input
             placeholder="Place Name ..."
+            value={searchValue.placeTitle}
             onChange={(e) =>
               setSearchValue({ ...searchValue, placeTitle: e.target.value })
             }
-            value={searchValue.placeTitle}
-            className="w-[200px] p-2 border-2 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400"
+            style={{ width: "300px", padding: "8px", height:'35px'}}
+            className="border-2 rounded-full focus:ring-2 focus:ring-purple-400 hover:border-purple-400"
           />
 
           {/* Category Multi-Select */}
           <Select
-            isMulti
+            mode="multiple"
+            value={searchValue.listCategory}
             options={categories.map((c) => ({ value: c.id, label: c.name }))}
-            onChange={(selectedOption) => {
-              setSearchValue({ ...searchValue, listCategory: selectedOption });
-            }}
-            value={searchValue.categories}
+            onChange={(selectedValues) =>
+              setSearchValue({ ...searchValue, listCategory: selectedValues })
+            }
             placeholder="Filter by Category"
-            styles={{
-              control: (base) => ({
-                ...base,
-                width: "200px",
-                borderRadius: "9999px",
-              }),
-            }}
+            style={{ width: "400px", height:'35px' }}
+            maxTagCount={'responsive'}
+            className="custom-select"
+            bordered={false}
           />
+          
           <button
             className="p-2 bg-purple-600 text-white rounded-full"
+            style={{
+              width: "50px",
+              height: "35px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
             onClick={() => handleSearch()}
           >
-            Search
+            <SearchOutlined />
           </button>
+
         </div>
       </div>
 
