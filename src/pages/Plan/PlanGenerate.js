@@ -21,6 +21,7 @@ import {
   Select,
   message,
   Pagination,
+  Input,
 } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Loading from "../../components/Loading";
@@ -334,7 +335,7 @@ const PlanGenerate = () => {
                           setSelectedDaysCriteria(value);
                         }
                       }}
-                      className="w-full"
+                      className="w-full h-[35px]"
                     />
                   </Form.Item>
                   <Form.Item
@@ -363,6 +364,7 @@ const PlanGenerate = () => {
                         setSelectedCategoriesCriteria(values);
                       }}
                       placeholder="Select Categories"
+                      className="h-[35px]"
                     />
                   </Form.Item>
                   <Form.Item
@@ -386,6 +388,7 @@ const PlanGenerate = () => {
                         setSelectedProvincesCriteria(value);
                       }}
                       placeholder="Select a province"
+                      className="h-[35px]"
                     />
                   </Form.Item>
                   <div className="flex cursor-pointer mt-8 mb-2">
@@ -483,7 +486,7 @@ const PlanGenerate = () => {
                           onChange={(value) => setSelectedDistance(value)}
                           min={0.01}
                           step={0.01}
-                          className="w-full"
+                          className="w-full h-[35px]"
                         />
                       </Form.Item>
                     </div>
@@ -506,7 +509,7 @@ const PlanGenerate = () => {
                 <div className="w-full flex flex-col items-center">
                   <div className="w-[400px] p-5 border-2 border-purple-400 rounded-xl">
                     <p className="font-semibold mb-3">Filter places:</p>
-                    <input
+                    <Input
                       type="text"
                       placeholder="Place Name ..."
                       value={searchValue.placeTitle}
@@ -516,7 +519,7 @@ const PlanGenerate = () => {
                           placeTitle: e.target.value,
                         })
                       }
-                      className="mb-3 w-full p-2 border-2 rounded-xl focus:outline-none focus:ring-1 focus:ring-black"
+                      className="mb-3 w-full h-[35px] p-2 border-1 rounded-lg hover:border-purple-400 focus:border-purple-400"
                     />
                     <Select
                       mode="multiple"
@@ -532,14 +535,8 @@ const PlanGenerate = () => {
                         });
                       }}
                       placeholder="Filter by Category"
-                      className="mb-3 w-full"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          borderRadius: "0.75rem",
-                        }),
-                        width: "100%",
-                      }}
+                      className="mb-3 w-full h-[35px]"
+                      bordered="false"
                     />
                     <Select
                       mode="multiple"
@@ -551,7 +548,7 @@ const PlanGenerate = () => {
                           listProvince: selectedValue,
                         });
                       }}
-                      className="w-full"
+                      className="w-full h-[35px] mb-3"
                       placeholder="Filter by Province"
                       styles={{
                         control: (base) => ({
@@ -563,7 +560,7 @@ const PlanGenerate = () => {
                     />
                     <div className="w-full flex justify-center">
                       <button
-                        className="py-5 px-20 my-5 bg-purple-600 text-white rounded-full "
+                        className="bg-purple-600 text-white rounded-full "
                         style={{
                           width: "50px",
                           height: "35px",
@@ -582,34 +579,34 @@ const PlanGenerate = () => {
                     {places.length > 0 ? (
                       places.map((place) => (
                         <div
-                          key={place.id}
+                          key={place.place.id}
                           className="w-full h-[250px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
                         >
-                          <Link to={`/places/${place.id}`}>
+                          <Link to={`/places/${place.place.id}`}>
                             <div className="h-[170px] relative">
                               <img
                                 src={
-                                  place.image
-                                    ? place.image
+                                  place.place.image
+                                    ? place.place.image
                                     : "/default-mockup-place.jpg"
                                 }
-                                alt={place.nameEn}
+                                alt={place.place.nameEn}
                                 className="w-full h-full object-cover"
                               />
-                              <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full">
-                                {place.category.name}
+                              <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full  overflow-hidden text-ellipsis whitespace-nowrap">
+                                {place.place.category.name}
                               </div>
                             </div>
 
                             <div className="h-[80px] bg-white px-5 py-2">
-                              <p className="text-purple-400 font-semibold text-xs mb-1">
-                                {place.province}
+                              <p className="text-purple-400 font-semibold text-xs mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
+                                {place.place.province}
                               </p>
-                              <p className="text-black font-semibold text-sm">
-                                {place.nameTh}
+                              <p className="text-black font-semibold text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                                {place.place.nameTh}
                               </p>
-                              <p className="text-black text-sm">
-                                {place.nameEn}
+                              <p className="text-black text-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                                {place.place.nameEn}
                               </p>
                             </div>
                           </Link>
