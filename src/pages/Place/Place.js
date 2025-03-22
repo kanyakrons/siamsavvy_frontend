@@ -114,7 +114,7 @@ const Place = () => {
               setSearchValue({ ...searchValue, placeTitle: e.target.value })
             }
             style={{ width: "300px", padding: "8px", height: "35px" }}
-            className="rounded-full hover:border-purple-400"
+            className="rounded-full hover:border-purple-400 focus:border-purple-400"
           />
 
           {/* Category Multi-Select */}
