@@ -5,6 +5,7 @@ import NavBar from "../../components/NavBar";
 import { AuthContext } from "../../context/AuthContext";
 import { message } from "antd";
 import Loading from "../../components/Loading";
+import {Image} from 'antd';
 import {
   getPlaceDetail,
   getPlacePhoto,
@@ -175,12 +176,14 @@ function PlaceDetail() {
               </div>
             </div>
 
-            <div className="my-3">
-              <img
-                src={placeImage || "/default-mockup-place.jpg"}
-                alt={placeDetails.nameEn}
-                className="w-full h-80 object-cover rounded-lg shadow-md"
-              />
+            <div className="my-3 w-full h-80 relative">
+              <Image
+                src={placeImage}
+                fallback="/default-mockup-place.jpg"
+                width={"100%"}
+                height={"320px"}
+                className="object-cover rounded-lg shadow-md"
+               />
             </div>
 
             <div className="mt-6 space-y-3">
@@ -306,15 +309,13 @@ function PlaceDetail() {
                     scrollSnapAlign: "start",
                   }}
                 >
-                  <img
-                    src={photo}
-                    alt={`Place ${index}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <Image
+                src={photo}
+                fallback="/default-mockup-place.jpg"
+                width={"100%"}
+                height={"100%"}
+                className="object-cover"
+               />
                 </div>
               ))}
             </div>
