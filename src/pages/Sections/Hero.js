@@ -3,7 +3,7 @@ import React from "react";
 const Hero = ({ title, description, isHomePage = false }) => {
   return (
     <>
-      <section className="flex flex-col justify-center bg-slate-500 w-full min-h-[30rem] pt-10">
+      <section className="flex flex-col justify-center bg-slate-500 w-full min-h-[25rem] pt-10">
         <div className="mx-40">
           <p className="text-6xl max-w-[38rem] font-bold text-white">{title}</p>
           <p className="max-w-[40rem] mt-10 text-xl text-white">

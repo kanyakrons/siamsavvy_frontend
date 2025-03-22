@@ -12,3 +12,16 @@
     border-color: var(--purple-400) !important;
   }
 }
+
+.custom-card {
+  width: 100%;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease-in-out;
+  padding: 20px;
+  font-size: 1.125rem;
+}
+
+.custom-card:hover {
+  transform: scale(1.05);
+}

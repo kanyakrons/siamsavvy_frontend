@@ -6,6 +6,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { message } from "antd";
 import Loading from "../../components/Loading";
 import {Image} from 'antd';
+import { PhoneFilled, MailFilled, GlobalOutlined, FacebookFilled, InstagramOutlined, YoutubeFilled, TikTokOutlined, MessageFilled, EnvironmentFilled } from '@ant-design/icons';
 import {
   getPlaceDetail,
   getPlacePhoto,
@@ -107,16 +108,17 @@ function PlaceDetail() {
       <NavBar variant="black" />
       <div className=" w-full mx-auto py-10 px-[120px]">
         {placeDetails && (
-          <div className="bg-white p-6 pt-12">
-            <div className="flex items-end">
+          <div className="bg-white p-6 pt-[50px]">
+            {/* Info */}
+            <div className="flex items-end mb-3">
               <div>
-                <p className="text-lg font-medium text-purple-400">
+                <p className=" font-medium text-purple-400">
                   {placeDetails.province}
                 </p>
                 <h2 className="text-xl font-semibold text-gray-800">
                   {placeDetails.nameTh} ({placeDetails.nameEn})
                 </h2>
-                <p className="text-lg text-gray-600">
+                <p className=" text-gray-600">
                   {placeDetails.category.name}
                 </p>
               </div>
@@ -176,7 +178,7 @@ function PlaceDetail() {
               </div>
             </div>
 
-            <div className="my-3">
+            <div className="mb-6">
               <Image
                 src={placeImage}
                 fallback="/default-mockup-place.jpg"
@@ -186,152 +188,144 @@ function PlaceDetail() {
                />
             </div>
 
-            <div className="mt-6 space-y-3">
-              <div>
-                <p className="font-semibold text-lg text-gray-800">Address:</p>
-                <p className="text-gray-700">
-                  {placeDetails.address}, {placeDetails.district},{" "}
-                  {placeDetails.subdistrict}, {placeDetails.province}
+            {/* Detail */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-9">
+              <div className="custom-card bg-violet-700 text-white">
+                <p className="font-semibold text-2xl mb-1">Operating Hours</p>
+                <p>{placeDetails.startEnd}</p>
+              </div>
+
+              <div className="custom-card bg-purple-700 text-white">
+                <p className="font-semibold text-2xl mb-1">Fee</p>
+                <p className=" flex">
+                  Thai Adults<div class="ms-auto"><span className="mx-2">{placeDetails.feeTh ? placeDetails.feeTh : "-"}</span>THB</div>
+                </p>
+                <p className=" flex">
+                  Thai Kids<div class="ms-auto"><span className="mx-2">{placeDetails.feeThKid ? placeDetails.feeThKid : "-"}</span>THB</div>
+                </p>
+                <p className=" flex">
+                  Foreigner Adults<div class="ms-auto"><span className="mx-2">{placeDetails.feeEn ? placeDetails.feeEn : "-"}</span>THB</div>
+                </p>
+                <p className=" flex">
+                  Foreigner Kids<div class="ms-auto"><span className="mx-2">{placeDetails.feeEnKid ? placeDetails.feeEnKid : "-"}</span>THB</div>
                 </p>
               </div>
 
-              <div>
-                <p className="font-semibold text-lg text-gray-800">
-                  Start/End:
-                </p>
-                <p className="text-gray-700">{placeDetails.startEnd}</p>
-              </div>
-
-              <div>
-                <p className="font-semibold text-lg text-gray-800">Fee:</p>
-                <p className="text-gray-700">
-                  Adults: {placeDetails.feeTh} THB, Kids:{" "}
-                  {placeDetails.feeThKid} THB
-                </p>
-              </div>
-
-              <div>
-                <p className="font-semibold text-lg text-gray-800">Contact:</p>
-                <p className="text-gray-700">Tel: {placeDetails.tel}</p>
-                <p className="text-gray-700">
-                  Email:{" "}
-                  <a
-                    href={`mailto:${placeDetails.email}`}
-                    className="text-blue-600"
-                  >
-                    {placeDetails.email}
-                  </a>
-                </p>
-              </div>
-
-              <div>
-                <p className="font-semibold text-lg text-gray-800">
-                  Social Links:
-                </p>
-                <div className="space-x-3">
-                  <a
-                    href={`https://${placeDetails.website}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Website
-                  </a>
-                  <a
-                    href={`https://${placeDetails.facebook}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Facebook
-                  </a>
-                  <a
-                    href={`https://${placeDetails.instagram}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Instagram
-                  </a>
-                  <a
-                    href={`https://${placeDetails.line}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    Line
-                  </a>
-                  <a
-                    href={`https://${placeDetails.tiktok}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    TikTok
-                  </a>
-                  <a
-                    href={`https://${placeDetails.youtube}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    YouTube
-                  </a>
-                </div>
+              <div className="custom-card bg-blue-950 text-white">
+                <p className="font-semibold text-2xl mb-1">Contact</p>
+                {placeDetails.tel && (
+                 <p className=""><PhoneFilled className="me-2"/>{placeDetails.tel}</p>
+                )}
+                {placeDetails.email && (
+                  <p className=""><a href={`mailto:${placeDetails.email}`}><MailFilled className="me-2"/>{placeDetails.email}</a></p>
+                )}
+                {placeDetails.website && (
+                  <p className=""><GlobalOutlined className="me-2"/>{placeDetails.website}</p>
+                )}
+                {placeDetails.facebook && (
+                  <p className=""><FacebookFilled className="me-2"/>{placeDetails.facebook}</p>
+                )}
+                {placeDetails.instagram && (
+                  <p className=""><InstagramOutlined className="me-2"/>{placeDetails.instagram}</p>
+                )}
+                {placeDetails.tiktok && (
+                  <p className=""><TikTokOutlined className="me-2"/>{placeDetails.tiktok}</p>
+                )}
+                {placeDetails.youtube && (
+                  <p className=""><YoutubeFilled className="me-2"/>{placeDetails.youtube}</p>
+                )}
+                {placeDetails.line && (
+                  <p className=""><MessageFilled className="me-2"/>{placeDetails.line}</p>
+                )}
               </div>
             </div>
 
-            {/* Photos */}
-            <div
-            className="mt-6"
-            style={{
-              display: "flex",
-              gap: "8px",
-              overflowX: "auto",
-              scrollSnapType: "x mandatory",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-              padding: "10px",
-              whiteSpace: "nowrap",
-            }}
-            >
-              {photos.map((photo, index) => (
+            {/* Gallery */}
+            {photos && photos.length > 1 && (
+              <div className="mb-9">
+                <p className="text-xl font-semibold mb-1">Gallery</p>
                 <div
-                  key={index}
                   style={{
-                    flex: "0 0 auto",
-                    width: "500px",
-                    height: "300px",
-                    overflow: "hidden",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    scrollSnapAlign: "start",
+                    gap: "8px",
+                    overflowX: "auto",
+                    scrollSnapType: "x mandatory",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    whiteSpace: "nowrap",
                   }}
-                >
-                  <Image
-                src={photo}
-                fallback="/default-mockup-place.jpg"
-                width={"100%"}
-                height={"100%"}
-                className="object-cover"
-               />
+                  >
+                    {photos.map((photo, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          flex: "0 0 auto",
+                          width: "500px",
+                          height: "300px",
+                          overflow: "hidden",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          scrollSnapAlign: "start",
+                        }}
+                      >
+                        <Image
+                      src={photo}
+                      fallback="/default-mockup-place.jpg"
+                      width={"100%"}
+                      height={"100%"}
+                      className="object-cover"
+                    />
+                      </div>
+                    ))}
                 </div>
-              ))}
+              </div>
+            )}
+            
+            {/* Address */}
+            <div className="mb-9">
+              <p className="text-xl font-semibold mb-1">Address</p>
+              <div className="flex gap-3">
+                <div className="w-[25%]">
+                  <div className="custom-card bg-blue-950 text-white h-[100%] flex flex-col items-center justify-center">
+                    <div className="w-16 h-16 flex items-center justify-center bg-red-600 text-white rounded-full shadow-lg text-4xl mb-6">
+                      <EnvironmentFilled />
+                    </div>
+                    {placeDetails.province && (
+                      <div className="flex text-4xl font-semibold mb-6 break-words">{placeDetails.province}</div>
+                    )}
+                    <div>
+                      {placeDetails.address && (
+                        <div className="flex"><span className="font-semibold me-1">ที่อยู่</span><p>{placeDetails.address}</p></div>
+                      )}
+                      {placeDetails.district && (
+                        <div className="flex"><span className="font-semibold me-1">เขต</span><p>{placeDetails.district}</p></div>
+                      )}
+                      {placeDetails.subdistrict && (
+                        <div className="flex"><span className="font-semibold me-1">แขวง</span><p>{placeDetails.subdistrict}</p></div>
+                      )}
+                      {placeDetails.road && (
+                        <div className="flex"><span className="font-semibold me-1">ถนน</span><p>{placeDetails.road}</p></div>
+                      )}
+                      {placeDetails.alley && (
+                        <div className="flex"><span className="font-semibold me-1">ซอย</span><p>{placeDetails.alley}</p></div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="w-[75%]">
+                  <GoogleMapPin
+                    location={{
+                      lat: Number(placeDetails.location.split(",")[0].trim()),
+                      lng: Number(placeDetails.location.split(",")[1].trim()),
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Google Map Section*/}
-            <div className="mt-6">
-              <GoogleMapPin
-                location={{
-                  lat: Number(placeDetails.location.split(",")[0].trim()),
-                  lng: Number(placeDetails.location.split(",")[1].trim()),
-                }}
-              />
-            </div>
-
-            {/* Review Section*/}
-            <div className="mt-6">
+            {/* Review */}
+            <div className="mb-3">
               <p className="text-xl font-semibold">Reviews</p>
               {placeDetails.placeReviews &&
                 placeDetails.placeReviews.length > 0 && (
