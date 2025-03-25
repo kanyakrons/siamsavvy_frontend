@@ -294,7 +294,7 @@ function PlaceDetail() {
                     {placeDetails.province && (
                       <div className="flex text-4xl font-semibold mb-6 break-words">{placeDetails.province}</div>
                     )}
-                    <div>
+                    <div className="d-flex flex-col justify-center">
                       {placeDetails.address && (
                         <div className="flex"><span className="font-semibold me-1">ที่อยู่</span><p>{placeDetails.address}</p></div>
                       )}
