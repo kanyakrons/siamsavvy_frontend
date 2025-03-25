@@ -22,6 +22,7 @@ import {
   message,
   Pagination,
   Input,
+  Modal
 } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Loading from "../../components/Loading";
@@ -65,6 +66,8 @@ const PlanGenerate = () => {
   const [selectedDay, setSelectedDay] = useState(0);
 
   //plan be your self
+  // State for modal visibility
+  const [isErrModalOpen, setIsErrModalOpen] = useState(false);
   const [places, setPlaces] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
@@ -174,6 +177,7 @@ const PlanGenerate = () => {
       setPlanDetails(data);
     } catch (error) {
       console.error("Error generating plan:", error);
+      showErrorModal();
     } finally {
       setLoading(false);
     }
@@ -214,6 +218,35 @@ const PlanGenerate = () => {
       }
     });
   };
+
+  // Function to show modal
+  const showErrorModal = () => {
+    setIsErrModalOpen(true);
+  };
+
+  // Function to close modal
+  const handleCloseErrModal = () => {
+    setIsErrModalOpen(false);
+  };
+
+  // Error modal component
+  const ErrorModal = () => (
+    <Modal
+      title={<span className="text-2xl font-bold text-black">Something Went Wrong</span>}
+      open={isErrModalOpen}
+      onCancel={handleCloseErrModal}
+      footer={[
+        <Button key="close" type="primary" className="bg-purple-400" onClick={handleCloseErrModal}>
+          Close
+        </Button>,
+      ]}
+      centered
+    >
+      <p className="text-black text-base">
+        We encountered an issue while generating your travel plan. Please try again later.
+      </p>
+    </Modal>
+  );
 
   return (
     <div className="w-full h-screen mx-auto">
@@ -821,6 +854,9 @@ const PlanGenerate = () => {
           </button>
         </div>
       )}
+
+      <ErrorModal />;
+
     </div>
   );
 };
