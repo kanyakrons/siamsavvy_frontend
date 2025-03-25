@@ -657,55 +657,57 @@ const PlanGenerate = () => {
                   {planDetails.detail?.trip.itinerary[selectedDay]?.places ? (
                     planDetails.detail?.trip.itinerary[selectedDay].places.map(
                       (place, placeIndex) => (
-                        <div key={placeIndex} className="relative mb-5">
-                          <div className="flex items-center justify-between p-4 border border-gray-300 rounded-xl mb-2 relative bg-white shadow-lg">
-                            <div className="flex items-center">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="size-6"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                />
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                                />
-                              </svg>
-
-                              <p className="ms-2 text-lg">{place.place_name}</p>
-                            </div>
-
-                            <div className="flex items-center">
-                              <p className="text-sm mr-5">
-                                {place.start_time} - {place.end_time}
-                              </p>
-                              <button className="text-red-500 hover:text-red-700">
+                        <a href={`/places/${place.place_id}`} target="_blank" rel="noopener noreferrer">
+                          <div key={placeIndex} className="relative mb-5">
+                            <div className="flex items-center justify-between p-4 border border-gray-300 rounded-xl mb-2 relative bg-white shadow-lg">
+                              <div className="flex items-center">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="h-5 w-5"
                                   fill="none"
                                   viewBox="0 0 24 24"
+                                  stroke-width="1.5"
                                   stroke="currentColor"
+                                  class="size-6"
                                 >
                                   <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"
+                                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                  />
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
                                   />
                                 </svg>
-                              </button>
+
+                                <p className="ms-2 text-lg">{place.place_name}</p>
+                              </div>
+
+                              <div className="flex items-center">
+                                <p className="text-sm mr-5">
+                                  {place.start_time} - {place.end_time}
+                                </p>
+                                <button className="text-red-500 hover:text-red-700">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </a>
                       )
                     )
                   ) : (
