@@ -116,7 +116,7 @@ function PlaceDetail() {
                   {placeDetails.province}
                 </p>
                 <h2 className="text-xl font-semibold text-gray-800">
-                  {placeDetails.nameTh} ({placeDetails.nameEn})
+                  {placeDetails.nameTh} {placeDetails.nameEn && `(${placeDetails.nameEn})`}
                 </h2>
                 <p className=" text-gray-600">
                   {placeDetails.category.name}
