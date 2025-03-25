@@ -1,18 +1,22 @@
 import { useParams } from "react-router-dom";
 import { GetPlanDetail } from "../../api/planApi";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { defaultValue } from "./PlanDefaultValue";
 import { Hero } from "../Sections";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const PlanDetail = () => {
   const { planId } = useParams();
   const [planDetails, setPlanDetail] = useState(defaultValue);
   const [selectedDay, setSelectedDay] = useState(0);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await GetPlanDetail(planId);
-
+      console.log("🚀 ~ fetchData ~ response:", response);
       setPlanDetail({
         name: response.data.name,
         detail: JSON.parse(response.data.detail),
@@ -27,8 +31,32 @@ const PlanDetail = () => {
       <div className=" p-5 flex flex-col items-center mt-4">
         <div className="w-full">
           {planDetails.detail && (
-            <div>
-              <p className="font-semibold text-3xl mb-6">{planDetails.name}</p>
+            <div className="mx-40">
+              <div className="flex">
+                {" "}
+                <p className="font-semibold text-3xl mb-6">
+                  {planDetails.name}
+                </p>
+                <div className="mt-2 ml-5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6 hover:shadow-2xl hover:scale-105"
+                    onClick={() => {
+                      navigate(`/blogs/create?planId=${planId}`);
+                    }}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
+                    />
+                  </svg>
+                </div>
+              </div>
               {/* Day Tabs */}
               <div className="flex overflow-x-auto mb-4">
                 {planDetails.detail?.trip.itinerary.map((dayPlan) => (

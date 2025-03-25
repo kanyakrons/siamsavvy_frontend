@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { getDetail } from "../../api/blogApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, message, Tag } from "antd";
 import { Hero } from "../Sections";
 import formatDate from "../../utils/FormatDate";
@@ -10,7 +10,18 @@ const BlogDetail = () => {
   const [blog, setBlog] = useState("");
   const [blogComment, setBlogComment] = useState("");
   const { isAuth, user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const { id } = useParams();
+
+  const formatJson = (string) => {
+    try {
+      return JSON.parse(string);
+    } catch (error) {
+      console.error("Invalid JSON string", error);
+      return {};
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,21 +39,82 @@ const BlogDetail = () => {
         <Hero />
         <div className="mt-10 mx-40 h-screen">
           <h1 className="text-xl font-bold my-5"> {blog?.title} </h1>
-          <img
-            src={blog?.image?.url}
-            className="object-cover h-[550px]  w-full"
-          />
+
           <div className="w-full flex flex-col">
             <div className=" mt-5 grid grid-cols-2">
               {" "}
               <div className="w-1/2">
                 <div>{blog?.createdAt ? formatDate(blog.createdAt) : ""}</div>
+
                 <div className="mt-5 ">
                   {blog?.categories
                     ? blog.categories.map((category) => (
                         <Tag>{category.name}</Tag>
                       ))
                     : ""}
+                </div>
+                <div>
+                  {blog.plan && (
+                    <>
+                      <div
+                        className="px-5 py-5 border-2 shadow-lg rounded-xl mt-5 hover:scale-105 transition-all duration-300 ease-in-out"
+                        onClick={() => {
+                          navigate(`/plans/${blog.plan.id}`);
+                        }}
+                      >
+                        <div className="flex">
+                          <p className="font-bold text-lg"> {blog.plan.name}</p>
+                          <p className="ms-auto text-sm text-gray-800">
+                            {formatDate(blog.plan?.createdAt)}
+                          </p>{" "}
+                        </div>
+                        <div className="flex flex-col gap-2 mt-3">
+                          <p className="flex gap-3">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="size-6"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                              />
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                              />
+                            </svg>
+                            {formatJson(blog.plan.detail).trip?.destination}
+                          </p>{" "}
+                          <p className="flex gap-3">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="size-6"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+                              />
+                            </svg>
+                            {formatJson(blog.plan.detail).trip?.duration} day(s)
+                          </p>{" "}
+                        </div>
+                        <p className="text-right">
+                          {blog.plan?.user.displayName}
+                        </p>{" "}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-end">
