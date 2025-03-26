@@ -748,11 +748,11 @@ const PlanGenerate = () => {
                                 <div className="absolute mt-3 ml-[75px] top-full flex flex-col font-semibold">
                                   <div className="flex mb-2">
                                     <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
-                                    <p>{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].distance}</p>
+                                    <p className="text-sm">{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].distance}</p>
                                   </div>
                                   <div className="flex">
                                     <FieldTimeOutlined className="text-purple-400 text-2xl me-2" />
-                                    <p>{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].duration}</p>
+                                    <p className="text-sm">{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].duration}</p>
                                   </div>
                                 </div>
                               )}
