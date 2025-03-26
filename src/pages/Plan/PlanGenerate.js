@@ -24,7 +24,7 @@ import {
   Input,
   Modal
 } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, FieldTimeOutlined, NodeIndexOutlined } from "@ant-design/icons";
 import Loading from "../../components/Loading";
 import SearchValue from "../Place/SearchValue";
 import { SearchOutlined } from "@mui/icons-material";
@@ -668,6 +668,7 @@ const PlanGenerate = () => {
                   <div className="flex overflow-x-auto mb-4">
                     {planDetails.detail?.trip.itinerary.map((dayPlan) => (
                       <button
+                        key={dayPlan.day}
                         onClick={() => {
                           setSelectedDay(parseInt(dayPlan.day) - 1);
                         }}
@@ -688,61 +689,77 @@ const PlanGenerate = () => {
 
                   {/* Places Detail for the Selected Day */}
                   {planDetails.detail?.trip.itinerary[selectedDay]?.places ? (
-                    planDetails.detail?.trip.itinerary[selectedDay].places.map(
-                      (place, placeIndex) => (
-                        <a href={`/places/${place.place_id}`} target="_blank" rel="noopener noreferrer">
-                          <div key={placeIndex} className="relative mb-5">
-                            <div className="flex items-center justify-between p-4 border border-gray-300 rounded-xl mb-2 relative bg-white shadow-lg">
-                              <div className="flex items-center">
+                    <div className="relative">
+                      {planDetails.detail?.trip.itinerary[selectedDay].places.map(
+                        (place, placeIndex, placesArray) => (
+                          <div key={placeIndex} className={`relative flex items-start ${placeIndex !== 0 ? 'mt-[80px]' : ''}`}>
+                            {/* Vertical Line */}
+                            {placeIndex < placesArray.length - 1 && (
+                              <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
+                            )}
+
+                            {/* Place Card */}
+                            <div className="flex items-center space-x-4 w-full">
+                              {/* Place Icon */}
+                              <div className="relative z-10 bg-white p-2 rounded-full border border-gray-400">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
+                                  className="h-6 w-6 text-purple-500"
                                   fill="none"
                                   viewBox="0 0 24 24"
-                                  stroke-width="1.5"
                                   stroke="currentColor"
-                                  class="size-6"
                                 >
                                   <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                                   />
                                   <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
                                   />
                                 </svg>
-
-                                <p className="ms-2 text-lg">{place.place_name}</p>
                               </div>
 
-                              <div className="flex items-center">
-                                <p className="text-sm mr-5">
-                                  {place.start_time} - {place.end_time}
-                                </p>
-                                <button className="text-red-500 hover:text-red-700">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="2"
-                                      d="M6 18L18 6M6 6l12 12"
-                                    />
-                                  </svg>
-                                </button>
-                              </div>
+                              {/* Place Details */}
+                              <a
+                                href={`/places/${place.place_id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 p-4 border border-gray-300 rounded-xl bg-white shadow-lg"
+                              >
+                                <div className="flex justify-between items-center">
+                                  <p className="text-lg font-semibold">{place.place_name}</p>
+                                  <p className="text-sm text-gray-600">
+                                    {place.start_time} - {place.end_time}
+                                  </p>
+                                </div>
+                              </a>
                             </div>
+
+                            {/* Distance & Duration */}
+                            {placeIndex < placesArray.length - 1 &&
+                              planDetails.detail.trip.itinerary[selectedDay]?.routes[
+                                placeIndex
+                              ] && (
+                                <div className="absolute mt-3 ml-[75px] top-full flex flex-col font-semibold">
+                                  <div className="flex mb-2">
+                                    <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
+                                    <p>{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].distance}</p>
+                                  </div>
+                                  <div className="flex">
+                                    <FieldTimeOutlined className="text-purple-400 text-2xl me-2" />
+                                    <p>{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].duration}</p>
+                                  </div>
+                                </div>
+                              )}
                           </div>
-                        </a>
-                      )
-                    )
+                        )
+                      )}
+                    </div>
                   ) : (
                     <div className="text-gray-500">
                       No places available for this day
