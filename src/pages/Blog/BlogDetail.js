@@ -5,11 +5,13 @@ import { Avatar, message, Tag } from "antd";
 import { Hero } from "../Sections";
 import formatDate from "../../utils/FormatDate";
 import { AuthContext } from "../../context/AuthContext";
+import { isLikedBlog, likeBlog } from "../../api/userApi";
 
 const BlogDetail = () => {
   const [blog, setBlog] = useState("");
   const [blogComment, setBlogComment] = useState("");
   const { isAuth, user } = useContext(AuthContext);
+  const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -22,10 +24,21 @@ const BlogDetail = () => {
     }
   };
 
+  const onClickLike = async () => {
+    try {
+      await likeBlog(id);
+      setIsLiked(true);
+    } catch (error) {
+      message.error(error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getDetail(id);
+        const liked = await isLikedBlog(id);
+        setIsLiked(liked.data);
         setBlog(response.data);
       } catch (error) {
         message.error(`error ${error}`);
@@ -38,7 +51,24 @@ const BlogDetail = () => {
       <div>
         <Hero />
         <div className="mt-10 mx-40 h-screen">
-          <h1 className="text-xl font-bold my-5"> {blog?.title} </h1>
+          <div className="flex">
+            <h1 className="text-xl font-bold my-5"> {blog?.title} </h1>
+            {isAuth && (
+              <div className="ms-auto mt-5">
+                {/* Heart icon */}
+                <svg
+                  onClick={onClickLike}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill={isLiked ? "red" : "none"}
+                  stroke={isLiked ? "red" : "gray"}
+                  className="w-7 h-7 cursor-pointer"
+                >
+                  <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                </svg>
+              </div>
+            )}
+          </div>
 
           <div className="w-full flex flex-col">
             <div className=" mt-5 grid grid-cols-2">

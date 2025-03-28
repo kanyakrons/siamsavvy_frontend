@@ -1,6 +1,7 @@
 import { useEffect, useState, createContext } from "react";
 import { loginApi } from "../api/userApi";
 import { message } from "antd";
+import { displayName } from "react-quill";
 
 const AuthContext = createContext();
 
@@ -29,12 +30,14 @@ const AuthProvider = ({ children }) => {
   const login = async (userData) => {
     try {
       const response = await loginApi(userData);
+      console.log("🚀 ~ login ~ response:", response);
       const expiryTime = new Date().getTime() + response?.data.expiresIn;
       localStorage.setItem(
         "user",
         JSON.stringify({
           id: response?.data.id,
           username: response?.data.username,
+          displayName: response?.data.displayName,
         })
       );
       localStorage.setItem("token", response?.data.token);

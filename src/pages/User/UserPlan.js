@@ -12,6 +12,7 @@ const UserPlan = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSerachText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [isFav, setIsFav] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -45,7 +46,26 @@ const UserPlan = () => {
     <div className="w-full">
       <NavBar variant={"black"} />
       <div className="mx-60 pt-20">
-        <p className=" font-semibold text-3xl my-4">Your Plans</p>
+        <div className="flex">
+          <p
+            className="font-semibold text-3xl my-4 hover:scale-105 transition-all duration-300 ease-in-out"
+            onClick={() => {
+              setIsFav(false);
+            }}
+          >
+            Your Plans
+          </p>
+          <p className="font-semibold text-3xl my-4 ml-3">/</p>
+          <p
+            className="font-semibold text-3xl my-4 ml-2 hover:scale-105 transition-all duration-300 ease-in-out"
+            onClick={() => {
+              setIsFav(true);
+            }}
+          >
+            {" "}
+            Favorite Plans
+          </p>
+        </div>
         <div>
           <form className="w-full mx-auto">
             <div className="flex">

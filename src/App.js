@@ -15,6 +15,7 @@ import BlogSearch from "./pages/Blog/BlogSearch";
 import UserBlog from "./pages/User/UserBlog";
 import BlogCreate from "./pages/Blog/CreateBlog/BlogCreate";
 import BlogDetail from "./pages/Blog/BlogDetail";
+import SignUpPage from "./pages/SingUp";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/blogs/saved" element={<UserBlog />} />
           <Route path="/blogs/:id" element={<BlogDetail />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUpPage />} />
 
           {/* <Route path="/plans/:id" element={<Home />} /> */}
         </Routes>

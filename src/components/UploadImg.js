@@ -77,7 +77,7 @@ const UploadImg = () => {
     <>
       <Upload
         action={getPreSigned}
-        listType="picture-card"
+        listType="picture-circle"
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}

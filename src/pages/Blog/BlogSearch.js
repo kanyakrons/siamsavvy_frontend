@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { SearchValue } from "./SearchValue";
-import Select from "react-select";
 import { Hero } from "../Sections";
 import { searchBlog } from "../../api/blogApi";
 import BlogCard from "../../components/BlogCard";
 import { useNavigate } from "react-router-dom";
 import { getProvinces } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
-import { message, Pagination } from "antd";
+import { Input, message, Pagination, Select } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 const BlogSearch = () => {
   const [searchValue, setSearchValue] = useState(SearchValue);
@@ -61,56 +61,60 @@ const BlogSearch = () => {
       <Hero title={"Blog"} />
       <div className=" flex justify-center items-center w-full mb-7">
         {/* Search Bar container */}
-        <div className="absolute flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px] ">
+        <div className="absolute flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
           {/* Province Multi-Select */}
           <Select
-            isMulti
-            placeholder="Filter by Province"
+            mode="multiple"
             options={provinces.map((p) => ({ value: p, label: p }))}
-            styles={{
-              control: (base) => ({
-                ...base,
-                width: "200px",
-                borderRadius: "9999px",
-              }),
-            }}
-            onChange={(selectedOption) => {
-              setSearchValue({ ...searchValue, listProvince: selectedOption });
-            }}
+            value={searchValue.listProvince}
+            onChange={(selectedValues) =>
+              setSearchValue({ ...searchValue, listProvince: selectedValues })
+            }
+            placeholder="Filter by Province"
+            style={{ width: "300px", height: "35px" }}
+            maxTagCount={"responsive"}
+            className="custom-select"
+            bordered={false}
           />
 
-          <input
-            type="text"
-            placeholder="Blog Title ..."
-            className="w-[200px] p-2 border-2 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400"
+          {/* Search by Place Name */}
+          <Input
+            placeholder="Place Name ..."
+            value={searchValue.blogTitle}
             onChange={(e) =>
               setSearchValue({ ...searchValue, blogTitle: e.target.value })
             }
+            style={{ width: "300px", padding: "8px", height: "35px" }}
+            className="rounded-full hover:border-purple-400 focus:border-purple-400"
           />
 
           {/* Category Multi-Select */}
           <Select
-            isMulti
+            mode="multiple"
+            value={searchValue.listCategory}
+            options={categories.map((c) => ({ value: c.id, label: c.name }))}
+            onChange={(selectedValues) =>
+              setSearchValue({ ...searchValue, listCategory: selectedValues })
+            }
             placeholder="Filter by Category"
-            options={categories.map((p) => ({ value: p, label: p }))}
-            styles={{
-              control: (base) => ({
-                ...base,
-                width: "200px",
-                borderRadius: "9999px",
-              }),
-            }}
-            onChange={(selectedOption) => {
-              setSearchValue({ ...searchValue, listCategory: selectedOption });
-            }}
+            style={{ width: "400px", height: "35px" }}
+            maxTagCount={"responsive"}
+            className="custom-select"
+            bordered={false}
           />
 
-          {/* Search Button */}
           <button
             className="p-2 bg-purple-600 text-white rounded-full"
-            onClick={handleSearch}
+            style={{
+              width: "50px",
+              height: "35px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onClick={() => handleSearch()}
           >
-            Search
+            <SearchOutlined />
           </button>
         </div>
       </div>
