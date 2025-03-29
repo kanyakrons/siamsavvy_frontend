@@ -25,8 +25,8 @@ const BlogSearch = () => {
       // Mapping the selected options to only include values
       const formattedSearchValue = {
         ...searchValue,
-        listCategory: searchValue.listCategory?.map((option) => option.value),
-        listProvince: searchValue.listProvince?.map((option) => option.value),
+        listCategory: searchValue.listCategory,
+        listProvince: searchValue.listProvince,
       };
 
       const response = await searchBlog(formattedSearchValue);

@@ -18,6 +18,15 @@ const createBlog = async (blogData) => {
   }
 };
 
+const commentBlog = async (request) => {
+  try {
+    const response = await fetchDataWithAuth("POST", "blogs/comment", request);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getDetail = async (id) => {
   try {
     const response = await fetchData("GET", `blogs/${id}`);
@@ -40,4 +49,4 @@ const getSavedBlog = async (searchValue) => {
   }
 };
 
-export { searchBlog, createBlog, getDetail, getSavedBlog };
+export { searchBlog, createBlog, getDetail, getSavedBlog, commentBlog };
