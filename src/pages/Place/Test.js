@@ -213,7 +213,7 @@ const DragAndDropList = () => {
 
       const placeToAdd = {
         place_id: place.place.id,
-        place_name: place.place.nameEn,
+        place_name: place.place.nameTh,
         start_time: "09:00",
         end_time: "12:00",
       };
@@ -225,9 +225,9 @@ const DragAndDropList = () => {
 
       if (!exists) {
         newPlanDetails.detail.trip.itinerary[dayIndex].places.push(placeToAdd);
-        message.success(`Added ${place.place.nameEn} to Day ${day}`);
+        message.success(`Added ${place.place.nameTh} to Day ${day}`);
       } else {
-        message.warning(`${place.place.nameEn} is already in Day ${day}`);
+        message.warning(`${place.place.nameTh} is already in Day ${day}`);
       }
 
       return newPlanDetails;
