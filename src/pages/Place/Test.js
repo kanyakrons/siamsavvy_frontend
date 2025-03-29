@@ -876,28 +876,22 @@ const DragAndDropList = () => {
                     {/* Day Tabs */}
                     <div className="flex overflow-x-auto mb-4">
                       {planDetails.detail?.trip.itinerary.map((dayPlan) => (
-                        <DroppableDay
-                          key={dayPlan.day}
-                          day={parseInt(dayPlan.day)}
-                          isSelected={selectedDay === parseInt(dayPlan.day) - 1}
+                        <button
+                          onClick={() => {
+                            setSelectedDay(parseInt(dayPlan.day) - 1);
+                          }}
+                          className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${
+                            selectedDay === parseInt(dayPlan.day) - 1
+                              ? "bg-purple-400 text-white"
+                              : "bg-gray-200 text-gray-800"
+                          } transition duration-300 ease-in-out ${
+                            selectedDay === parseInt(dayPlan.day) - 1
+                              ? "hover:bg-purple-500"
+                              : "hover:bg-gray-300"
+                          }`}
                         >
-                          <button
-                            onClick={() => {
-                              setSelectedDay(parseInt(dayPlan.day) - 1);
-                            }}
-                            className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${
-                              selectedDay === parseInt(dayPlan.day) - 1
-                                ? "bg-purple-400 text-white"
-                                : "bg-gray-200 text-gray-800"
-                            } transition duration-300 ease-in-out ${
-                              selectedDay === parseInt(dayPlan.day) - 1
-                                ? "hover:bg-purple-500"
-                                : "hover:bg-gray-300"
-                            }`}
-                          >
-                            {`Day ${dayPlan.day}`}
-                          </button>
-                        </DroppableDay>
+                          {`Day ${dayPlan.day}`}
+                        </button>
                       ))}
                     </div>
 
