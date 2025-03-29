@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPlaces, getProvinces, searchPlace } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
-import { generatePlanByAi, CreatePlan } from "../../api/planApi";
+import { generatePlanByAi, CreatePlan, GetPlanWithRoute } from "../../api/planApi";
 import { Link } from "react-router-dom";
 import { defaultValue } from "./PlanDefaultValue";
 import { Hero } from "../Sections";
@@ -248,6 +248,33 @@ const PlanGenerate = () => {
     </Modal>
   );
 
+  // get place detail with route
+  useEffect(() => {
+    const fetchRouteData = async () => {
+      try {
+        setLoading(true);
+
+        if (!isPlanning) {
+          const response = await GetPlanWithRoute(planDetails);
+
+          const data = {
+            name: planName,
+            detail: response.data,
+          };
+          setPlanDetails(data);
+        }
+      }
+      catch (error) {
+        setError("Error fetching data");
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchRouteData();
+  }, [isPlanning]);
+
   return (
     <div className="w-full h-screen mx-auto">
       {/* Full-screen Loading Spinner */}
@@ -258,17 +285,15 @@ const PlanGenerate = () => {
       <div className="flex flex-col items-center mt-10">
         <div className="flex w-60 bg-gray-200 rounded-xl p-1">
           <button
-            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
-            }`}
+            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
+              }`}
             onClick={() => setIsPlanning(true)}
           >
             Plan
           </button>
           <button
-            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              !isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
-            }`}
+            className={`w-1/2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${!isPlanning ? "bg-white font-semibold shadow-md" : "text-gray-700"
+              }`}
             onClick={() => setIsPlanning(false)}
           >
             Summary
@@ -310,17 +335,15 @@ const PlanGenerate = () => {
             <div className="w-1/2 flex flex-col items-center">
               <div className="flex w-80 mb-4">
                 <button
-                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${
-                    isAiGenerate ? "bg-gray-300" : "bg-white"
-                  }`}
+                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${isAiGenerate ? "bg-gray-300" : "bg-white"
+                    }`}
                   onClick={() => setIsAiGenerate(true)}
                 >
                   Auto-generate plan
                 </button>
                 <button
-                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${
-                    !isAiGenerate ? "bg-gray-300" : "bg-white"
-                  }`}
+                  className={`w-1/2 px-4 py-2 text-sm font-semibold rounded-full transition-all ${!isAiGenerate ? "bg-gray-300" : "bg-white"
+                    }`}
                   onClick={() => setIsAiGenerate(false)}
                 >
                   Plan trip by yourself
@@ -672,15 +695,13 @@ const PlanGenerate = () => {
                         onClick={() => {
                           setSelectedDay(parseInt(dayPlan.day) - 1);
                         }}
-                        className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${
-                          selectedDay === parseInt(dayPlan.day) - 1
+                        className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${selectedDay === parseInt(dayPlan.day) - 1
                             ? "bg-purple-400 text-white"
                             : "bg-gray-200 text-gray-800"
-                        } transition duration-300 ease-in-out ${
-                          selectedDay === parseInt(dayPlan.day) - 1
+                          } transition duration-300 ease-in-out ${selectedDay === parseInt(dayPlan.day) - 1
                             ? "hover:bg-purple-500"
                             : "hover:bg-gray-300"
-                        }`}
+                          }`}
                       >
                         {`Day ${dayPlan.day}`}
                       </button>
@@ -692,7 +713,7 @@ const PlanGenerate = () => {
                     <div className="relative">
                       {planDetails.detail?.trip.itinerary[selectedDay].places.map(
                         (place, placeIndex, placesArray) => (
-                          <div key={placeIndex} className={`relative flex items-start ${placeIndex !== 0 ? 'mt-[80px]' : ''}`}>
+                          <div key={placeIndex} className={`relative flex items-start ${placeIndex !== 0 ? 'mt-[50px]' : ''}`}>
                             {/* Vertical Line */}
                             {placeIndex < placesArray.length - 1 && (
                               <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
@@ -740,19 +761,15 @@ const PlanGenerate = () => {
                               </a>
                             </div>
 
-                            {/* Distance & Duration */}
+                            {/* Distance */}
                             {placeIndex < placesArray.length - 1 &&
                               planDetails.detail.trip.itinerary[selectedDay]?.routes[
-                                placeIndex
+                              placeIndex
                               ] && (
                                 <div className="absolute mt-3 ml-[75px] top-full flex flex-col font-semibold">
                                   <div className="flex mb-2">
                                     <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
                                     <p className="text-sm">{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].distance}</p>
-                                  </div>
-                                  <div className="flex">
-                                    <FieldTimeOutlined className="text-purple-400 text-2xl me-2" />
-                                    <p className="text-sm">{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].duration}</p>
                                   </div>
                                 </div>
                               )}
@@ -781,18 +798,17 @@ const PlanGenerate = () => {
                 <div className="flex overflow-x-auto mb-4">
                   {planDetails.detail?.trip.itinerary.map((dayPlan) => (
                     <button
+                      key={dayPlan.day}
                       onClick={() => {
                         setSelectedDay(parseInt(dayPlan.day) - 1);
                       }}
-                      className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${
-                        selectedDay === parseInt(dayPlan.day) - 1
+                      className={`px-4 py-2 mr-2 rounded-xl font-semibold focus:outline-none ${selectedDay === parseInt(dayPlan.day) - 1
                           ? "bg-purple-400 text-white"
                           : "bg-gray-200 text-gray-800"
-                      } transition duration-300 ease-in-out ${
-                        selectedDay === parseInt(dayPlan.day) - 1
+                        } transition duration-300 ease-in-out ${selectedDay === parseInt(dayPlan.day) - 1
                           ? "hover:bg-purple-500"
                           : "hover:bg-gray-300"
-                      }`}
+                        }`}
                     >
                       {`Day ${dayPlan.day}`}
                     </button>
@@ -801,59 +817,73 @@ const PlanGenerate = () => {
 
                 {/* Places Detail for the Selected Day */}
                 {planDetails.detail?.trip.itinerary[selectedDay]?.places ? (
-                  planDetails.detail?.trip.itinerary[selectedDay].places.map(
-                    (place, placeIndex) => (
-                      <div key={placeIndex} className="relative mb-5">
-                        <div className="flex items-center justify-between p-4 border border-gray-300 rounded-xl mb-2 relative bg-white shadow-lg">
-                          <div className="flex items-center">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke-width="1.5"
-                              stroke="currentColor"
-                              class="size-6"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                              />
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                              />
-                            </svg>
+                  <div className="relative">
+                    {planDetails.detail?.trip.itinerary[selectedDay].places.map(
+                      (place, placeIndex, placesArray) => (
+                        <div key={placeIndex} className={`relative flex items-start ${placeIndex !== 0 ? 'mt-[50px]' : ''}`}>
+                          {/* Vertical Line */}
+                          {placeIndex < placesArray.length - 1 && (
+                            <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
+                          )}
 
-                            <p className="ms-2 text-lg">{place.place_name}</p>
-                          </div>
-
-                          <div className="flex items-center">
-                            <p className="text-sm mr-5">
-                              {place.start_time} - {place.end_time}
-                            </p>
-                            <button className="text-red-500 hover:text-red-700">
+                          {/* Place Card */}
+                          <div className="flex items-center space-x-4 w-full">
+                            {/* Place Icon */}
+                            <div className="relative z-10 bg-white p-2 rounded-full border border-gray-400">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
+                                className="h-6 w-6 text-purple-500"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
                               >
                                 <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M6 18L18 6M6 6l12 12"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
                                 />
                               </svg>
-                            </button>
+                            </div>
+
+                            {/* Place Details */}
+                            <a
+                              href={`/places/${place.place_id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 p-4 border border-gray-300 rounded-xl bg-white shadow-lg"
+                            >
+                              <div className="flex justify-between items-center">
+                                <p className="text-lg font-semibold">{place.place_name}</p>
+                                <p className="text-sm text-gray-600">
+                                  {place.start_time} - {place.end_time}
+                                </p>
+                              </div>
+                            </a>
                           </div>
+
+                          {/* Distance & Duration */}
+                          {placeIndex < placesArray.length - 1 &&
+                            planDetails.detail.trip.itinerary[selectedDay]?.routes[
+                            placeIndex
+                            ] && (
+                              <div className="absolute mt-3 ml-[75px] top-full flex flex-col font-semibold">
+                                <div className="flex mb-2">
+                                  <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
+                                  <p className="text-sm">{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].distance}</p>
+                                </div>
+                              </div>
+                            )}
                         </div>
-                      </div>
-                    )
-                  )
+                      )
+                    )}
+                  </div>
                 ) : (
                   <div className="text-gray-500">
                     No places available for this day
