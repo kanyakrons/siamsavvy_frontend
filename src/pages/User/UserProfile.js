@@ -160,23 +160,21 @@ const UserProfile = () => {
 
   const handleSearch = async (newPage) => {
     if (!user?.id) return;
-    let page;
-    if (newPage > 1) {
-      page = newPage - 1;
-    }
+
     setLoading(true);
     try {
       // Mapping the selected options to only include values
       const formattedSearchValue = {
         ...searchValue,
         userId: user?.id,
-        pageNumber: page ? page : 0,
+        pageSize: 12,
+        pageNumber: newPage,
       };
 
       const response = await searchPlace(formattedSearchValue);
       setPlaces(response?.data.content);
       setPage(response?.data.number);
-      setTotalPage(response?.data.totalPages);
+      setTotalPage(response?.data.totalElements);
     } catch (error) {
       console.log(error);
       message.error("Load error");

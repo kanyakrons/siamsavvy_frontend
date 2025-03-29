@@ -51,13 +51,12 @@ const Place = () => {
       const response = await searchPlace(formattedSearchValue);
       setPlaces(response?.data.content);
       setPage(response?.data.number);
-      setTotalPage(response?.data.totalPages);
+      setTotalPage(response?.data.totalElements);
     } catch (error) {
       console.log(error);
       setError(error);
       message.error("Load error");
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -101,8 +100,8 @@ const Place = () => {
               setSearchValue({ ...searchValue, listProvince: selectedValues })
             }
             placeholder="Filter by Province"
-            style={{ width: "300px", height:'35px' }}
-            maxTagCount={'responsive'}
+            style={{ width: "300px", height: "35px" }}
+            maxTagCount={"responsive"}
             className="custom-select"
             bordered={false}
           />
@@ -127,12 +126,12 @@ const Place = () => {
               setSearchValue({ ...searchValue, listCategory: selectedValues })
             }
             placeholder="Filter by Category"
-            style={{ width: "400px", height:'35px' }}
-            maxTagCount={'responsive'}
+            style={{ width: "400px", height: "35px" }}
+            maxTagCount={"responsive"}
             className="custom-select"
             bordered={false}
           />
-          
+
           <button
             className="p-2 bg-purple-600 text-white rounded-full"
             style={{
@@ -146,64 +145,65 @@ const Place = () => {
           >
             <SearchOutlined />
           </button>
-
         </div>
       </div>
 
-          <div className="grid grid-cols-3 gap-5 mx-20 mt-20 mb-5">
-            {places.length > 0 ? (
-              places.map((place) => (
-                <div
-                  key={place.id}
-                  className="w-full h-[330px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
-                >
-                  <Link to={`/places/${place.place.id}`}>
-                    {/* Image Section */}
-                    <div className="h-[230px] relative">
-                      <Image
-                        src={place.image}
-                        alt={place.nameEn}
-                        width={"100%"}
-                        height={"100%"}
-                        fallback="/default-mockup-place.jpg"
-                        className="object-cover"
-                        preview="false"
-                      />
+      <div className="grid grid-cols-3 gap-5 mx-20 mt-20 mb-5">
+        {places.length > 0 ? (
+          places.map((place) => (
+            <div
+              key={place.id}
+              className="w-full h-[330px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+            >
+              <Link to={`/places/${place.place.id}`}>
+                {/* Image Section */}
+                <div className="h-[230px] relative">
+                  <Image
+                    src={place.image}
+                    alt={place.nameEn}
+                    width={"100%"}
+                    height={"100%"}
+                    fallback="/default-mockup-place.jpg"
+                    className="object-cover"
+                    preview="false"
+                  />
 
-                      {/* Category Box (Top Right) */}
-                      <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full">
-                        {place.place.category.name}
-                      </div>
-                    </div>
-
-                    {/* Info Section */}
-                    <div className="h-[100px] bg-white px-5 py-3">
-                      <p className="text-purple-400 font-semibold text-sm mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
-                        {place.place.province}
-                      </p>
-                      <p className="text-black font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
-                        {place.place.nameTh}
-                      </p>
-                      <p className="text-black overflow-hidden text-ellipsis whitespace-nowrap">{place.place.nameEn}</p>
-                    </div>
-                  </Link>
+                  {/* Category Box (Top Right) */}
+                  <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full">
+                    {place.place.category.name}
+                  </div>
                 </div>
-              ))
-            ) : (
-              <p>No places found.</p>
-            )}
-          </div>
-          <div className="">
-            <Pagination
-              align="center"
-              defaultCurrent={page}
-              total={totalPage}
-              showSizeChanger={false}
-              onChange={(newPage) => {
-                handleSearch(newPage);
-              }}
-            />
-          </div>
+
+                {/* Info Section */}
+                <div className="h-[100px] bg-white px-5 py-3">
+                  <p className="text-purple-400 font-semibold text-sm mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
+                    {place.place.province}
+                  </p>
+                  <p className="text-black font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
+                    {place.place.nameTh}
+                  </p>
+                  <p className="text-black overflow-hidden text-ellipsis whitespace-nowrap">
+                    {place.place.nameEn}
+                  </p>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>No places found.</p>
+        )}
+      </div>
+      <div className="">
+        <Pagination
+          align="center"
+          defaultCurrent={page}
+          total={totalPage}
+          showSizeChanger={false}
+          onChange={(newPage) => {
+            handleSearch(newPage - 1);
+          }}
+        />
+      </div>
     </div>
   );
 };
