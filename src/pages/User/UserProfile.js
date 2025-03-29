@@ -11,20 +11,29 @@ import { AuthContext } from "../../context/AuthContext";
 import { searchPlace } from "../../api/placeApi";
 import SearchValue from "../Place/SearchValue";
 import { Link } from "react-router-dom";
+import { fetchData, fetchDataWithAuth } from "../../api/axiosService";
+
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 
 const UserProfile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, isAuth } = useContext(AuthContext);
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [displayName, setDisplayName] = useState(user?.displayName);
-  const [userId] = useState(user?.id);
+  const [img, setImg] = useState(user?.imageUrl);
+  const [displayName, setDisplayName] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [searchValue, setSearchValue] = useState(SearchValue);
   const [tempDisplayName, setTempDisplayName] = useState(displayName);
   const [profileImage, setProfileImage] = useState(
-    "https://randomuser.me/api/portraits/men/1.jpg"
+    user?.imageUrl || "https://randomuser.me/api/portraits/men/1.jpg"
   );
 
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -50,18 +59,97 @@ const UserProfile = () => {
     setIsEditing(false);
   };
 
-  const handleProfileImageChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        message.error("Image must be smaller than 2MB");
+  const uploadProfileImage = async (file) => {
+    try {
+      // Request a presigned URL from the backend
+      const response = await fetchData(
+        "GET",
+        `/api/files/presigned-upload/${file.name}`
+      );
+
+      if (response.status !== 200) {
+        console.error("Failed to fetch presigned URL");
+        message.error("Failed to prepare image upload");
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+
+      const presignedUrl = response.data;
+
+      // Upload the image to S3 using the presigned URL
+      const uploadResponse = await fetch(presignedUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        console.error("Failed to upload image");
+        message.error("Failed to upload image");
+        return;
+      }
+
+      // Get the S3 URL for the uploaded image
+      const fileUrl = presignedUrl.split("?")[0];
+
+      // Update the user's profile image in your database
+      const updateResponse = await fetchDataWithAuth(
+        "PUT",
+        `/users/uploadImage`,
+        { imgUrl: fileUrl }
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          ...user,
+          imageUrl: fileUrl,
+        })
+      );
+
+      setImg(fileUrl);
+
+      if (updateResponse.status === 200) {
+        setProfileImage(fileUrl);
+
+        window.location.reload();
+        message.success("Profile image updated successfully");
+      } else {
+        message.error("Failed to update profile image");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      message.error("Error uploading image");
+    }
+  };
+
+  const handleProfileImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size
+    if (file.size > 2 * 1024 * 1024) {
+      message.error("Image must be smaller than 2MB");
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.match("image.*")) {
+      message.error("Only image files are allowed");
+      return;
+    }
+
+    try {
+      // Show preview while uploading
+      const preview = await getBase64(file);
+      setProfileImage(preview);
+
+      // Upload to S3
+      await uploadProfileImage(file);
+    } catch (error) {
+      console.error("Error processing image:", error);
+      message.error("Error processing image");
     }
   };
 
@@ -98,6 +186,8 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setImg(storedUser?.imageUrl);
     const fetchData = async () => {
       setLoading(true);
 
@@ -111,7 +201,7 @@ const UserProfile = () => {
     };
 
     fetchData();
-  }, [user]);
+  }, [img]);
 
   return (
     <div className="w-full">
@@ -123,7 +213,7 @@ const UserProfile = () => {
           <div className="absolute -top-16 left-6 border-4 border-white rounded-full group">
             <Avatar
               size={128}
-              src={profileImage}
+              src={img}
               className="cursor-pointer hover:opacity-90"
               onClick={() => handlePreview(profileImage)}
             />
@@ -144,11 +234,9 @@ const UserProfile = () => {
               />
             </div>
           </div>
-
           {/* Display Name and Username */}
           <div className="mt-16 mb-4">
             <h1 className="text-2xl font-bold">{user?.displayName}</h1>
-
             <p className="text-gray-500">{user?.username}</p>
           </div>
         </div>
@@ -156,9 +244,8 @@ const UserProfile = () => {
         {/* Divider */}
         <div className="border-t border-gray-200"></div>
 
-        {/* Bottom Section - This is where you can add your own content */}
+        {/* Bottom Section */}
         <div className="p-6">
-          {/* Your custom content goes here */}
           <div className="py-8 text-gray-400">
             <div className="flex flex-col justify-center items-center w-full mb-7">
               <div className="grid grid-cols-3 gap-5 mx-20  mb-5">

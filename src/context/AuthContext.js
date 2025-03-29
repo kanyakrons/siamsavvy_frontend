@@ -38,6 +38,7 @@ const AuthProvider = ({ children }) => {
           id: response?.data.id,
           username: response?.data.username,
           displayName: response?.data.displayName,
+          imageUrl: response?.data.imageUrl,
         })
       );
       localStorage.setItem("token", response?.data.token);

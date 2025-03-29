@@ -21,6 +21,10 @@ const fetchDataWithAuth = async (method, url, data = null) => {
       response = await axiosInstance.post(url, JSON.stringify(data), {
         headers,
       });
+    } else if (method.toUpperCase() === "PUT") {
+      response = await axiosInstance.put(url, JSON.stringify(data), {
+        headers,
+      });
     } else {
       throw new Error("Invalid HTTP method");
     }
@@ -38,6 +42,8 @@ const fetchData = async (method, url, data = null) => {
       response = await axiosInstance.get(url);
     } else if (method.toUpperCase() === "POST") {
       response = await axiosInstance.post(url, data);
+    } else if (method.toUpperCase() === "PUT") {
+      response = await axiosInstance.put(url, data);
     } else {
       throw new Error("Invalid HTTP method");
     }
