@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PlanTrip = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex px-[8rem] pt-20 bg-blue-50 w-full min-h-[25rem] justify-around">
       <div className="w-2/5 ">
@@ -9,6 +11,9 @@ const PlanTrip = () => {
         <button
           type="button"
           class="mt-8 text-white bg-black hover:bg-transparent hover:text-black hover:border-2 hover:border-black font-medium rounded-full text-sm px-10 py-4 text-center inline-flex items-center "
+          onClick={() => {
+            navigate("/plans/generate");
+          }}
         >
           Explore More
           <svg
@@ -31,25 +36,25 @@ const PlanTrip = () => {
 
       <div className="flex flex-col w-3/5">
         <p>
-          Lorem ipsum dolor sit amet consectetur. Diam eu risus volutpat in. A
-          consequat netus vulputate. A consequat netus vulputate. A consequat
-          netus vulputate. A consequat netus vulputate. A consequat netus
-          vulputate.
+          Explore 77 vibrant cities across 5 unique zones—each with its own
+          flavor, from bustling urban hubs to hidden natural escapes. Let AI
+          craft your perfect itinerary, or dive into shared plans from travelers
+          who’ve been there.
         </p>
         <div className="grid grid-cols-2 gap-5 mt-10">
           <div className="flex flex-col">
-            <p className="text-3xl font-bold">77</p>
+            <p className="text-3xl font-bold">📍 77 Cities, Endless Combos</p>
             <p className="">
-              Lorem ipsum dolor sit amet consectetur. Diam eu risus volutpat in.
-              A consequat netus vulputate.
+              Mix and match destinations to build your dream route. Beach hop,
+              mountain climb, or city binge—it’s your call.
             </p>
           </div>
           <div className="flex flex-col">
-            <p className="text-3xl font-bold">5</p>
+            <p className="text-3xl font-bold">🗺️ 5 Zones, Endless Routes</p>
             <p>
               {" "}
-              Lorem ipsum dolor sit amet consectetur. Diam eu risus volutpat in.
-              A consequat netus vulputate.
+              Navigate by region: Coastal, Cultural, Adventure, Urban, or
+              Serene. Filter by vibe, not just maps.
             </p>
           </div>
         </div>

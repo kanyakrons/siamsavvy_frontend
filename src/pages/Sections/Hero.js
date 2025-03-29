@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = ({ title, description, isHomePage = false }) => {
+  const navigate = useNavigate();
   return (
     <>
       <section className="flex flex-col justify-center bg-slate-500 w-full min-h-[25rem] pt-10">
@@ -14,8 +16,11 @@ const Hero = ({ title, description, isHomePage = false }) => {
               <button
                 type="button"
                 class="text-gray-500 bg-white hover:bg-transparent hover:text-white hover:border-2 hover:border-white font-medium rounded-full text-sm px-10 py-5 text-center inline-flex items-center "
+                onClick={() => {
+                  navigate("/places");
+                }}
               >
-                Lorem
+                Explore Places
                 <svg
                   class="rtl:rotate-180 w-3.5 h-3.5 ms-2"
                   aria-hidden="true"
@@ -35,8 +40,11 @@ const Hero = ({ title, description, isHomePage = false }) => {
               <button
                 type="button"
                 class="text-white hover:bg-white hover:text-gray-500 font-medium rounded-full border-2 border-white text-sm px-10 py-5 text-center inline-flex items-center ml-5"
+                onClick={() => {
+                  navigate("/blogs");
+                }}
               >
-                Lorem
+                Read Blog
               </button>
             </div>
           )}

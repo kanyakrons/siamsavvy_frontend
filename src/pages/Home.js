@@ -24,16 +24,13 @@ const Home = () => {
 
   return (
     <main className="relative">
-      {loading && (
-        <Loading loading={loading}></Loading>
-      )}
-
-      {" "}
-      <NavBar />
+      {loading && <Loading loading={loading}></Loading>} <NavBar />
       <section className="  ">
         <Hero
-          title={"Home page"}
-          description={"Home page drescription"}
+          title={"SiamSavvy"}
+          description={
+            "A next-gen travel platform where AI designs your perfect itinerary, while real users share their experiences. Publish blogs with tips, and let AI optimize routes, and hidden gems—all in one place."
+          }
           isHomePage={true}
         />
       </section>

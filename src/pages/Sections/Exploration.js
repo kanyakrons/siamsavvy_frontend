@@ -21,7 +21,7 @@ const Exploration = () => {
       <div className="justify-center items-center flex flex-col">
         <p className="text-2xl font-bold">EXPLORATION</p>
         <p className="mt-1 text-purple-400">
-          Lorem ipsum dolor sit amet consectetur. Diam eu risus volutpat in.{" "}
+          Can’t decide? Let serendipity guide you{" "}
         </p>
       </div>
       <div className=" grid grid-cols-3 gap-4 mt-8 mx-20 ">

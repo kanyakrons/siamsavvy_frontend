@@ -22,7 +22,8 @@ const PopularPlaces = () => {
       <div className="justify-center items-center flex flex-col">
         <p className="text-2xl font-bold">POPULAR PLACES</p>
         <p className="mt-1 text-purple-400">
-          Lorem ipsum dolor sit amet consectetur. Diam eu risus volutpat in.{" "}
+          Jump straight to the places everyone loves—or find your next secret
+          spot.{" "}
         </p>
       </div>
       <div className="grid grid-cols-4 gap-4 mt-8 mx-20 ">
