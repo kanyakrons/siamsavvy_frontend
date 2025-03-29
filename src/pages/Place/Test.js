@@ -254,7 +254,7 @@ const DragAndDropList = () => {
     const newPlanDetails = { ...planDetails };
     const placeToAdd = {
       place_id: place.place.id,
-      place_name: place.place.nameEn,
+      place_name: place.place.nameTh,
       start_time: "09:00",
       end_time: "12:00",
     };
