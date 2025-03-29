@@ -15,6 +15,17 @@ const generatePlanByAi = async (numberOfDay, categories, city, startLocation, di
   }
 };
 
+const GetPlanWithRoute = async (planDetails) => {
+  try {
+    const response = await fetchDataWithAuth("POST", `/plans/plan-with-route`, {
+      planDetails: JSON.stringify(planDetails.detail)
+    });
+    return response;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 const CreatePlan = async (planDetails) => {
   try {
     const response = await fetchDataWithAuth("POST", "/plans/create", {
@@ -45,4 +56,4 @@ const GetPlanSaved = async () => {
   }
 };
 
-export { generatePlanByAi, CreatePlan, GetPlanDetail, GetPlanSaved };
+export { generatePlanByAi, CreatePlan, GetPlanDetail, GetPlanSaved, GetPlanWithRoute };
