@@ -761,7 +761,7 @@ const PlanGenerate = () => {
                               </a>
                             </div>
 
-                            {/* Distance & Duration */}
+                            {/* Distance */}
                             {placeIndex < placesArray.length - 1 &&
                               planDetails.detail.trip.itinerary[selectedDay]?.routes[
                               placeIndex
@@ -826,6 +826,7 @@ const PlanGenerate = () => {
                             <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
                           )}
 
+<<<<<<< Updated upstream
                           {/* Place Card */}
                           <div className="flex items-center space-x-4 w-full">
                             {/* Place Icon */}
@@ -851,6 +852,10 @@ const PlanGenerate = () => {
                                 />
                               </svg>
                             </div>
+=======
+                            <p className="ms-2 text-lg">{place.place_name}</p>
+                          </div>
+>>>>>>> Stashed changes
 
                             {/* Place Details */}
                             <a
