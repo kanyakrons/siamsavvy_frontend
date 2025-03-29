@@ -194,7 +194,7 @@ const BlogDetail = () => {
             ></div>
 
             <div className="mb-3 mt-10">
-              <p className="text-xl font-semibold">Reviews</p>
+              <p className="text-xl font-semibold">Comments</p>
               {blog.blogComments && blog.blogComments.length > 0 && (
                 <div className="">
                   {blog.blogComments.map((review) => (
@@ -217,7 +217,7 @@ const BlogDetail = () => {
                       </div>
                       <p className="mt-2 text-gray-700">{review.content}</p>
                       <p className="mt-2 text-gray-500 text-sm">
-                        Reviewed on{" "}
+                        Commented on{" "}
                         {new Date(review.createdAt).toLocaleDateString()}
                       </p>
                     </div>
@@ -236,7 +236,7 @@ const BlogDetail = () => {
                   <textarea
                     className="w-full mt-3 p-3 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
                     rows="3"
-                    placeholder="Write your review..."
+                    placeholder="Write your comment..."
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
                   ></textarea>
@@ -245,7 +245,7 @@ const BlogDetail = () => {
                     className="px-5 py-2 bg-black text-white font-semibold rounded-full shadow-md transition-all duration-200 hover:bg-purple-400"
                     onClick={onComment}
                   >
-                    Post Review
+                    Comment
                   </button>
                 </div>
               )}

@@ -72,7 +72,10 @@ function NavBar({ variant = "white" }) {
           {isAuth && (
             <div className="relative">
               <img
-                src={img || "https://randomuser.me/api/portraits/men/1.jpg"} // Fallback image
+                src={
+                  img ||
+                  "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+                } // Fallback image
                 alt="User Profile"
                 className="profile-pic rounded-full w-10 h-10 object-cover cursor-pointer"
                 onClick={toggleDropdown}
