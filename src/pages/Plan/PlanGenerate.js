@@ -28,6 +28,7 @@ import { InfoCircleOutlined, FieldTimeOutlined, NodeIndexOutlined, CarOutlined }
 import Loading from "../../components/Loading";
 import SearchValue from "../Place/SearchValue";
 import { SearchOutlined } from "@mui/icons-material";
+import MapComponent from "../Sections/MapComponent";
 
 const PlanGenerate = () => {
   const googleMapsApiKey = "AIzaSyC5sHKuA6W--94ketB3V89APPJSOvS8okM";
@@ -817,7 +818,7 @@ const PlanGenerate = () => {
 
                 {/* Places Detail for the Selected Day */}
                 {planDetails.detail?.trip.itinerary[selectedDay]?.places ? (
-                  <div className="relative">
+                  <div className="relative mb-10">
                     {planDetails.detail?.trip.itinerary[selectedDay].places.map(
                       (place, placeIndex, placesArray) => (
                         <div key={placeIndex} className={`relative flex items-start ${placeIndex !== 0 ? 'mt-[110px]' : ''}`}>
@@ -940,6 +941,8 @@ const PlanGenerate = () => {
                     No places available for this day
                   </div>
                 )}
+              
+                <MapComponent places={planDetails.detail?.trip.itinerary[selectedDay]?.places} />
               </div>
             )}
           </div>
