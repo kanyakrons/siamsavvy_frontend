@@ -176,7 +176,7 @@ const BlogDetail = () => {
                     {" "}
                     <Avatar
                       size="large"
-                      src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+                      src={JSON.parse(localStorage.getItem("user"))?.imageUrl}
                     />
                   </div>
                   <div>
@@ -203,9 +203,17 @@ const BlogDetail = () => {
                       className="mt-2 p-4 border-t border-gray-300"
                     >
                       <div className="flex justify-between items-center">
-                        <p className="font-semibold">
-                          {review.user.displayName}
-                        </p>
+                        <div className="flex">
+                          <Avatar
+                            size="large"
+                            src={
+                              JSON.parse(localStorage.getItem("user"))?.imageUrl
+                            }
+                          />
+                          <p className="font-semibold ml-3">
+                            {review.user.displayName}
+                          </p>
+                        </div>
                       </div>
                       <p className="mt-2 text-gray-700">{review.content}</p>
                       <p className="mt-2 text-gray-500 text-sm">

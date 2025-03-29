@@ -3,10 +3,20 @@ import { useEffect, useState, useContext } from "react";
 import GoogleMapPin from "../Sections/GoogleMapPin";
 import NavBar from "../../components/NavBar";
 import { AuthContext } from "../../context/AuthContext";
-import { message } from "antd";
+import { Avatar, message } from "antd";
 import Loading from "../../components/Loading";
-import {Image} from 'antd';
-import { PhoneFilled, MailFilled, GlobalOutlined, FacebookFilled, InstagramOutlined, YoutubeFilled, TikTokOutlined, MessageFilled, EnvironmentFilled } from '@ant-design/icons';
+import { Image } from "antd";
+import {
+  PhoneFilled,
+  MailFilled,
+  GlobalOutlined,
+  FacebookFilled,
+  InstagramOutlined,
+  YoutubeFilled,
+  TikTokOutlined,
+  MessageFilled,
+  EnvironmentFilled,
+} from "@ant-design/icons";
 import {
   getPlaceDetail,
   getPlacePhoto,
@@ -52,7 +62,6 @@ function PlaceDetail() {
     };
 
     fetchData();
-
   }, [placeId, isAuth]);
 
   const onPostReview = async () => {
@@ -101,9 +110,7 @@ function PlaceDetail() {
 
   return (
     <div>
-      {loading && (
-        <Loading loading={loading}></Loading>
-      )}
+      {loading && <Loading loading={loading}></Loading>}
 
       <NavBar variant="black" />
       <div className=" w-full mx-auto py-10 px-[120px]">
@@ -116,11 +123,10 @@ function PlaceDetail() {
                   {placeDetails.province}
                 </p>
                 <h2 className="text-xl font-semibold text-gray-800">
-                  {placeDetails.nameTh} {placeDetails.nameEn && `(${placeDetails.nameEn})`}
+                  {placeDetails.nameTh}{" "}
+                  {placeDetails.nameEn && `(${placeDetails.nameEn})`}
                 </h2>
-                <p className=" text-gray-600">
-                  {placeDetails.category.name}
-                </p>
+                <p className=" text-gray-600">{placeDetails.category.name}</p>
               </div>
               <div className="flex ms-auto">
                 <div className="mt-1 me-5">
@@ -185,7 +191,7 @@ function PlaceDetail() {
                 width={"100%"}
                 height={"500px"}
                 className="object-cover rounded-lg shadow-md"
-               />
+              />
             </div>
 
             {/* Detail */}
@@ -198,44 +204,94 @@ function PlaceDetail() {
               <div className="custom-card bg-purple-700 text-white">
                 <p className="font-semibold text-2xl mb-1">Fee</p>
                 <p className=" flex">
-                  Thai Adults<div class="ms-auto"><span className="mx-2">{placeDetails.feeTh ? placeDetails.feeTh : "-"}</span>THB</div>
+                  Thai Adults
+                  <div class="ms-auto">
+                    <span className="mx-2">
+                      {placeDetails.feeTh ? placeDetails.feeTh : "-"}
+                    </span>
+                    THB
+                  </div>
                 </p>
                 <p className=" flex">
-                  Thai Kids<div class="ms-auto"><span className="mx-2">{placeDetails.feeThKid ? placeDetails.feeThKid : "-"}</span>THB</div>
+                  Thai Kids
+                  <div class="ms-auto">
+                    <span className="mx-2">
+                      {placeDetails.feeThKid ? placeDetails.feeThKid : "-"}
+                    </span>
+                    THB
+                  </div>
                 </p>
                 <p className=" flex">
-                  Foreigner Adults<div class="ms-auto"><span className="mx-2">{placeDetails.feeEn ? placeDetails.feeEn : "-"}</span>THB</div>
+                  Foreigner Adults
+                  <div class="ms-auto">
+                    <span className="mx-2">
+                      {placeDetails.feeEn ? placeDetails.feeEn : "-"}
+                    </span>
+                    THB
+                  </div>
                 </p>
                 <p className=" flex">
-                  Foreigner Kids<div class="ms-auto"><span className="mx-2">{placeDetails.feeEnKid ? placeDetails.feeEnKid : "-"}</span>THB</div>
+                  Foreigner Kids
+                  <div class="ms-auto">
+                    <span className="mx-2">
+                      {placeDetails.feeEnKid ? placeDetails.feeEnKid : "-"}
+                    </span>
+                    THB
+                  </div>
                 </p>
               </div>
 
               <div className="custom-card bg-blue-950 text-white">
                 <p className="font-semibold text-2xl mb-1">Contact</p>
                 {placeDetails.tel && (
-                 <p className=""><PhoneFilled className="me-2"/>{placeDetails.tel}</p>
+                  <p className="">
+                    <PhoneFilled className="me-2" />
+                    {placeDetails.tel}
+                  </p>
                 )}
                 {placeDetails.email && (
-                  <p className=""><a href={`mailto:${placeDetails.email}`}><MailFilled className="me-2"/>{placeDetails.email}</a></p>
+                  <p className="">
+                    <a href={`mailto:${placeDetails.email}`}>
+                      <MailFilled className="me-2" />
+                      {placeDetails.email}
+                    </a>
+                  </p>
                 )}
                 {placeDetails.website && (
-                  <p className=""><GlobalOutlined className="me-2"/>{placeDetails.website}</p>
+                  <p className="">
+                    <GlobalOutlined className="me-2" />
+                    {placeDetails.website}
+                  </p>
                 )}
                 {placeDetails.facebook && (
-                  <p className=""><FacebookFilled className="me-2"/>{placeDetails.facebook}</p>
+                  <p className="">
+                    <FacebookFilled className="me-2" />
+                    {placeDetails.facebook}
+                  </p>
                 )}
                 {placeDetails.instagram && (
-                  <p className=""><InstagramOutlined className="me-2"/>{placeDetails.instagram}</p>
+                  <p className="">
+                    <InstagramOutlined className="me-2" />
+                    {placeDetails.instagram}
+                  </p>
                 )}
                 {placeDetails.tiktok && (
-                  <p className=""><TikTokOutlined className="me-2"/>{placeDetails.tiktok}</p>
+                  <p className="">
+                    <TikTokOutlined className="me-2" />
+                    {placeDetails.tiktok}
+                  </p>
                 )}
                 {placeDetails.youtube && (
-                  <p className=""><YoutubeFilled className="me-2"/>{placeDetails.youtube}</p>
+                  <p className="">
+                    <YoutubeFilled className="me-2" />
+                    {placeDetails.youtube}
+                  </p>
                 )}
                 {placeDetails.line && (
-                  <p className=""><MessageFilled className="me-2"/>{placeDetails.line}</p>
+                  <p className="">
+                    <MessageFilled className="me-2" />
+                    {placeDetails.line}
+                  </p>
                 )}
               </div>
             </div>
@@ -254,34 +310,34 @@ function PlaceDetail() {
                     msOverflowStyle: "none",
                     whiteSpace: "nowrap",
                   }}
-                  >
-                    {photos.map((photo, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          flex: "0 0 auto",
-                          width: "500px",
-                          height: "300px",
-                          overflow: "hidden",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          scrollSnapAlign: "start",
-                        }}
-                      >
-                        <Image
-                      src={photo}
-                      fallback="/default-mockup-place.jpg"
-                      width={"100%"}
-                      height={"100%"}
-                      className="object-cover"
-                    />
-                      </div>
-                    ))}
+                >
+                  {photos.map((photo, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        flex: "0 0 auto",
+                        width: "500px",
+                        height: "300px",
+                        overflow: "hidden",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        scrollSnapAlign: "start",
+                      }}
+                    >
+                      <Image
+                        src={photo}
+                        fallback="/default-mockup-place.jpg"
+                        width={"100%"}
+                        height={"100%"}
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
-            
+
             {/* Address */}
             <div className="mb-9">
               <p className="text-xl font-semibold mb-1">Address</p>
@@ -292,23 +348,40 @@ function PlaceDetail() {
                       <EnvironmentFilled />
                     </div>
                     {placeDetails.province && (
-                      <div className="flex text-4xl font-semibold mb-6 break-words">{placeDetails.province}</div>
+                      <div className="flex text-4xl font-semibold mb-6 break-words">
+                        {placeDetails.province}
+                      </div>
                     )}
                     <div className="d-flex flex-col justify-center">
                       {placeDetails.address && (
-                        <div className="flex"><span className="font-semibold me-1">ที่อยู่</span><p>{placeDetails.address}</p></div>
+                        <div className="flex">
+                          <span className="font-semibold me-1">ที่อยู่</span>
+                          <p>{placeDetails.address}</p>
+                        </div>
                       )}
                       {placeDetails.district && (
-                        <div className="flex"><span className="font-semibold me-1">เขต</span><p>{placeDetails.district}</p></div>
+                        <div className="flex">
+                          <span className="font-semibold me-1">เขต</span>
+                          <p>{placeDetails.district}</p>
+                        </div>
                       )}
                       {placeDetails.subdistrict && (
-                        <div className="flex"><span className="font-semibold me-1">แขวง</span><p>{placeDetails.subdistrict}</p></div>
+                        <div className="flex">
+                          <span className="font-semibold me-1">แขวง</span>
+                          <p>{placeDetails.subdistrict}</p>
+                        </div>
                       )}
                       {placeDetails.road && (
-                        <div className="flex"><span className="font-semibold me-1">ถนน</span><p>{placeDetails.road}</p></div>
+                        <div className="flex">
+                          <span className="font-semibold me-1">ถนน</span>
+                          <p>{placeDetails.road}</p>
+                        </div>
                       )}
                       {placeDetails.alley && (
-                        <div className="flex"><span className="font-semibold me-1">ซอย</span><p>{placeDetails.alley}</p></div>
+                        <div className="flex">
+                          <span className="font-semibold me-1">ซอย</span>
+                          <p>{placeDetails.alley}</p>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -336,9 +409,18 @@ function PlaceDetail() {
                         className="mt-2 p-4 border-t border-gray-300"
                       >
                         <div className="flex justify-between items-center">
-                          <p className="font-semibold">
-                            {review.user.displayName}
-                          </p>
+                          <div className="flex">
+                            <Avatar
+                              size="large"
+                              src={
+                                JSON.parse(localStorage.getItem("user"))
+                                  ?.imageUrl
+                              }
+                            />
+                            <p className="font-semibold ml-3">
+                              {review.user.displayName}
+                            </p>
+                          </div>
                           <div className="flex items-center">
                             {/* Render 5 stars*/}
                             {[...Array(5)].map((_, index) => (
