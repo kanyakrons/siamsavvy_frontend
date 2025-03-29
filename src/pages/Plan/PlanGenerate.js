@@ -24,7 +24,7 @@ import {
   Input,
   Modal
 } from "antd";
-import { InfoCircleOutlined, FieldTimeOutlined, NodeIndexOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, FieldTimeOutlined, NodeIndexOutlined, CarOutlined } from "@ant-design/icons";
 import Loading from "../../components/Loading";
 import SearchValue from "../Place/SearchValue";
 import { SearchOutlined } from "@mui/icons-material";
@@ -790,10 +790,10 @@ const PlanGenerate = () => {
       )}
 
       {!isPlanning && (
-        <div className="flex flex-col items-center mt-4 px-20 min-h-[70rem]">
+        <div className="flex flex-col items-center my-4 px-20 min-h-[70rem]">
           <div className="w-full">
             {planDetails.detail && (
-              <div>
+              <div className="mx-[200px]">
                 {/* Day Tabs */}
                 <div className="flex overflow-x-auto mb-4">
                   {planDetails.detail?.trip.itinerary.map((dayPlan) => (
@@ -820,10 +820,10 @@ const PlanGenerate = () => {
                   <div className="relative">
                     {planDetails.detail?.trip.itinerary[selectedDay].places.map(
                       (place, placeIndex, placesArray) => (
-                        <div key={placeIndex} className={`relative flex items-start ${placeIndex !== 0 ? 'mt-[50px]' : ''}`}>
+                        <div key={placeIndex} className={`relative flex items-start ${placeIndex !== 0 ? 'mt-[110px]' : ''}`}>
                           {/* Vertical Line */}
                           {placeIndex < placesArray.length - 1 && (
-                            <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
+                            <div className="absolute left-5 top-6 bottom-0 w-1 h-[160px] bg-gray-300"></div>
                           )}
 
                           {/* Place Card */}
@@ -878,6 +878,57 @@ const PlanGenerate = () => {
                                   <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
                                   <p className="text-sm">{planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].distance}</p>
                                 </div>
+
+                                {planDetails.detail.trip.itinerary[selectedDay].routes[placeIndex].route_options.map((option, index) => (
+                                  <Tooltip
+                                    title={
+                                      <div style={{ maxWidth: "500px", whiteSpace: "normal" }}>
+                                        <p className="font-semibold">{option.duration}</p>
+
+                                        {option.type == "DRIVE" ?
+                                          <div>
+                                            {option.summary}
+                                          </div>
+                                          :
+                                          option.steps ? (
+                                            <div>
+                                              {option.steps.map((step, index) => (
+                                                <div key={index}>{step}</div>
+                                              ))}
+                                            </div>
+                                          ) : <div></div>
+                                        }
+
+                                        {option.url && (
+                                          <a
+                                            href={option.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-purple-400 underline block"
+                                          >
+                                            View in Google Map
+                                          </a>
+                                        )}
+                                      </div>
+                                    }
+                                    placement="right"
+                                    color={"white"}
+                                    overlayInnerStyle={{color: '#000'}}
+                                    overlayStyle={{ maxWidth: "500px", whiteSpace: "normal" }}
+                                  >
+                                    <div className="flex mb-2">
+                                      {option.type == "DRIVE" ?
+                                        <CarOutlined className="text-purple-400 text-2xl me-2" /> :
+                                        <div className="text-purple-400 me-2">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-bus-front-fill" viewBox="0 0 16 16">
+                                            <path d="M16 7a1 1 0 0 1-1 1v3.5c0 .818-.393 1.544-1 2v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5V14H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2a2.5 2.5 0 0 1-1-2V8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1V2.64C1 1.452 1.845.408 3.064.268A44 44 0 0 1 8 0c2.1 0 3.792.136 4.936.268C14.155.408 15 1.452 15 2.64V4a1 1 0 0 1 1 1zM3.552 3.22A43 43 0 0 1 8 3c1.837 0 3.353.107 4.448.22a.5.5 0 0 0 .104-.994A44 44 0 0 0 8 2c-1.876 0-3.426.109-4.552.226a.5.5 0 1 0 .104.994M8 4c-1.876 0-3.426.109-4.552.226A.5.5 0 0 0 3 4.723v3.554a.5.5 0 0 0 .448.497C4.574 8.891 6.124 9 8 9s3.426-.109 4.552-.226A.5.5 0 0 0 13 8.277V4.723a.5.5 0 0 0-.448-.497A44 44 0 0 0 8 4m-3 7a1 1 0 1 0-2 0 1 1 0 0 0 2 0m8 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m-7 0a1 1 0 0 0 1 1h2a1 1 0 1 0 0-2H7a1 1 0 0 0-1 1"/>
+                                          </svg>
+                                        </div>
+                                      }
+                                      <p className="text-sm">{option.type == 'DRIVE' ? option.type : option.summary} <span className="text-gray-400">({option.duration})</span></p>
+                                    </div>
+                                  </Tooltip>
+                                ))}
                               </div>
                             )}
                         </div>
@@ -895,7 +946,7 @@ const PlanGenerate = () => {
 
           <button
             onClick={SavePlan}
-            className={`px-4 py-2 mr-2 rounded-xl font-semibold text-white focus:outline-none bg-purple-400 transition duration-300 ease-in-out bg-purple-300 hover:bg-purple-500`}
+            className={`px-4 py-2 mt-8 mr-2 rounded-xl font-semibold text-white focus:outline-none bg-purple-400 transition duration-300 ease-in-out bg-purple-300 hover:bg-purple-500`}
           >
             Save
           </button>
