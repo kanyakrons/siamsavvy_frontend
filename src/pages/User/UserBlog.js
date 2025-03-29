@@ -166,24 +166,6 @@ const UserBlog = () => {
             <div>No blogs available</div>
           )}
         </div>
-        <div className="my-10 pt-5 w-full h-[100px] flex flex-col items-center">
-          <div className="flex flex-col items-center">
-            <span className="text-sm text-gray-700">
-              Showing <span className="font-semibold text-gray-900">1</span> to{" "}
-              <span className="font-semibold text-gray-900">10</span> of{" "}
-              <span className="font-semibold text-gray-900">100</span> Entries
-            </span>
-
-            <div className="inline-flex mt-2">
-              <button className="flex items-center justify-center px-10 py-5 h-8 text-sm font-medium text-white bg-gray-800 rounded-s-lg hover:bg-gray-900">
-                Prev
-              </button>
-              <button className="flex items-center justify-center ml-0.5 px-10 py-5 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e-lg hover:bg-gray-900">
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -162,7 +162,7 @@ const BlogDetail = () => {
                           </p>{" "}
                         </div>
                         <p className="text-right">
-                          {blog.plan?.user.displayName}
+                          {blog.plan?.user?.displayName}
                         </p>{" "}
                       </div>
                     </>

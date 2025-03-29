@@ -1,17 +1,34 @@
 import { useParams } from "react-router-dom";
-import { GetPlanDetail } from "../../api/planApi";
+import {
+  checkIfFavorited,
+  GetPlanDetail,
+  toggleFavorite,
+} from "../../api/planApi";
 import { useContext, useEffect, useState } from "react";
 import { defaultValue } from "./PlanDefaultValue";
 import { Hero } from "../Sections";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 const PlanDetail = () => {
   const { planId } = useParams();
   const [planDetails, setPlanDetail] = useState(defaultValue);
   const [selectedDay, setSelectedDay] = useState(0);
-  const { user } = useContext(AuthContext);
+  const { user, isAuth } = useContext(AuthContext);
+  const [isFavorited, setIsFavorited] = useState(false);
   const navigate = useNavigate();
+
+  const addFavorite = async () => {
+    try {
+      const response = await toggleFavorite(planId);
+      if (response.status === 200 || response.status === 201) {
+        setIsFavorited(response.data);
+      }
+    } catch (error) {
+      message.error("Failed to like/unlike place. Please try again later.");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,9 +38,16 @@ const PlanDetail = () => {
         name: response.data.name,
         detail: JSON.parse(response.data.detail),
       });
+
+      if (isAuth) {
+        const likedData = await checkIfFavorited(planId);
+        console.log("🚀 ~ fetchData ~ likedData:", likedData);
+        setIsFavorited(likedData.data);
+      }
     };
+
     fetchData();
-  }, [planId]);
+  }, [planId, isAuth]);
 
   return (
     <div className="w-full mx-auto h-screen">
@@ -56,6 +80,21 @@ const PlanDetail = () => {
                     />
                   </svg>
                 </div>
+                {isAuth && (
+                  <div className="mt-2 ml-5">
+                    {/* Heart icon */}
+                    <svg
+                      onClick={addFavorite}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill={isFavorited ? "red" : "none"}
+                      stroke={isFavorited ? "red" : "gray"}
+                      className="w-7 h-7 cursor-pointer"
+                    >
+                      <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                    </svg>
+                  </div>
+                )}
               </div>
               {/* Day Tabs */}
               <div className="flex overflow-x-auto mb-4">
