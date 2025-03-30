@@ -188,8 +188,8 @@ const PlanGenerate = () => {
           <div className="h-[170px] relative">
             <img
               src={
-                place.place.image
-                  ? place.place.image
+                place.image
+                  ? place.image
                   : "/default-mockup-place.jpg"
               }
               alt={place.place.nameEn}
