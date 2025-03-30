@@ -10,7 +10,7 @@ const Blogs = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await searchBlog({ ...searchValue, pageSize: 9 });
+        const response = await searchBlog({ ...searchValue, pageSize: 6 });
         setBlogs(response.data.content);
       } catch (error) {
         message.error(error);
@@ -21,7 +21,7 @@ const Blogs = () => {
   }, []);
 
   return (
-    <section className=" w-full min-h-[90rem]">
+    <section className=" w-full">
       <div className="mx-[8rem] pt-10 ">
         <p className="font-bold mb-2"> Recent blog posts</p>
 
@@ -37,9 +37,9 @@ const Blogs = () => {
             ))}
           </div>
         </div>
-        <div className="mt-10">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-4 min-h-[40rem]">
-            {blogs.slice(3, 8).map((item) => (
+        <div className="mt-10 mb-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+            {blogs.slice(3, 6).map((item) => (
               <BlogCard blog={item} layout="vertical" imageHeight={200} />
             ))}
           </div>
