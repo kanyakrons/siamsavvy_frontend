@@ -125,7 +125,7 @@ const PlanGenerate = () => {
       const response = await searchPlace(formattedSearchValue);
       setPlaces(response?.data.content);
       setPage(response?.data.number);
-      setTotalPage(response?.data.totalPages);
+      setTotalPage(response?.data.totalElements);
       setLoading(false);
     } catch (error) {
       message.error("Load error");
@@ -885,28 +885,30 @@ const PlanGenerate = () => {
   };
 
   const addNewDay = () => {
-    setPlanDetails(prevDetails => {
-      const newDetails = prevDetails.detail ? JSON.parse(JSON.stringify(prevDetails)) : {
-        name: planName,
-        detail: {
-          trip: {
-            itinerary: []
-          }
-        }
-      };
-      
+    setPlanDetails((prevDetails) => {
+      const newDetails = prevDetails.detail
+        ? JSON.parse(JSON.stringify(prevDetails))
+        : {
+            name: planName,
+            detail: {
+              trip: {
+                itinerary: [],
+              },
+            },
+          };
+
       const newDayNumber = newDetails.detail.trip.itinerary.length + 1;
-      
+
       newDetails.detail.trip.itinerary.push({
         day: newDayNumber,
         places: [],
-        routes: []
+        routes: [],
       });
-      
+
       if (newDayNumber === 1) {
         setSelectedDay(0);
       }
-      
+
       return newDetails;
     });
   };
@@ -917,20 +919,20 @@ const PlanGenerate = () => {
       return;
     }
 
-    setPlanDetails(prevDetails => {
+    setPlanDetails((prevDetails) => {
       const newDetails = JSON.parse(JSON.stringify(prevDetails));
       newDetails.detail.trip.itinerary.splice(dayIndex, 1);
-      
+
       // Re-number the remaining days
       newDetails.detail.trip.itinerary.forEach((day, index) => {
         day.day = index + 1;
       });
-      
+
       // If we deleted the currently selected day, select the previous day
       if (selectedDay >= dayIndex) {
         setSelectedDay(Math.max(0, selectedDay - 1));
       }
-      
+
       return newDetails;
     });
   };
@@ -954,16 +956,14 @@ const PlanGenerate = () => {
                   : "hover:bg-gray-300"
               }`}
             >
-              <p className="me-1">
-               {`Day ${dayPlan.day}`}
-              </p>
+              <p className="me-1">{`Day ${dayPlan.day}`}</p>
 
               <button
                 onClick={() => deleteDay(index)}
                 className="ml-1 text-gray-500 hover:text-red-500 transition-colors"
               >
                 <CloseOutlined />
-            </button>
+              </button>
             </button>
           </div>
         ))}
@@ -1378,17 +1378,17 @@ const PlanGenerate = () => {
                 )}
               </div>
               <div className="w-1/2">
-                {planDetails.detail && (
-                  <div>
-                    {renderDayTabs()}
-                  </div>
-                )}
+                {planDetails.detail && <div>{renderDayTabs()}</div>}
 
                 <div>
                   {/* Show empty state if no days exist yet */}
-                  {(!planDetails.detail || !planDetails.detail.trip.itinerary || planDetails.detail.trip.itinerary.length == 0) ? (
+                  {!planDetails.detail ||
+                  !planDetails.detail.trip.itinerary ||
+                  planDetails.detail.trip.itinerary.length == 0 ? (
                     <div className="text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
-                      <p className="text-gray-500 mb-4">No days in your plan yet</p>
+                      <p className="text-gray-500 mb-4">
+                        No days in your plan yet
+                      </p>
                       <button
                         onClick={addNewDay}
                         className="px-4 py-2 bg-purple-400 text-white rounded-lg hover:bg-purple-500"
@@ -1398,7 +1398,8 @@ const PlanGenerate = () => {
                     </div>
                   ) : (
                     <DroppableDay day={selectedDay + 1} isSelected={true}>
-                      {planDetails.detail?.trip.itinerary[selectedDay]?.places.length > 0 ? (
+                      {planDetails.detail?.trip.itinerary[selectedDay]?.places
+                        .length > 0 ? (
                         <div className="relative">
                           {planDetails.detail?.trip.itinerary[
                             selectedDay
@@ -1416,10 +1417,10 @@ const PlanGenerate = () => {
                       ) : (
                         <div className="text-gray-500">
                           <div className="text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
-                            <p className="text-gray-500 mb-4">No places for this day</p>
-                            <button
-                              className="px-4 py-2 bg-gray-300 text-white rounded-lg"
-                            >
+                            <p className="text-gray-500 mb-4">
+                              No places for this day
+                            </p>
+                            <button className="px-4 py-2 bg-gray-300 text-white rounded-lg">
                               Drag and drop your first place
                             </button>
                           </div>
