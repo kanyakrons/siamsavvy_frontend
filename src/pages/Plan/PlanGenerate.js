@@ -187,11 +187,7 @@ const PlanGenerate = () => {
         >
           <div className="h-[170px] relative">
             <img
-              src={
-                place.image
-                  ? place.image
-                  : "/default-mockup-place.jpg"
-              }
+              src={place.image ? place.image : "/default-mockup-place.jpg"}
               alt={place.place.nameEn}
               className="w-full h-full object-cover"
             />
@@ -246,8 +242,9 @@ const PlanGenerate = () => {
       const placeToAdd = {
         place_id: place.place.id,
         place_name: place.place.nameTh,
-        start_time: "09:00",
-        end_time: "12:00",
+        location: place.place.location,
+        start_time: "00:00",
+        end_time: "00:00",
       };
 
       // Check for duplicates
@@ -363,7 +360,6 @@ const PlanGenerate = () => {
         {index < placesArray.length - 1 && (
           <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
         )}
-
 
         {/* Place Card */}
         <div className="flex items-center space-x-4 w-full">
