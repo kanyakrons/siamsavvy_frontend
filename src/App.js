@@ -22,7 +22,6 @@ import UserBlog from "./pages/User/UserBlog";
 import BlogCreate from "./pages/Blog/CreateBlog/BlogCreate";
 import BlogDetail from "./pages/Blog/BlogDetail";
 import SignUpPage from "./pages/SingUp";
-import DragAndDropList from "./pages/Place/Test";
 
 function App() {
   return (
@@ -41,7 +40,6 @@ function App() {
             <Route path="/plans/generate" element={<PlanGenerate />} />
             <Route path="/plans/:planId" element={<PlanDetail />} />
             <Route path="/plans/saved" element={<UserPlan />} />
-            <Route path="/drag" element={<DragAndDropList />} />
 
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/blogs" element={<BlogSearch />} />
