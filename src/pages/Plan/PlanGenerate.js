@@ -215,9 +215,9 @@ const PlanGenerate = () => {
   const addPlaceToDay = (place, day) => {
     setPlanDetails((prevDetails) => {
       const newPlanDetails = JSON.parse(JSON.stringify(prevDetails));
-  
+
       // ... (your existing initialization code)
-  
+
       const dayIndex = day - 1;
       const placeToAdd = {
         place_id: place.place.id,
@@ -226,40 +226,45 @@ const PlanGenerate = () => {
         start_time: "00:00",
         end_time: "00:00",
       };
-  
+
       // Check for duplicates
       const exists = newPlanDetails.detail.trip.itinerary[dayIndex].places.some(
         (p) => p.place_id === place.place.id
       );
-  
+
       if (!exists) {
         newPlanDetails.detail.trip.itinerary[dayIndex].places.push(placeToAdd);
-        
+
         // Calculate distances for all places in this day
         if (newPlanDetails.detail.trip.itinerary[dayIndex].places.length > 1) {
           if (!newPlanDetails.detail.trip.itinerary[dayIndex].routes) {
             newPlanDetails.detail.trip.itinerary[dayIndex].routes = [];
           }
-          
+
           const places = newPlanDetails.detail.trip.itinerary[dayIndex].places;
           for (let i = 0; i < places.length - 1; i++) {
-            const distance = calculateDistance(places[i].location, places[i+1].location);
+            const distance = calculateDistance(
+              places[i].location,
+              places[i + 1].location
+            );
             if (!newPlanDetails.detail.trip.itinerary[dayIndex].routes[i]) {
               newPlanDetails.detail.trip.itinerary[dayIndex].routes[i] = {
                 distance: distance,
-                route_options: []
+                route_options: [],
               };
             } else {
-              newPlanDetails.detail.trip.itinerary[dayIndex].routes[i].distance = distance;
+              newPlanDetails.detail.trip.itinerary[dayIndex].routes[
+                i
+              ].distance = distance;
             }
           }
         }
-        
+
         message.success(`Added ${place.place.nameTh} to Day ${day}`);
       } else {
         message.warning(`${place.place.nameTh} is already in Day ${day}`);
       }
-  
+
       return newPlanDetails;
     });
   };
@@ -357,6 +362,28 @@ const PlanGenerate = () => {
           index !== 0 ? "mt-[50px]" : ""
         }`}
       >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            removePlaceFromDay(dayIndex, index);
+          }}
+          className="absolute right-0 top-0 text-red-500 hover:text-red-700 mt-2 mr-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+          </svg>
+        </button>
         {/* Your existing place card JSX */}
         {/* Vertical Line */}
         {index < placesArray.length - 1 && (
@@ -411,11 +438,14 @@ const PlanGenerate = () => {
               <div className="flex mb-2">
                 <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
                 <p className="text-sm">
-                  {planDetails.detail.trip.itinerary[selectedDay].routes[index].distance}
+                  {
+                    planDetails.detail.trip.itinerary[selectedDay].routes[index]
+                      .distance
+                  }
                 </p>
               </div>
             </div>
-        )}
+          )}
       </div>
     );
   };
@@ -452,22 +482,60 @@ const PlanGenerate = () => {
       const places = [...newPlanDetails.detail.trip.itinerary[dayIndex].places];
       const [removed] = places.splice(dragIndex, 1);
       places.splice(hoverIndex, 0, removed);
-  
+
       newPlanDetails.detail.trip.itinerary[dayIndex].places = places;
-      
+
       // Recalculate all distances for this day
       if (places.length > 1) {
         newPlanDetails.detail.trip.itinerary[dayIndex].routes = [];
         for (let i = 0; i < places.length - 1; i++) {
-          const distance = calculateDistance(places[i].location, places[i+1].location);
+          const distance = calculateDistance(
+            places[i].location,
+            places[i + 1].location
+          );
           newPlanDetails.detail.trip.itinerary[dayIndex].routes[i] = {
             distance: distance,
-            route_options: []
+            route_options: [],
           };
         }
       }
-      
+
       return newPlanDetails;
+    });
+  };
+
+  const removePlaceFromDay = (dayIndex, placeIndex) => {
+    setPlanDetails((prevDetails) => {
+      const newDetails = JSON.parse(JSON.stringify(prevDetails));
+
+      // Remove the place at the specified index
+      newDetails.detail.trip.itinerary[dayIndex].places.splice(placeIndex, 1);
+
+      // If there was a route at this index, remove it too
+      if (newDetails.detail.trip.itinerary[dayIndex].routes) {
+        newDetails.detail.trip.itinerary[dayIndex].routes.splice(placeIndex, 1);
+      }
+
+      // Recalculate distances for remaining places
+      const places = newDetails.detail.trip.itinerary[dayIndex].places;
+      if (places.length > 1) {
+        newDetails.detail.trip.itinerary[dayIndex].routes = [];
+        for (let i = 0; i < places.length - 1; i++) {
+          const distance = calculateDistance(
+            places[i].location,
+            places[i + 1].location
+          );
+          newDetails.detail.trip.itinerary[dayIndex].routes[i] = {
+            distance: distance,
+            route_options: [],
+          };
+        }
+      } else if (places.length <= 1) {
+        // If only 1 or 0 places left, clear all routes
+        newDetails.detail.trip.itinerary[dayIndex].routes = [];
+      }
+
+      return newDetails;
     });
   };
 
