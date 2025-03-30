@@ -10,7 +10,7 @@ const CardUserItem = ({ item, type }) => {
       <img
         src={
           type == "blogs"
-            ? item?.image?.url
+            ? item?.image?.url ? item.image.url : "/default-mockup-place.jpg"
             : "https://img.freepik.com/premium-vector/thailand-map-icons_24911-67467.jpg"
         }
         className="w-full object-cover h-[400px] rounded-2xl"
