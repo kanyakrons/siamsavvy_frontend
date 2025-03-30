@@ -11,8 +11,8 @@ const PopularPlaces = () => {
     const fetchData = async () => {
       try {
         SearchValue.pageSize = 4;
+        SearchValue.pageNumber = Math.floor(Math.random() * 10) + 1;
         const response = await searchPlace(SearchValue);
-        console.log("🚀 ~ fetchData ~ response:", response);
         setPlaces(response.data?.content);
       } catch (error) {}
     };
@@ -21,7 +21,7 @@ const PopularPlaces = () => {
   return (
     <div className="w-full min-h-[40rem] pt-8">
       <div className="justify-center items-center flex flex-col">
-        <p className="text-2xl font-bold">POPULAR PLACES</p>
+        <p className="text-2xl font-bold">PLACES</p>
         <p className="mt-1 text-purple-400">
           Jump straight to the places everyone loves—or find your next secret
           spot.{" "}
