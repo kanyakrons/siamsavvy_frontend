@@ -206,9 +206,9 @@ const UserProfile = () => {
       <NavBar variant="black" />
       <div className="bg-white shadow rounded-lg overflow-hidden">
         {/* Profile Info Section */}
-        <div className="px-6 py-4 relative mt-40 mx-20">
+        <div className="px-6 py-4 mt-[100px] mb-[20px] mx-20 flex items-center ">
           {/* Avatar with Upload */}
-          <div className="absolute -top-16 left-6 border-4 border-white rounded-full group">
+          <div className="border-4 border-white rounded-full group">
             <Avatar
               size={128}
               src={img}
@@ -233,7 +233,7 @@ const UserProfile = () => {
             </div>
           </div>
           {/* Display Name and Username */}
-          <div className="mt-16 mb-4">
+          <div className="ms-[20px]">
             <h1 className="text-2xl font-bold">{user?.displayName}</h1>
             <p className="text-gray-500">{user?.username}</p>
           </div>
@@ -246,61 +246,64 @@ const UserProfile = () => {
         <div className="p-6">
           <div className="py-8 text-gray-400">
             <div className="flex flex-col justify-center items-center w-full mb-7">
-              <div className="grid grid-cols-3 gap-5 mx-20  mb-5">
-                {places.length > 0 ? (
-                  places.map((place) => (
-                    <div
-                      key={place.id}
-                      className="w-full h-[330px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
-                    >
-                      <Link to={`/places/${place.place.id}`}>
-                        {/* Image Section */}
-                        <div className="h-[230px] relative">
-                          <Image
-                            src={place.image}
-                            alt={place.nameEn}
-                            width={"100%"}
-                            height={"100%"}
-                            fallback="/default-mockup-place.jpg"
-                            className="object-cover"
-                            preview="false"
-                          />
+              <div>
+                <p className="font-bold text-3xl text-black mb-5">Favorite Places</p>
+                <div className="grid grid-cols-3 gap-5 mb-5">
+                  {places.length > 0 ? (
+                    places.map((place) => (
+                      <div
+                        key={place.id}
+                        className="w-full h-[330px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+                      >
+                        <Link to={`/places/${place.place.id}`}>
+                          {/* Image Section */}
+                          <div className="h-[230px] relative">
+                            <Image
+                              src={place.image}
+                              alt={place.nameEn}
+                              width={"100%"}
+                              height={"100%"}
+                              fallback="/default-mockup-place.jpg"
+                              className="object-cover"
+                              preview="false"
+                            />
 
-                          {/* Category Box (Top Right) */}
-                          <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full">
-                            {place.place.category.name}
+                            {/* Category Box (Top Right) */}
+                            <div className="absolute top-3 right-3 bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full">
+                              {place.place.category.name}
+                            </div>
                           </div>
-                        </div>
 
-                        {/* Info Section */}
-                        <div className="h-[100px] bg-white px-5 py-3">
-                          <p className="text-purple-400 font-semibold text-sm mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
-                            {place.place.province}
-                          </p>
-                          <p className="text-black font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
-                            {place.place.nameTh}
-                          </p>
-                          <p className="text-black overflow-hidden text-ellipsis whitespace-nowrap">
-                            {place.place.nameEn}
-                          </p>
-                        </div>
-                      </Link>
-                    </div>
-                  ))
-                ) : (
-                  <p>No places found.</p>
-                )}
-              </div>
-              <div className="">
-                <Pagination
-                  align="center"
-                  defaultCurrent={page}
-                  total={totalPage}
-                  showSizeChanger={false}
-                  onChange={(newPage) => {
-                    handleSearch(newPage - 1);
-                  }}
-                />
+                          {/* Info Section */}
+                          <div className="h-[100px] bg-white px-5 py-3">
+                            <p className="text-purple-400 font-semibold text-sm mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
+                              {place.place.province}
+                            </p>
+                            <p className="text-black font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
+                              {place.place.nameTh}
+                            </p>
+                            <p className="text-black overflow-hidden text-ellipsis whitespace-nowrap">
+                              {place.place.nameEn}
+                            </p>
+                          </div>
+                        </Link>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No places found.</p>
+                  )}
+                </div>
+                <div className="">
+                  <Pagination
+                    align="center"
+                    defaultCurrent={page}
+                    total={totalPage}
+                    showSizeChanger={false}
+                    onChange={(newPage) => {
+                      handleSearch(newPage - 1);
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
