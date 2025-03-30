@@ -284,8 +284,9 @@ const PlanGenerate = () => {
     const placeToAdd = {
       place_id: place.place.id,
       place_name: place.place.nameTh,
-      start_time: "09:00",
-      end_time: "12:00",
+      location: place.place.location,
+      start_time: "00:00",
+      end_time: "00:00",
     };
 
     if (!newPlanDetails.detail.trip.itinerary[0].places) {
