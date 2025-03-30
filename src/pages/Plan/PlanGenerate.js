@@ -215,31 +215,10 @@ const PlanGenerate = () => {
   const addPlaceToDay = (place, day) => {
     setPlanDetails((prevDetails) => {
       const newPlanDetails = JSON.parse(JSON.stringify(prevDetails));
-
-      // Initialize if empty
-      if (!newPlanDetails.detail) {
-        newPlanDetails.detail = {
-          trip: {
-            itinerary: Array(day)
-              .fill()
-              .map((_, i) => ({
-                day: i + 1,
-                places: [],
-              })),
-          },
-        };
-      }
-
+  
+      // ... (your existing initialization code)
+  
       const dayIndex = day - 1;
-
-      // Ensure day exists
-      if (!newPlanDetails.detail.trip.itinerary[dayIndex]) {
-        newPlanDetails.detail.trip.itinerary[dayIndex] = {
-          day: day,
-          places: [],
-        };
-      }
-
       const placeToAdd = {
         place_id: place.place.id,
         place_name: place.place.nameTh,
@@ -247,19 +226,40 @@ const PlanGenerate = () => {
         start_time: "00:00",
         end_time: "00:00",
       };
-
+  
       // Check for duplicates
       const exists = newPlanDetails.detail.trip.itinerary[dayIndex].places.some(
         (p) => p.place_id === place.place.id
       );
-
+  
       if (!exists) {
         newPlanDetails.detail.trip.itinerary[dayIndex].places.push(placeToAdd);
+        
+        // Calculate distances for all places in this day
+        if (newPlanDetails.detail.trip.itinerary[dayIndex].places.length > 1) {
+          if (!newPlanDetails.detail.trip.itinerary[dayIndex].routes) {
+            newPlanDetails.detail.trip.itinerary[dayIndex].routes = [];
+          }
+          
+          const places = newPlanDetails.detail.trip.itinerary[dayIndex].places;
+          for (let i = 0; i < places.length - 1; i++) {
+            const distance = calculateDistance(places[i].location, places[i+1].location);
+            if (!newPlanDetails.detail.trip.itinerary[dayIndex].routes[i]) {
+              newPlanDetails.detail.trip.itinerary[dayIndex].routes[i] = {
+                distance: distance,
+                route_options: []
+              };
+            } else {
+              newPlanDetails.detail.trip.itinerary[dayIndex].routes[i].distance = distance;
+            }
+          }
+        }
+        
         message.success(`Added ${place.place.nameTh} to Day ${day}`);
       } else {
         message.warning(`${place.place.nameTh} is already in Day ${day}`);
       }
-
+  
       return newPlanDetails;
     });
   };
@@ -411,17 +411,11 @@ const PlanGenerate = () => {
               <div className="flex mb-2">
                 <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
                 <p className="text-sm">
-                  {calculateDistance(
-                    planDetails.detail.trip.itinerary[selectedDay].places[index]
-                      .location,
-                    planDetails.detail.trip.itinerary[selectedDay].places[
-                      index + 1
-                    ].location
-                  )}
+                  {planDetails.detail.trip.itinerary[selectedDay].routes[index].distance}
                 </p>
               </div>
             </div>
-          )}
+        )}
       </div>
     );
   };
@@ -458,8 +452,21 @@ const PlanGenerate = () => {
       const places = [...newPlanDetails.detail.trip.itinerary[dayIndex].places];
       const [removed] = places.splice(dragIndex, 1);
       places.splice(hoverIndex, 0, removed);
-
+  
       newPlanDetails.detail.trip.itinerary[dayIndex].places = places;
+      
+      // Recalculate all distances for this day
+      if (places.length > 1) {
+        newPlanDetails.detail.trip.itinerary[dayIndex].routes = [];
+        for (let i = 0; i < places.length - 1; i++) {
+          const distance = calculateDistance(places[i].location, places[i+1].location);
+          newPlanDetails.detail.trip.itinerary[dayIndex].routes[i] = {
+            distance: distance,
+            route_options: []
+          };
+        }
+      }
+      
       return newPlanDetails;
     });
   };
