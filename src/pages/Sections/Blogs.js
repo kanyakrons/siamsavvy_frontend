@@ -23,7 +23,6 @@ const Blogs = () => {
   return (
     <section className=" w-full min-h-[90rem]">
       <div className="mx-[8rem] pt-10 ">
-        <p className="font-bold text-2xl text-center mb-5"> BLOGS </p>
         <p className="font-bold mb-2"> Recent blog posts</p>
 
         <div className="min-h-[30rem] w-full  grid grid-cols-2 mt-5 gap-5">

@@ -86,7 +86,7 @@ const Place = () => {
     <div className="relative w-full mx-auto h-screen ">
       {loading && <Loading loading={loading}></Loading>}
 
-      <Hero />
+      <Hero title={"Places"} />
       {/* Outer container to center the search bar */}
       <div className="flex justify-center items-center w-full mb-7">
         {/* Search Bar container */}

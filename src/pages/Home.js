@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   Hero,
   Blogs,
@@ -14,18 +13,17 @@ import Loading from "../components/Loading";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-
     setLoading(false);
   }, []);
 
   return (
     <main className="relative">
-      {loading && <Loading loading={loading}></Loading>} <NavBar />
-      <section className="  ">
+      {loading && <Loading loading={loading} />}
+      <NavBar />
+
+      <section>
         <Hero
           title={"SiamSavvy"}
           description={
@@ -34,21 +32,47 @@ const Home = () => {
           isHomePage={true}
         />
       </section>
-      <section className="">
+
+      <motion.section
+        initial={{ opacity: 0, x: 100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <Blogs />
-      </section>
-      <section className=" ">
+      </motion.section>
+
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <PlanTrip />
-      </section>
-      <section className=" ">
+      </motion.section>
+
+      {/* Add similar motion wrappers to other sections */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <PopularPlaces />
-      </section>
-      <section className=" ">
+      </motion.section>
+
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         <Exploration />
-      </section>{" "}
-      <section className=" ">
+      </motion.section>
+
+      <section>
         <Footer />
-      </section>{" "}
+      </section>
     </main>
   );
 };
