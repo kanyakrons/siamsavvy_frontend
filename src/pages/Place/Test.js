@@ -107,8 +107,12 @@ const DragAndDropList = () => {
 
   const DroppableDay = ({ day, children, isSelected }) => {
     const [{ isOver }, drop] = useDrop({
-      accept: ItemTypes.PLACE,
-      drop: (item) => addPlaceToDay(item.place, day),
+      accept: [ItemTypes.PLACE, ItemTypes.ITINERARY_PLACE],
+      drop: (item, monitor) => {
+        if (monitor.getItemType() === ItemTypes.PLACE) {
+          addPlaceToDay(item.place, day);
+        }
+      },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
       }),
@@ -265,6 +269,120 @@ const DragAndDropList = () => {
 
     newPlanDetails.detail.trip.itinerary[0].places.push(placeToAdd);
     setPlanDetails(newPlanDetails);
+  };
+
+  const DraggableItineraryPlace = ({ place, index, dayIndex, movePlace }) => {
+    const ref = useRef(null);
+
+    const [{ isDragging }, drag] = useDrag({
+      type: ItemTypes.ITINERARY_PLACE,
+      item: { index, dayIndex },
+      collect: (monitor) => ({
+        isDragging: !!monitor.isDragging(),
+      }),
+    });
+
+    const [, drop] = useDrop({
+      accept: ItemTypes.ITINERARY_PLACE,
+      hover(item, monitor) {
+        if (!ref.current) return;
+        if (item.dayIndex !== dayIndex) return; // Only allow sorting within same day
+
+        const dragIndex = item.index;
+        const hoverIndex = index;
+
+        if (dragIndex === hoverIndex) return;
+
+        // Determine rectangle on screen
+        const hoverBoundingRect = ref.current?.getBoundingClientRect();
+        // Get vertical middle
+        const hoverMiddleY =
+          (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+        // Determine mouse position
+        const clientOffset = monitor.getClientOffset();
+        // Get pixels to the top
+        const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+        // Only perform the move when the mouse has crossed half of the items height
+        if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
+        if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
+
+        movePlace(dragIndex, hoverIndex, dayIndex);
+        item.index = hoverIndex;
+      },
+    });
+
+    drag(drop(ref));
+
+    return (
+      <div
+        ref={ref}
+        style={{
+          opacity: isDragging ? 0.5 : 1,
+        }}
+        className={`relative flex items-start ${
+          index !== 0 ? "mt-[50px]" : ""
+        }`}
+      >
+        {/* Your existing place card JSX */}
+        {/* Vertical Line */}
+        <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
+
+        {/* Place Card */}
+        <div className="flex items-center space-x-4 w-full">
+          {/* Place Icon */}
+          <div className="relative z-10 bg-white p-2 rounded-full border border-gray-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 text-purple-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+              />
+            </svg>
+          </div>
+
+          {/* Place Details */}
+          <a
+            href={`/places/${place.place_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 p-4 border border-gray-300 rounded-xl bg-white shadow-lg"
+          >
+            <div className="flex justify-between items-center">
+              <p className="text-lg font-semibold">{place.place_name}</p>
+              <p className="text-sm text-gray-600">
+                {place.start_time} - {place.end_time}
+              </p>
+            </div>
+          </a>
+        </div>
+      </div>
+    );
+  };
+
+  const movePlace = (dragIndex, hoverIndex, dayIndex) => {
+    setPlanDetails((prevDetails) => {
+      const newPlanDetails = JSON.parse(JSON.stringify(prevDetails));
+      const places = [...newPlanDetails.detail.trip.itinerary[dayIndex].places];
+      const [removed] = places.splice(dragIndex, 1);
+      places.splice(hoverIndex, 0, removed);
+
+      newPlanDetails.detail.trip.itinerary[dayIndex].places = places;
+      return newPlanDetails;
+    });
   };
 
   <DndProvider backend={HTML5Backend}>
@@ -903,79 +1021,13 @@ const DragAndDropList = () => {
                           {planDetails.detail?.trip.itinerary[
                             selectedDay
                           ].places.map((place, placeIndex, placesArray) => (
-                            <div
-                              key={placeIndex}
-                              className={`relative flex items-start ${
-                                placeIndex !== 0 ? "mt-[50px]" : ""
-                              }`}
-                            >
-                              {/* Vertical Line */}
-                              {placeIndex < placesArray.length - 1 && (
-                                <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
-                              )}
-
-                              {/* Place Card */}
-                              <div className="flex items-center space-x-4 w-full">
-                                {/* Place Icon */}
-                                <div className="relative z-10 bg-white p-2 rounded-full border border-gray-400">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-6 w-6 text-purple-500"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                    />
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                                    />
-                                  </svg>
-                                </div>
-
-                                {/* Place Details */}
-                                <a
-                                  href={`/places/${place.place_id}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex-1 p-4 border border-gray-300 rounded-xl bg-white shadow-lg"
-                                >
-                                  <div className="flex justify-between items-center">
-                                    <p className="text-lg font-semibold">
-                                      {place.place_name}
-                                    </p>
-                                    <p className="text-sm text-gray-600">
-                                      {place.start_time} - {place.end_time}
-                                    </p>
-                                  </div>
-                                </a>
-                              </div>
-
-                              {/* Distance */}
-                              {placeIndex < placesArray.length - 1 &&
-                                planDetails.detail.trip.itinerary[selectedDay]
-                                  ?.routes[placeIndex] && (
-                                  <div className="absolute mt-3 ml-[75px] top-full flex flex-col font-semibold">
-                                    <div className="flex mb-2">
-                                      <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
-                                      <p className="text-sm">
-                                        {
-                                          planDetails.detail.trip.itinerary[
-                                            selectedDay
-                                          ].routes[placeIndex].distance
-                                        }
-                                      </p>
-                                    </div>
-                                  </div>
-                                )}
-                            </div>
+                            <DraggableItineraryPlace
+                              key={place.place_id}
+                              place={place}
+                              index={placeIndex}
+                              dayIndex={selectedDay}
+                              movePlace={movePlace}
+                            />
                           ))}
                         </div>
                       ) : (
@@ -1019,91 +1071,27 @@ const DragAndDropList = () => {
                   </div>
 
                   {/* Places Detail for the Selected Day */}
-                  {planDetails.detail?.trip.itinerary[selectedDay]?.places ? (
-                    <div className="relative">
-                      {planDetails.detail?.trip.itinerary[
-                        selectedDay
-                      ].places.map((place, placeIndex, placesArray) => (
-                        <div
-                          key={placeIndex}
-                          className={`relative flex items-start ${
-                            placeIndex !== 0 ? "mt-[50px]" : ""
-                          }`}
-                        >
-                          {/* Vertical Line */}
-                          {placeIndex < placesArray.length - 1 && (
-                            <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
-                          )}
-
-                          {/* Place Card */}
-                          <div className="flex items-center space-x-4 w-full">
-                            {/* Place Icon */}
-                            <div className="relative z-10 bg-white p-2 rounded-full border border-gray-400">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-6 w-6 text-purple-500"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                />
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                                />
-                              </svg>
-                            </div>
-
-                            {/* Place Details */}
-                            <a
-                              href={`/places/${place.place_id}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex-1 p-4 border border-gray-300 rounded-xl bg-white shadow-lg"
-                            >
-                              <div className="flex justify-between items-center">
-                                <p className="text-lg font-semibold">
-                                  {place.place_name}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                  {place.start_time} - {place.end_time}
-                                </p>
-                              </div>
-                            </a>
-                          </div>
-
-                          {/* Distance & Duration */}
-                          {placeIndex < placesArray.length - 1 &&
-                            planDetails.detail.trip.itinerary[selectedDay]
-                              ?.routes[placeIndex] && (
-                              <div className="absolute mt-3 ml-[75px] top-full flex flex-col font-semibold">
-                                <div className="flex mb-2">
-                                  <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
-                                  <p className="text-sm">
-                                    {
-                                      planDetails.detail.trip.itinerary[
-                                        selectedDay
-                                      ].routes[placeIndex].distance
-                                    }
-                                  </p>
-                                </div>
-                              </div>
-                            )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-gray-500">
-                      No places available for this day
-                    </div>
-                  )}
+                  <DroppableDay day={selectedDay + 1} isSelected={true}>
+                    {planDetails.detail?.trip.itinerary[selectedDay]?.places ? (
+                      <div className="relative">
+                        {planDetails.detail?.trip.itinerary[
+                          selectedDay
+                        ].places.map((place, placeIndex, placesArray) => (
+                          <DraggableItineraryPlace
+                            key={place.place_id}
+                            place={place}
+                            index={placeIndex}
+                            dayIndex={selectedDay}
+                            movePlace={movePlace}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-gray-500">
+                        No places available for this day
+                      </div>
+                    )}
+                  </DroppableDay>
                 </div>
               )}
             </div>
