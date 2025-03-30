@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
-const Hero = ({ title, description, isHomePage = false }) => {
+const Hero = ({
+  title,
+  description,
+  isHomePage = false,
+  isBlogPage = false,
+}) => {
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { isAuth } = useContext(AuthContext);
 
   const images = [
     "https://www.thomascook.com/.imaging/default/dam/uk/holidays/destinations/thailand_main.jpg/jcr:content.jpg", // Add your second image
@@ -43,7 +50,18 @@ const Hero = ({ title, description, isHomePage = false }) => {
       <div className="relative z-10 mx-40 py-20">
         <p className="text-6xl max-w-[38rem] font-bold text-white">{title}</p>
         <p className="max-w-[40rem] mt-10 text-l text-white">{description}</p>
-
+        {isBlogPage && isAuth && (
+          <div className="mt-10">
+            {" "}
+            <button
+              type="button"
+              className="text-white hover:bg-white hover:text-gray-500 font-medium rounded-full border-2 border-white text-sm px-10 py-5 text-center inline-flex items-center"
+              onClick={() => navigate("/blogs/create")}
+            >
+              Create Your Blog
+            </button>
+          </div>
+        )}
         {isHomePage && (
           <div className="mt-10">
             <button

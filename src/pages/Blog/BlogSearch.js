@@ -58,7 +58,7 @@ const BlogSearch = () => {
 
   return (
     <div className="relative w-full mx-auto h-screen ">
-      <Hero title={"Blogs"} />
+      <Hero title={"Blogs"} isBlogPage={true} />
       <div className=" flex justify-center items-center w-full mb-7">
         {/* Search Bar container */}
         <div className="absolute flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
