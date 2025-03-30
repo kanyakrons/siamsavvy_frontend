@@ -34,7 +34,11 @@ const PopularPlaces = () => {
               navigate(`/places/${place.place.id}`);
             }}
           >
-            <PlaceCardvertical place={place.place} height={500} />
+            <PlaceCardvertical
+              place={place.place}
+              img={place.image}
+              height={500}
+            />
           </div>
         ))}
       </div>

@@ -31,11 +31,10 @@ const Exploration = () => {
           }}
         >
           <PlaceCardvertical
-            place={{
-              title: provinces[0],
-              image:
-                "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
-            }}
+            place={{ nameTh: provinces[0] }}
+            img={
+              "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png"
+            }
             height={600}
           />
         </div>
@@ -46,11 +45,10 @@ const Exploration = () => {
           }}
         >
           <PlaceCardvertical
-            place={{
-              title: provinces[1],
-              image:
-                "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
-            }}
+            place={{ nameTh: provinces[1] }}
+            img={
+              "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png"
+            }
             height={600}
           />
         </div>
@@ -61,11 +59,10 @@ const Exploration = () => {
           }}
         >
           <PlaceCardvertical
-            place={{
-              title: provinces[2],
-              image:
-                "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
-            }}
+            place={{ nameTh: provinces[2] }}
+            img={
+              "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png"
+            }
             height={600}
           />
         </div>
