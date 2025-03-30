@@ -639,7 +639,7 @@ const PlanGenerate = () => {
                           key={place.place.id}
                           className="w-full h-[250px] relative bg-white rounded-3xl shadow-lg aspect-square overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
                         >
-                          <Link to={`/places/${place.place.id}`}>
+                          <a href={`/places/${place.place.id}`} target="_blank" rel="noopener noreferrer">
                             <div className="h-[170px] relative">
                               <img
                                 src={
@@ -666,7 +666,7 @@ const PlanGenerate = () => {
                                 {place.place.nameEn}
                               </p>
                             </div>
-                          </Link>
+                          </a>
                         </div>
                       ))
                     ) : (
