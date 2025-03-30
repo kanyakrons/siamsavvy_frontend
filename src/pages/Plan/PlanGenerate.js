@@ -360,7 +360,10 @@ const PlanGenerate = () => {
       >
         {/* Your existing place card JSX */}
         {/* Vertical Line */}
-        <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
+        {index < placesArray.length - 1 && (
+          <div className="absolute left-5 top-6 bottom-0 w-1 h-[130px] bg-gray-300"></div>
+        )}
+
 
         {/* Place Card */}
         <div className="flex items-center space-x-4 w-full">
