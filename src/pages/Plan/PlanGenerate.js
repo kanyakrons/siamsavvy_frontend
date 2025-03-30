@@ -116,6 +116,7 @@ const PlanGenerate = () => {
         ...searchValue,
         listCategory: searchValue.listCategory,
         listProvince: searchValue.listProvince,
+        pageSize: 4,
         pageNumber: newPage ? newPage : searchValue.pageNumber,
       };
 
@@ -410,10 +411,13 @@ const PlanGenerate = () => {
               <div className="flex mb-2">
                 <NodeIndexOutlined className="text-purple-400 text-2xl me-2" />
                 <p className="text-sm">
-                  {
-                    planDetails.detail.trip.itinerary[selectedDay].routes[index]
-                      .distance
-                  }
+                  {calculateDistance(
+                    planDetails.detail.trip.itinerary[selectedDay].places[index]
+                      .location,
+                    planDetails.detail.trip.itinerary[selectedDay].places[
+                      index + 1
+                    ].location
+                  )}
                 </p>
               </div>
             </div>
@@ -421,6 +425,32 @@ const PlanGenerate = () => {
       </div>
     );
   };
+
+  // Add this utility function somewhere in your file (or in a separate utils file)
+  function calculateDistance(location1, location2) {
+    // Parse the location strings
+    const [lat1, lon1] = location1
+      .split(",")
+      .map((coord) => parseFloat(coord.trim()));
+    const [lat2, lon2] = location2
+      .split(",")
+      .map((coord) => parseFloat(coord.trim()));
+
+    // Haversine formula to calculate distance in km
+    const R = 6371; // Earth radius in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+
+    return distance.toFixed(2) + " km";
+  }
 
   const movePlace = (dragIndex, hoverIndex, dayIndex) => {
     setPlanDetails((prevDetails) => {
