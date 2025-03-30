@@ -306,9 +306,8 @@ function PlaceDetail() {
                     gap: "8px",
                     overflowX: "auto",
                     scrollSnapType: "x mandatory",
-                    scrollbarWidth: "none",
-                    msOverflowStyle: "none",
                     whiteSpace: "nowrap",
+                    msOverflowStyle: "none",
                   }}
                 >
                   {photos.map((photo, index) => (
