@@ -216,8 +216,6 @@ const PlanGenerate = () => {
     setPlanDetails((prevDetails) => {
       const newPlanDetails = JSON.parse(JSON.stringify(prevDetails));
   
-      // ... (your existing initialization code)
-  
       const dayIndex = day - 1;
       const placeToAdd = {
         place_id: place.place.id,
@@ -347,6 +345,14 @@ const PlanGenerate = () => {
 
     drag(drop(ref));
 
+    const handleTimeChange = (field, value) => {
+      setPlanDetails(prevDetails => {
+        const newDetails = JSON.parse(JSON.stringify(prevDetails));
+        newDetails.detail.trip.itinerary[dayIndex].places[index][field] = value;
+        return newDetails;
+      });
+    };
+
     return (
       <div
         ref={ref}
@@ -390,19 +396,34 @@ const PlanGenerate = () => {
           </div>
 
           {/* Place Details */}
-          <a
-            href={`/places/${place.place_id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 p-4 border border-gray-300 rounded-xl bg-white shadow-lg"
-          >
+          <div className="flex-1 p-4 border border-gray-300 rounded-xl bg-white shadow-lg">
             <div className="flex justify-between items-center">
-              <p className="text-lg font-semibold">{place.place_name}</p>
-              <p className="text-sm text-gray-600">
-                {place.start_time} - {place.end_time}
-              </p>
+              <a 
+                href={`/places/${place.place_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg font-semibold"
+              >
+                <p>{place.place_name}</p>
+              </a>
+
+              <div className="flex items-center space-x-2">
+                <Input
+                  value={place.start_time}
+                  onChange={(e) => handleTimeChange('start_time', e.target.value)}
+                  placeholder="HH:MM"
+                  className="w-20"
+                />
+                <span className="font-semibold">to</span>
+                <Input
+                  value={place.end_time}
+                  onChange={(e) => handleTimeChange('end_time', e.target.value)}
+                  placeholder="HH:MM"
+                  className="w-20"
+                />
+              </div>
             </div>
-          </a>
+          </div>
         </div>
 
         {index < placesArray.length - 1 &&
@@ -451,8 +472,12 @@ const PlanGenerate = () => {
       const newPlanDetails = JSON.parse(JSON.stringify(prevDetails));
       const places = [...newPlanDetails.detail.trip.itinerary[dayIndex].places];
       const [removed] = places.splice(dragIndex, 1);
+      
+      // Reset times when moving
+      removed.start_time = "00:00";
+      removed.end_time = "00:00";
+      
       places.splice(hoverIndex, 0, removed);
-  
       newPlanDetails.detail.trip.itinerary[dayIndex].places = places;
       
       // Recalculate all distances for this day
@@ -657,6 +682,84 @@ const PlanGenerate = () => {
     fetchRouteData();
   }, [isPlanning]);
 
+  const validateTimeFormat = (timeStr) => {
+    if (!timeStr) return false;
+    const timeRegex = /^([01]?[0-9]|2[0-3])\.[0-5][0-9]$/;
+    return timeRegex.test(timeStr);
+  };
+  
+  const validateTimePeriod = (startTime, endTime) => {
+    if (!validateTimeFormat(startTime)) return false;
+    if (!validateTimeFormat(endTime)) return false;
+    
+    const [startHours, startMins] = startTime.split('.').map(Number);
+    const [endHours, endMins] = endTime.split('.').map(Number);
+    
+    if (startHours > endHours) return false;
+    if (startHours === endHours && startMins >= endMins) return false;
+    
+    return true;
+  };
+
+  const validatePlanBeforeSummary = () => {
+    if (!planDetails.detail || !planDetails.detail.trip.itinerary.length) {
+      message.error("Please add at least one place to your plan");
+      return false;
+    }
+  
+    // Check each day's itinerary
+    for (const dayPlan of planDetails.detail.trip.itinerary) {
+      if (!dayPlan.places || dayPlan.places.length === 0) {
+        message.error(`Day ${dayPlan.day} has no places`);
+        return false;
+      }
+  
+      // Check times for each place in the day
+      for (let i = 0; i < dayPlan.places.length; i++) {
+        const place = dayPlan.places[i];
+        
+        // Check for unset times
+        if (place.start_time === "00:00" && place.end_time === "00:00") {
+          message.error(`Please set times for ${place.place_name} in Day ${dayPlan.day}`);
+          return false;
+        }
+        
+        // Validate time format
+        if (!validateTimeFormat(place.start_time.replace(':', '.'))) {
+          message.error(`Invalid start time format for ${place.place_name} (use HH.MM format)`);
+          return false;
+        }
+        if (!validateTimeFormat(place.end_time.replace(':', '.'))) {
+          message.error(`Invalid end time format for ${place.place_name} (use HH.MM format)`);
+          return false;
+        }
+        
+        // Validate time period
+        if (!validateTimePeriod(
+          place.start_time.replace(':', '.'), 
+          place.end_time.replace(':', '.')
+        )) {
+          message.error(`Invalid time period for ${place.place_name} (end time must be after start time)`);
+          return false;
+        }
+        
+        // Check sequence with next place
+        if (i < dayPlan.places.length - 1) {
+          const nextPlace = dayPlan.places[i + 1];
+          const currentEnd = place.end_time.replace(':', '.');
+          const nextStart = nextPlace.start_time.replace(':', '.');
+          
+          if (!validateTimePeriod(currentEnd, nextStart)) {
+            message.error(`Time sequence error between ${place.place_name} and ${nextPlace.place_name}`);
+            return false;
+          }
+        }
+      }
+    }
+    
+    return true;
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="w-full h-screen mx-auto">
@@ -682,7 +785,11 @@ const PlanGenerate = () => {
                   ? "bg-white font-semibold shadow-md"
                   : "text-gray-700"
               }`}
-              onClick={() => setIsPlanning(false)}
+              onClick={() => {
+                if (validatePlanBeforeSummary()) {
+                  setIsPlanning(false);
+                }
+              }}
             >
               Summary
             </button>
