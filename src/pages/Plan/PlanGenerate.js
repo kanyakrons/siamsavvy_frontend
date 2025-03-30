@@ -215,7 +215,7 @@ const PlanGenerate = () => {
   const addPlaceToDay = (place, day) => {
     setPlanDetails((prevDetails) => {
       const newPlanDetails = JSON.parse(JSON.stringify(prevDetails));
-  
+
       const dayIndex = day - 1;
       const placeToAdd = {
         place_id: place.place.id,
@@ -351,7 +351,7 @@ const PlanGenerate = () => {
     drag(drop(ref));
 
     const handleTimeChange = (field, value) => {
-      setPlanDetails(prevDetails => {
+      setPlanDetails((prevDetails) => {
         const newDetails = JSON.parse(JSON.stringify(prevDetails));
         newDetails.detail.trip.itinerary[dayIndex].places[index][field] = value;
         return newDetails;
@@ -403,7 +403,7 @@ const PlanGenerate = () => {
           {/* Place Details */}
           <div className="flex-1 p-4 border border-gray-300 rounded-xl bg-white shadow-lg">
             <div className="flex justify-between items-center">
-              <a 
+              <a
                 href={`/places/${place.place_id}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -415,12 +415,12 @@ const PlanGenerate = () => {
               <div className="flex items-center space-x-2">
                 <TimeInput
                   value={place.start_time}
-                  onChange={(value) => handleTimeChange('start_time', value)}
+                  onChange={(value) => handleTimeChange("start_time", value)}
                 />
                 <span className="font-semibold">to</span>
                 <TimeInput
                   value={place.end_time}
-                  onChange={(value) => handleTimeChange('end_time', value)}
+                  onChange={(value) => handleTimeChange("end_time", value)}
                 />
 
                 <button
@@ -499,11 +499,11 @@ const PlanGenerate = () => {
       const newPlanDetails = JSON.parse(JSON.stringify(prevDetails));
       const places = [...newPlanDetails.detail.trip.itinerary[dayIndex].places];
       const [removed] = places.splice(dragIndex, 1);
-      
+
       // Reset times when moving
       removed.start_time = "00:00";
       removed.end_time = "00:00";
-      
+
       places.splice(hoverIndex, 0, removed);
       newPlanDetails.detail.trip.itinerary[dayIndex].places = places;
 
@@ -752,17 +752,17 @@ const PlanGenerate = () => {
     const timeRegex = /^([01]?[0-9]|2[0-3])\.[0-5][0-9]$/;
     return timeRegex.test(timeStr);
   };
-  
+
   const validateTimePeriod = (startTime, endTime) => {
     if (!validateTimeFormat(startTime)) return false;
     if (!validateTimeFormat(endTime)) return false;
-    
-    const [startHours, startMins] = startTime.split('.').map(Number);
-    const [endHours, endMins] = endTime.split('.').map(Number);
-    
+
+    const [startHours, startMins] = startTime.split(".").map(Number);
+    const [endHours, endMins] = endTime.split(".").map(Number);
+
     if (startHours > endHours) return false;
     if (startHours === endHours && startMins >= endMins) return false;
-    
+
     return true;
   };
 
@@ -771,80 +771,92 @@ const PlanGenerate = () => {
       message.error("Please add at least one place to your plan");
       return false;
     }
-  
+
     // Check each day's itinerary
     for (const dayPlan of planDetails.detail.trip.itinerary) {
       if (!dayPlan.places || dayPlan.places.length === 0) {
         message.error(`Day ${dayPlan.day} has no places`);
         return false;
       }
-  
+
       // Check times for each place in the day
       for (let i = 0; i < dayPlan.places.length; i++) {
         const place = dayPlan.places[i];
-        
+
         // Check for unset times
         if (place.start_time === "00:00" && place.end_time === "00:00") {
-          message.error(`Please set times for ${place.place_name} in Day ${dayPlan.day}`);
+          message.error(
+            `Please set times for ${place.place_name} in Day ${dayPlan.day}`
+          );
           return false;
         }
-        
+
         // Validate time format
-        if (!validateTimeFormat(place.start_time.replace(':', '.'))) {
-          message.error(`Invalid start time format for ${place.place_name} (use HH.MM format)`);
+        if (!validateTimeFormat(place.start_time.replace(":", "."))) {
+          message.error(
+            `Invalid start time format for ${place.place_name} (use HH.MM format)`
+          );
           return false;
         }
-        if (!validateTimeFormat(place.end_time.replace(':', '.'))) {
-          message.error(`Invalid end time format for ${place.place_name} (use HH.MM format)`);
+        if (!validateTimeFormat(place.end_time.replace(":", "."))) {
+          message.error(
+            `Invalid end time format for ${place.place_name} (use HH.MM format)`
+          );
           return false;
         }
-        
+
         // Validate time period
-        if (!validateTimePeriod(
-          place.start_time.replace(':', '.'), 
-          place.end_time.replace(':', '.')
-        )) {
-          message.error(`Invalid time period for ${place.place_name} (end time must be after start time)`);
+        if (
+          !validateTimePeriod(
+            place.start_time.replace(":", "."),
+            place.end_time.replace(":", ".")
+          )
+        ) {
+          message.error(
+            `Invalid time period for ${place.place_name} (end time must be after start time)`
+          );
           return false;
         }
-        
+
         // Check sequence with next place
         if (i < dayPlan.places.length - 1) {
           const nextPlace = dayPlan.places[i + 1];
-          const currentEnd = place.end_time.replace(':', '.');
-          const nextStart = nextPlace.start_time.replace(':', '.');
-          
+          const currentEnd = place.end_time.replace(":", ".");
+          const nextStart = nextPlace.start_time.replace(":", ".");
+
           if (!validateTimePeriod(currentEnd, nextStart)) {
-            message.error(`Time sequence error between ${place.place_name} and ${nextPlace.place_name}`);
+            message.error(
+              `Time sequence error between ${place.place_name} and ${nextPlace.place_name}`
+            );
             return false;
           }
         }
       }
     }
-    
+
     return true;
   };
 
   const TimeInput = ({ value, onChange }) => {
     const [internalValue, setInternalValue] = useState(value);
     const [isValid, setIsValid] = useState(true);
-  
+
     const handleChange = (e) => {
       const newValue = e.target.value;
       setInternalValue(newValue);
-      
+
       // Basic length check while typing
       if (newValue.length > 5) return;
-      
+
       // Allow partial input (like "1" or "12:")
       setIsValid(true);
     };
-  
+
     const handleBlur = () => {
       // Validate full time format on blur
       const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
       const isValidTime = timeRegex.test(internalValue);
-      
+
       if (isValidTime) {
         onChange(internalValue);
       } else {
@@ -853,18 +865,18 @@ const PlanGenerate = () => {
       }
       setIsValid(isValidTime);
     };
-  
+
     useEffect(() => {
       setInternalValue(value);
     }, [value]);
-  
+
     return (
       <Input
         value={internalValue}
         onChange={handleChange}
         onBlur={handleBlur}
         placeholder="HH:MM"
-        className={`w-20 ${!isValid ? 'border-red-500' : ''}`}
+        className={`w-20 ${!isValid ? "border-red-500" : ""}`}
         maxLength={5}
       />
     );
@@ -874,7 +886,7 @@ const PlanGenerate = () => {
     <DndProvider backend={HTML5Backend}>
       <div className="w-full h-screen mx-auto">
         {/* Full-screen Loading Spinner */}
-        <Hero />
+        <Hero title={"Plan Your Trip"} />
         {loading && <Loading loading={loading}></Loading>}
         {/* toggle plan / summary */}
         <div className="flex flex-col items-center mt-10">

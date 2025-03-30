@@ -12,6 +12,7 @@ const PopularPlaces = () => {
       try {
         SearchValue.pageSize = 4;
         const response = await searchPlace(SearchValue);
+        console.log("🚀 ~ fetchData ~ response:", response);
         setPlaces(response.data?.content);
       } catch (error) {}
     };
@@ -30,10 +31,10 @@ const PopularPlaces = () => {
         {places.slice(0, 4).map((place) => (
           <div
             onClick={() => {
-              navigate(`/places/${place.id}`);
+              navigate(`/places/${place.place.id}`);
             }}
           >
-            <PlaceCardvertical place={place} height={500} />
+            <PlaceCardvertical place={place.place} height={500} />
           </div>
         ))}
       </div>

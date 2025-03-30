@@ -6,6 +6,7 @@ import { Hero } from "../Sections";
 import formatDate from "../../utils/FormatDate";
 import { AuthContext } from "../../context/AuthContext";
 import { isLikedBlog, likeBlog } from "../../api/userApi";
+import NavBar from "../../components/NavBar";
 
 const BlogDetail = () => {
   const [blog, setBlog] = useState("");
@@ -69,10 +70,11 @@ const BlogDetail = () => {
     fetchData();
   }, [id, commentSubmitted]);
   return (
-    <div>
+    <div className="w-full">
+      <NavBar variant="black" />
+
       <div>
-        <Hero />
-        <div className="mt-10 mx-40 h-screen">
+        <div className="mx-60 pt-20 bg-gra ">
           <div className="flex">
             <h1 className="text-xl font-bold my-5"> {blog?.title} </h1>
             {isAuth && (
@@ -189,7 +191,7 @@ const BlogDetail = () => {
             </div>
 
             <div
-              className="quil-content w-full mt-10"
+              className="quil-content w-full mt-10 "
               dangerouslySetInnerHTML={{ __html: blog?.content }}
             ></div>
 

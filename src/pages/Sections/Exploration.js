@@ -33,7 +33,8 @@ const Exploration = () => {
           <PlaceCardvertical
             place={{
               title: provinces[0],
-              pic: "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
+              image:
+                "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
             }}
             height={600}
           />
@@ -47,7 +48,8 @@ const Exploration = () => {
           <PlaceCardvertical
             place={{
               title: provinces[1],
-              pic: "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
+              image:
+                "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
             }}
             height={600}
           />
@@ -61,7 +63,8 @@ const Exploration = () => {
           <PlaceCardvertical
             place={{
               title: provinces[2],
-              pic: "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
+              image:
+                "https://siamsavvy.s3.ap-southeast-2.amazonaws.com/exploration.png",
             }}
             height={600}
           />
