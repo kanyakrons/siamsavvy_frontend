@@ -25,7 +25,7 @@ const BlogCard = ({ blog, layout = "vertical", imageHeight = 200 }) => {
         }`}
       >
         <img
-          src={blog?.image?.url}
+          src={blog?.image?.url ? blog.image.url : "/default-mockup-place.jpg"}
           alt="blog"
           className="w-full object-cover transition-all duration-300 transform hover:shadow-2xl rounded-xl"
           style={{ height: `${imageHeight}px` }}
