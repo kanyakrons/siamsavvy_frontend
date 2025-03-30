@@ -408,18 +408,14 @@ const PlanGenerate = () => {
               </a>
 
               <div className="flex items-center space-x-2">
-                <Input
+                <TimeInput
                   value={place.start_time}
-                  onChange={(e) => handleTimeChange('start_time', e.target.value)}
-                  placeholder="HH:MM"
-                  className="w-20"
+                  onChange={(value) => handleTimeChange('start_time', value)}
                 />
                 <span className="font-semibold">to</span>
-                <Input
+                <TimeInput
                   value={place.end_time}
-                  onChange={(e) => handleTimeChange('end_time', e.target.value)}
-                  placeholder="HH:MM"
-                  className="w-20"
+                  onChange={(value) => handleTimeChange('end_time', value)}
                 />
               </div>
             </div>
@@ -758,6 +754,51 @@ const PlanGenerate = () => {
     }
     
     return true;
+  };
+
+  const TimeInput = ({ value, onChange }) => {
+    const [internalValue, setInternalValue] = useState(value);
+    const [isValid, setIsValid] = useState(true);
+  
+    const handleChange = (e) => {
+      const newValue = e.target.value;
+      setInternalValue(newValue);
+      
+      // Basic length check while typing
+      if (newValue.length > 5) return;
+      
+      // Allow partial input (like "1" or "12:")
+      setIsValid(true);
+    };
+  
+    const handleBlur = () => {
+      // Validate full time format on blur
+      const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+      const isValidTime = timeRegex.test(internalValue);
+      
+      if (isValidTime) {
+        onChange(internalValue);
+      } else {
+        // Revert to last valid value if invalid
+        setInternalValue(value);
+      }
+      setIsValid(isValidTime);
+    };
+  
+    useEffect(() => {
+      setInternalValue(value);
+    }, [value]);
+  
+    return (
+      <Input
+        value={internalValue}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="HH:MM"
+        className={`w-20 ${!isValid ? 'border-red-500' : ''}`}
+        maxLength={5}
+      />
+    );
   };
 
   return (
