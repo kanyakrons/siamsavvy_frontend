@@ -13,11 +13,15 @@ import { useSearchParams } from "react-router-dom";
 import CardUserItem from "../../../components/CardUserItem";
 import { GetPlanDetail } from "../../../api/planApi";
 import formatDate from "../../../utils/FormatDate";
+import { useNavigate } from "react-router-dom";
+
 
 const MAX_COUNT = 3;
 const Delta = Quill.import("delta");
 
 const BlogCreate = () => {
+  const navigate = useNavigate();
+
   const [content, setContent] = useState();
   const [uploadedImages, setUploadedImages] = useState([]);
   const quillRef = useRef();
@@ -46,7 +50,6 @@ const BlogCreate = () => {
 
   const getPlanDetail = async () => {
     const response = await GetPlanDetail(planId);
-    console.log("🚀 ~ getPlanDetail ~ response:", response);
     setPlanDetail(response.data);
   };
 
@@ -68,6 +71,8 @@ const BlogCreate = () => {
     };
 
     const response = await createBlog(updatedBlogValue);
+
+    navigate("/blogs/saved");
   };
 
   const suffix = (
