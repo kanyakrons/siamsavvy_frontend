@@ -1437,6 +1437,8 @@ const PlanGenerate = () => {
             <div className="w-full">
               {planDetails.detail && (
                 <div className="mx-[200px]">
+                  <p className="font-bold text-3xl mb-5">{planDetails.name}</p>
+
                   {/* Day Tabs */}
                   <div className="flex overflow-x-auto mb-4">
                     {planDetails.detail?.trip.itinerary.map((dayPlan) => (
