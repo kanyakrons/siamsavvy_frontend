@@ -30,7 +30,7 @@ const BlogDetail = () => {
   const onClickLike = async () => {
     try {
       await likeBlog(id);
-      setIsLiked(true);
+      setIsLiked(!isLiked);
     } catch (error) {
       message.error(error);
     }
