@@ -905,6 +905,8 @@ const PlanGenerate = () => {
         routes: [],
       });
 
+      newDetails.detail.trip.duration = newDayNumber;
+
       if (newDayNumber === 1) {
         setSelectedDay(0);
       }

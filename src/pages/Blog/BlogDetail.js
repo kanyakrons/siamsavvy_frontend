@@ -214,7 +214,7 @@ const BlogDetail = () => {
                           <Avatar
                             size="large"
                             src={
-                              JSON.parse(localStorage.getItem("user"))?.imageUrl
+                              review.user.imageUrl
                             }
                           />
                           <p className="font-semibold ml-3">

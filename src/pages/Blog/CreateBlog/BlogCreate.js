@@ -115,9 +115,9 @@ const BlogCreate = () => {
     <>
       <NavBar variant={"black"} />
       <div className="w-full h-screen pt-40">
-        <div className="mx-40">
+        <div className="mx-40 mb-[20px]">
           {/* Title */}
-          <div className="flex">
+          <div className="flex  mb-[20px]">
             <div className="flex flex-col w-1/2 mr-5">
               <div className="flex flex-col gap-4">
                 <div>
