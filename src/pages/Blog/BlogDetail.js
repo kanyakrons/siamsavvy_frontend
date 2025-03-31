@@ -75,8 +75,13 @@ const BlogDetail = () => {
 
       <div>
         <div className="mx-60 pt-20 bg-gra ">
-          <div className="flex">
-            <h1 className="text-xl font-bold my-5"> {blog?.title} </h1>
+          <div className="flex mt-5">
+            <div className="flex flex-col">
+              <h1 className="text-3xl font-bold "> {blog?.title} </h1>
+              <div className="mt-1">
+                {blog?.createdAt ? formatDate(blog.createdAt) : ""}
+              </div>
+            </div>
             {isAuth && (
               <div className="ms-auto mt-5">
                 {/* Heart icon */}
@@ -95,11 +100,9 @@ const BlogDetail = () => {
           </div>
 
           <div className="w-full flex flex-col">
-            <div className=" mt-5 grid grid-cols-2">
+            <div className=" grid grid-cols-2">
               {" "}
               <div className="w-1/2">
-                <div>{blog?.createdAt ? formatDate(blog.createdAt) : ""}</div>
-
                 <div className="mt-5 ">
                   {blog?.categories
                     ? blog.categories.map((category) => (

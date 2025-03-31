@@ -8,6 +8,7 @@ import { getProvinces } from "../../api/placeApi";
 import { getCategories } from "../../api/categoryApi";
 import { Input, message, Pagination, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { motion } from "framer-motion";
 
 const BlogSearch = () => {
   const [searchValue, setSearchValue] = useState(SearchValue);
@@ -59,11 +60,17 @@ const BlogSearch = () => {
   return (
     <div className="relative w-full mx-auto h-screen ">
       <Hero title={"Blogs"} isBlogPage={true} />
-      <div className=" flex justify-center items-center w-full mb-7">
-        {/* Search Bar container */}
-        <div className="absolute flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
-          {/* Province Multi-Select */}
-          {/* <Select
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 -mt-15 mb-12"
+      >
+        <div className=" flex justify-center items-center w-full mb-7">
+          {/* Search Bar container */}
+          <div className="absolute flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
+            {/* Province Multi-Select */}
+            {/* <Select
             mode="multiple"
             options={provinces.map((p) => ({ value: p, label: p }))}
             value={searchValue.listProvince}
@@ -77,47 +84,48 @@ const BlogSearch = () => {
             bordered={false}
           /> */}
 
-          {/* Search by Place Name */}
-          <Input
-            placeholder="Blog Name ..."
-            value={searchValue.blogTitle}
-            onChange={(e) =>
-              setSearchValue({ ...searchValue, blogTitle: e.target.value })
-            }
-            style={{ width: "300px", padding: "8px", height: "35px" }}
-            className="rounded-full hover:border-purple-400 focus:border-purple-400"
-          />
+            {/* Search by Place Name */}
+            <Input
+              placeholder="Blog Name ..."
+              value={searchValue.blogTitle}
+              onChange={(e) =>
+                setSearchValue({ ...searchValue, blogTitle: e.target.value })
+              }
+              style={{ width: "300px", padding: "8px", height: "35px" }}
+              className="rounded-full hover:border-purple-400 focus:border-purple-400"
+            />
 
-          {/* Category Multi-Select */}
-          <Select
-            mode="multiple"
-            value={searchValue.listCategory}
-            options={categories.map((c) => ({ value: c.id, label: c.name }))}
-            onChange={(selectedValues) =>
-              setSearchValue({ ...searchValue, listCategory: selectedValues })
-            }
-            placeholder="Filter by Category"
-            style={{ width: "400px", height: "35px" }}
-            maxTagCount={"responsive"}
-            className="custom-select"
-            bordered={false}
-          />
+            {/* Category Multi-Select */}
+            <Select
+              mode="multiple"
+              value={searchValue.listCategory}
+              options={categories.map((c) => ({ value: c.id, label: c.name }))}
+              onChange={(selectedValues) =>
+                setSearchValue({ ...searchValue, listCategory: selectedValues })
+              }
+              placeholder="Filter by Category"
+              style={{ width: "400px", height: "35px" }}
+              maxTagCount={"responsive"}
+              className="custom-select"
+              bordered={false}
+            />
 
-          <button
-            className="p-2 bg-purple-600 text-white rounded-full"
-            style={{
-              width: "50px",
-              height: "35px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onClick={() => handleSearch()}
-          >
-            <SearchOutlined />
-          </button>
+            <button
+              className="p-2 bg-purple-600 text-white rounded-full"
+              style={{
+                width: "50px",
+                height: "35px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onClick={() => handleSearch()}
+            >
+              <SearchOutlined />
+            </button>
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-3 row-auto mx-20 mt-20 gap-10">
         {blogList?.map((blog) => (
