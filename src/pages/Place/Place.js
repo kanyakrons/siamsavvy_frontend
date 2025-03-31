@@ -65,26 +65,28 @@ const Place = () => {
   const handlePaginate = () => {};
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchInitialData = async () => {
       setLoading(true);
       try {
-        const provincesData = await getProvinces();
-        const categoriesData = await getCategories();
-        handleSearch();
+        const [provincesData, categoriesData] = await Promise.all([
+          getProvinces(),
+          getCategories()
+        ]);
         setProvinces(provincesData.data);
         setCategories(categoriesData.data);
+        await handleSearch(); // Wait for search to complete
       } catch (error) {
         setError("Error fetching data");
       } finally {
         setLoading(false);
       }
     };
-
-    fetchData();
+  
+    fetchInitialData();
   }, []);
 
   return (
-    <div className="relative w-full mx-auto h-screen ">
+    <div className="relative w-full mx-auto  ">
       {loading && <Loading loading={loading}></Loading>}
 
       <Hero title={"Places"} />
