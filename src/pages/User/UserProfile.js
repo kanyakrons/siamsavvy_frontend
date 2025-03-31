@@ -206,9 +206,9 @@ const UserProfile = () => {
       <NavBar variant="black" />
       <div className="bg-white shadow rounded-lg overflow-hidden">
         {/* Profile Info Section */}
-        <div className="px-6 py-4 mt-[100px] mb-[20px] mx-20 flex items-center ">
+        <div className="px-6 py-4 relative mt-40 mx-20 ">
           {/* Avatar with Upload */}
-          <div className="border-4 border-white rounded-full group">
+          <div className=" absolute -top-16 left-6 border-4 border-white rounded-full group">
             <Avatar
               size={128}
               src={img}
@@ -233,21 +233,24 @@ const UserProfile = () => {
             </div>
           </div>
           {/* Display Name and Username */}
-          <div className="ms-[20px]">
+          <div className="ms-[20px] absolute -top-10 left-48 ">
             <h1 className="text-2xl font-bold">{user?.displayName}</h1>
             <p className="text-gray-500">{user?.username}</p>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-200"></div>
+        <div className="border-t border-gray-200 mt-40"></div>
 
         {/* Bottom Section */}
+
         <div className="p-6">
           <div className="py-8 text-gray-400">
             <div className="flex flex-col justify-center items-center w-full mb-7">
               <div>
-                <p className="font-bold text-3xl text-black mb-5">Favorite Places</p>
+                <p className="font-bold text-3xl text-black mb-5">
+                  Favorite Places
+                </p>
                 <div className="grid grid-cols-3 gap-5 mb-5">
                   {places.length > 0 ? (
                     places.map((place) => (

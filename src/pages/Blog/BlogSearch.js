@@ -63,7 +63,7 @@ const BlogSearch = () => {
         {/* Search Bar container */}
         <div className="absolute flex gap-4 justify-center items-center bg-white rounded-full shadow-lg px-6 py-3 w-full max-w-[750px]">
           {/* Province Multi-Select */}
-          <Select
+          {/* <Select
             mode="multiple"
             options={provinces.map((p) => ({ value: p, label: p }))}
             value={searchValue.listProvince}
@@ -75,11 +75,11 @@ const BlogSearch = () => {
             maxTagCount={"responsive"}
             className="custom-select"
             bordered={false}
-          />
+          /> */}
 
           {/* Search by Place Name */}
           <Input
-            placeholder="Place Name ..."
+            placeholder="Blog Name ..."
             value={searchValue.blogTitle}
             onChange={(e) =>
               setSearchValue({ ...searchValue, blogTitle: e.target.value })

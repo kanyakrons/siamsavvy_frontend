@@ -103,7 +103,9 @@ const BlogDetail = () => {
                 <div className="mt-5 ">
                   {blog?.categories
                     ? blog.categories.map((category) => (
-                        <Tag>{category.name}</Tag>
+                        <Tag className=" bg-purple-400 text-white text-xs font-semibold px-4 py-1 rounded-full mb-2">
+                          {category.name}
+                        </Tag>
                       ))
                     : ""}
                 </div>
@@ -228,7 +230,7 @@ const BlogDetail = () => {
               )}
 
               {isAuth && (
-                <div className="mt-2 border border-gray-200 rounded-lg bg-gray-100 px-7 py-5 shadow-md">
+                <div className="mt-2 border border-gray-200 rounded-lg bg-gray-100 px-7 py-5 shadow-md mb-10">
                   {/* User Name */}
                   <p className="font-semibold">
                     {JSON.parse(JSON.stringify(user)).username}
