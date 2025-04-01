@@ -51,7 +51,7 @@ const BlogCard = ({ blog, layout = "vertical", imageHeight = 200 }) => {
         <p
           className={` text-gray-700   ${
             layout === "horizontal"
-              ? "w-[400px] line-clamp-3"
+              ? "w-[300px] line-clamp-3"
               : "w-full line-clamp-2"
           }`}
         >
